@@ -1,0 +1,8 @@
+{
+    "require-dev": {
+        "phpunit/phpunit": "^6",
+        "squizlabs/php_codesniffer": "*",
+		"wp-coding-standards/wpcs": "*",
+		"phpcompatibility/php-compatibility": "*"
+    }
+}

@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<ruleset name="WordPress Coding Standards for DCO Comment Attachment Plugin">
+	<description>Sniffs for WordPress plugins</description>
+
+	<!-- What to scan -->
+	<file>.</file>
+	<exclude-pattern>/vendor/</exclude-pattern>
+	<exclude-pattern>/tests/</exclude-pattern>
+
+	<!-- How to scan -->
+	<arg value="sp"/>
+	<arg name="basepath" value="./"/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg name="parallel" value="8"/>
+
+	<config name="testVersion" value="5.2-"/>
+	<config name="minimum_supported_wp_version" value="4.6"/>
+	
+	<rule ref="PHPCompatibility"/>
+	<rule ref="WordPress"/>
+	
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array" value="dco_ca"/>
+		</properties>
+	</rule>
+	
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array" value="dco-comment-attachment"/>
+		</properties>
+	</rule>
+</ruleset>
