@@ -36,6 +36,7 @@ class DCO_CA {
 	public function init_hooks() {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
+		add_action( 'comment_post', array( $this, 'save_attachment' ) );
 	}
 
 	/**
@@ -68,6 +69,27 @@ class DCO_CA {
 		$file_field = ob_get_clean();
 
 		return $file_field . $submit_field;
+	}
+
+	/**
+	 * Saves attachment after post comment.
+	 *
+	 * @since 1.0
+	 * @param int $comment_id The comment ID.
+	 */
+	public function save_attachment( $comment_id ) {
+		if ( ! function_exists( 'media_handle_upload' ) ) {
+			require_once ABSPATH . 'wp-admin/includes/image.php';
+			require_once ABSPATH . 'wp-admin/includes/file.php';
+			require_once ABSPATH . 'wp-admin/includes/media.php';
+		}
+
+		$attachment_id = media_handle_upload( 'attachment', 0 );
+
+		if ( ! is_wp_error( $attachment_id ) ) {
+			// Assign attachment to comment.
+			add_comment_meta( $comment_id, 'attachment_id', $attachment_id );
+		}
 	}
 
 }
