@@ -37,6 +37,7 @@ class DCO_CA {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 		add_action( 'comment_post', array( $this, 'save_attachment' ) );
+		add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
 	}
 
 	/**
@@ -104,6 +105,21 @@ class DCO_CA {
 	 */
 	private function assign_attachment( $comment_id, $attachment_id ) {
 		return add_comment_meta( $comment_id, 'attachment_id', $attachment_id );
+	}
+
+	/**
+	 * Deletes an assigned attachment immediately before a comment is deleted from the database.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 */
+	public function delete_attachment( $comment_id ) {
+		// Get the id of the assigned attachment.
+		$attachment_id = get_comment_meta( $comment_id, 'attachment_id', true );
+		if ( $attachment_id ) {
+			wp_delete_attachment( $attachment_id, true );
+		}
 	}
 
 }
