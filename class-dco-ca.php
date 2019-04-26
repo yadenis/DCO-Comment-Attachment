@@ -52,11 +52,12 @@ class DCO_CA {
 	}
 
 	/**
-	 * Adds file upload field to form.
+	 * Adds a file upload field to the form.
 	 *
 	 * @since 1.0
+	 *
 	 * @param string $submit_field HTML markup for the submit field.
-	 * @return string $submit_field_with_file_field HTML markup for the file field and submit field.
+	 * @return string $submit_field_with_file_field HTML markup for the file field and the submit field.
 	 */
 	public function add_attachment_field( $submit_field ) {
 		ob_start();
@@ -72,9 +73,10 @@ class DCO_CA {
 	}
 
 	/**
-	 * Saves attachment after post comment.
+	 * Saves attachment after comment is posted.
 	 *
 	 * @since 1.0
+	 *
 	 * @param int $comment_id The comment ID.
 	 */
 	public function save_attachment( $comment_id ) {
@@ -87,9 +89,21 @@ class DCO_CA {
 		$attachment_id = media_handle_upload( 'attachment', 0 );
 
 		if ( ! is_wp_error( $attachment_id ) ) {
-			// Assign attachment to comment.
-			add_comment_meta( $comment_id, 'attachment_id', $attachment_id );
+			$this->assign_attachment( $comment_id, $attachment_id );
 		}
+	}
+
+	/**
+	 * Assigns an attachment for the comment.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 * @param int $attachment_id The attachment ID.
+	 * @return int|bool Meta ID on success, false on failure.
+	 */
+	private function assign_attachment( $comment_id, $attachment_id ) {
+		return add_comment_meta( $comment_id, 'attachment_id', $attachment_id );
 	}
 
 }
