@@ -38,6 +38,7 @@ class DCO_CA {
 		add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 		add_action( 'comment_post', array( $this, 'save_attachment' ) );
 		add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
+		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
 	}
 
 	/**
@@ -115,11 +116,52 @@ class DCO_CA {
 	 * @param int $comment_id The comment ID.
 	 */
 	public function delete_attachment( $comment_id ) {
-		// Get the id of the assigned attachment.
-		$attachment_id = get_comment_meta( $comment_id, 'attachment_id', true );
+		$attachment_id = $this->get_attachment_id( $comment_id );
 		if ( $attachment_id ) {
 			wp_delete_attachment( $attachment_id, true );
 		}
+	}
+
+	/**
+	 * Gets an assigned attachment ID.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 * @return int|string $attachment_id The assigned attachment ID on success, empty string on failure.
+	 */
+	private function get_attachment_id( $comment_id ) {
+		return get_comment_meta( $comment_id, 'attachment_id', true );
+	}
+
+	/**
+	 * Displays an assigned attachment.
+	 *
+	 * @since 1.0
+	 *
+	 * @param string $comment_content Text of the comment.
+	 * @return string $comment_content_with_attachment Text of the comment with an assigned attachment.
+	 */
+	public function display_attachment( $comment_content ) {
+		$attachment_id = $this->get_attachment_id( get_comment_ID() );
+		if ( ! $attachment_id ) {
+			return $comment_content;
+		}
+
+		$url = wp_get_attachment_url( $attachment_id );
+
+		if ( wp_attachment_is_image( $attachment_id ) ) {
+			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id ) . '</div>';
+		} elseif ( wp_attachment_is( 'video', $attachment_id ) ) {
+			$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
+		} elseif ( wp_attachment_is( 'audio', $attachment_id ) ) {
+			$attachment_content = '<div class="dco-attachment dco-audio-attachment">' . do_shortcode( '[audio src="' . esc_url( $url ) . '"]' ) . '</div>';
+		} else {
+			$title              = get_the_title( $attachment_id );
+			$attachment_content = '<div class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></div>';
+		}
+
+		return $comment_content . $attachment_content;
 	}
 
 }
