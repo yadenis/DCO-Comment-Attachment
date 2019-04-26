@@ -16,8 +16,10 @@ defined( 'ABSPATH' ) || die;
  * Class with public functions.
  *
  * @since 1.0
+ *
+ * @see DCO_CA_Base
  */
-class DCO_CA {
+class DCO_CA extends DCO_CA_Base {
 
 	/**
 	 * Constructor
@@ -25,6 +27,8 @@ class DCO_CA {
 	 * @since 1.0
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		add_action( 'init', array( $this, 'init_hooks' ) );
 	}
 
@@ -34,10 +38,11 @@ class DCO_CA {
 	 * @since 1.0
 	 */
 	public function init_hooks() {
+		parent::init_hooks();
+
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 		add_action( 'comment_post', array( $this, 'save_attachment' ) );
-		add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
 		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
 	}
 
@@ -59,7 +64,7 @@ class DCO_CA {
 	 * @since 1.0
 	 *
 	 * @param string $submit_field HTML markup for the submit field.
-	 * @return string $submit_field_with_file_field HTML markup for the file field and the submit field.
+	 * @return string HTML markup for the file field and the submit field.
 	 */
 	public function add_attachment_field( $submit_field ) {
 		ob_start();
@@ -109,44 +114,19 @@ class DCO_CA {
 	}
 
 	/**
-	 * Deletes an assigned attachment immediately before a comment is deleted from the database.
-	 *
-	 * @since 1.0
-	 *
-	 * @param int $comment_id The comment ID.
-	 */
-	public function delete_attachment( $comment_id ) {
-		$attachment_id = $this->get_attachment_id( $comment_id );
-		if ( $attachment_id ) {
-			wp_delete_attachment( $attachment_id, true );
-		}
-	}
-
-	/**
-	 * Gets an assigned attachment ID.
-	 *
-	 * @since 1.0
-	 *
-	 * @param int $comment_id The comment ID.
-	 * @return int|string $attachment_id The assigned attachment ID on success, empty string on failure.
-	 */
-	private function get_attachment_id( $comment_id ) {
-		return get_comment_meta( $comment_id, 'attachment_id', true );
-	}
-
-	/**
 	 * Displays an assigned attachment.
 	 *
 	 * @since 1.0
 	 *
 	 * @param string $comment_content Text of the comment.
-	 * @return string $comment_content_with_attachment Text of the comment with an assigned attachment.
+	 * @return string Text of the comment with an assigned attachment.
 	 */
 	public function display_attachment( $comment_content ) {
-		$attachment_id = $this->get_attachment_id( get_comment_ID() );
-		if ( ! $attachment_id ) {
+		if ( ! $this->has_attachment() ) {
 			return $comment_content;
 		}
+
+		$attachment_id = $this->get_attachment_id();
 
 		$url = wp_get_attachment_url( $attachment_id );
 
