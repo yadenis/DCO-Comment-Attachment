@@ -20,6 +20,15 @@ defined( 'ABSPATH' ) || die;
 class DCO_CA_Base {
 
 	/**
+	 * The meta key of the attachment ID for comment meta.
+	 *
+	 * @since 1.0
+	 *
+	 * @var string $attachment_meta_key The attachment ID meta key.
+	 */
+	private $attachment_meta_key = 'attachment_id';
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0
@@ -56,7 +65,8 @@ class DCO_CA_Base {
 			return false;
 		}
 
-		if ( ! delete_comment_meta( $comment_id, 'attachment_id' ) ) {
+		$meta_key = $this->get_attachment_meta_key();
+		if ( ! delete_comment_meta( $comment_id, $meta_key ) ) {
 			return false;
 		}
 
@@ -72,11 +82,13 @@ class DCO_CA_Base {
 	 * @return int|string The assigned attachment ID on success, empty string on failure.
 	 */
 	public function get_attachment_id( $comment_id = 0 ) {
+		$meta_key = $this->get_attachment_meta_key();
+
 		if ( ! $comment_id ) {
 			$comment_id = get_comment_ID();
 		}
 
-		return get_comment_meta( $comment_id, 'attachment_id', true );
+		return get_comment_meta( $comment_id, $meta_key, true );
 	}
 
 	/**
@@ -97,6 +109,17 @@ class DCO_CA_Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Gets the meta key of the attachment ID for comment meta.
+	 *
+	 * @since 1.0
+	 *
+	 * return string The attachment ID meta key.
+	 */
+	public function get_attachment_meta_key() {
+		return $this->attachment_meta_key;
 	}
 
 }
