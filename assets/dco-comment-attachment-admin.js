@@ -33,6 +33,7 @@
 					let $comment = $this.closest( '.comment' );
 					let $attachment = $comment.children( '.dco-attachment' );
 					$attachment.remove();
+					$this.remove();
 				}
 			});
 		});
@@ -63,10 +64,11 @@
 
 				switch ( selection.type ) {
 					case 'image':
+						let thumbnail;
 						if ( selection.sizes.hasOwnProperty( 'medium' ) ) {
-							let thumbnail = selection.sizes.medium;
+							thumbnail = selection.sizes.medium;
 						} else {
-							let thumbnail = selection.sizes.full;
+							thumbnail = selection.sizes.full;
 						}
 
 						if ( ! $( '.dco-image-attachment' ).length ) {
