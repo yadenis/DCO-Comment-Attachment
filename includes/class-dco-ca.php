@@ -64,7 +64,7 @@ class DCO_CA extends DCO_CA_Base {
 	public function enqueue_scripts() {
 		// Only when comments is used.
 		if ( is_singular() && comments_open() ) {
-			wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
+			wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
 		}
 	}
 

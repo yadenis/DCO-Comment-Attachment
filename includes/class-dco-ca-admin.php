@@ -120,7 +120,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	public function enqueue_scripts( $hook_suffix ) {
 		// Only on comments page.
 		if ( 'edit-comments.php' === $hook_suffix ) {
-			wp_enqueue_script( 'dco-comment-attachment-admin', DCO_CA_URL . 'dco-comment-attachment-admin.js', array( 'jquery' ), DCO_CA_VERSION, true );
+			wp_enqueue_script( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.js', array( 'jquery' ), DCO_CA_VERSION, true );
 		}
 	}
 

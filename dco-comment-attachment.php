@@ -25,9 +25,9 @@ define( 'DCO_CA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DCO_CA_BASENAME', plugin_basename( __FILE__ ) );
 define( 'DCO_CA_VERSION', '1.0' );
 
-require_once DCO_CA_PATH . 'class-dco-ca-base.php';
-require_once DCO_CA_PATH . 'class-dco-ca.php';
+require_once DCO_CA_PATH . 'includes/class-dco-ca-base.php';
+require_once DCO_CA_PATH . 'includes/class-dco-ca.php';
 
 if ( is_admin() ) {
-	require_once DCO_CA_PATH . 'class-dco-ca-admin.php';
+	require_once DCO_CA_PATH . 'includes/class-dco-ca-admin.php';
 }
