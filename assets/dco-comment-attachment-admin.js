@@ -1,129 +1,130 @@
-(function ($) {
-	var attachment_notice_need_hide;
+( function( $ ) {
+	var attachmentNoticeNeedHide;
 
-	var show_attachment_notice = function (url) {
-		$('.dco-attachment').addClass('dco-hidden');
-		$('.dco-attachment-notice a').attr('href', url);
-		$('.dco-attachment-notice').removeClass('dco-hidden');
+	var showAttachmentNotice = function( url ) {
+		$( '.dco-attachment' ).addClass( 'dco-hidden' );
+		$( '.dco-attachment-notice a' ).attr( 'href', url );
+		$( '.dco-attachment-notice' ).removeClass( 'dco-hidden' );
 
-		attachment_notice_need_hide = false;
-	}
+		attachmentNoticeNeedHide = false;
+	};
 
-	var hide_attachment_notice = function () {
-		$('.dco-attachment').removeClass('dco-hidden');
-		$('.dco-attachment-notice').addClass('dco-hidden');
-	}
+	var hideAttachmentNotice = function() {
+		$( '.dco-attachment' ).removeClass( 'dco-hidden' );
+		$( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
+	};
 
-	$(document).ready(function () {
-		$(document).on('click', '.dco-del-attachment', function (e) {
+	$( document ).ready( function() {
+		$( document ).on( 'click', '.dco-del-attachment', function( e ) {
 			e.preventDefault();
 
-			var $this = $(this);
-			var nonce = $this.data('nonce');
-			var id = $this.data('id');
+			let $this = $( this );
+			let nonce = $this.data( 'nonce' );
+			let id = $this.data( 'id' );
 
-			var data = {
+			let data = {
 				action: 'delete_attachment',
 				id: id,
-				_ajax_nonce: nonce
+				_ajax_nonce: nonce // eslint-disable-line camelcase
 			};
 
-			$.post(ajaxurl, data, function (response) {
-				if(response.success) {
-					var $comment = $this.closest('.comment');
-					var $attachment = $comment.children('.dco-attachment');
+			$.post( ajaxurl, data, function( response ) {
+				if ( response.success ) {
+					let $comment = $this.closest( '.comment' );
+					let $attachment = $comment.children( '.dco-attachment' );
 					$attachment.remove();
 				}
 			});
 		});
 
-		$('#dco-add-attachment').on('click', function (e) {
+		$( '#dco-add-attachment' ).on( 'click', function( e ) {
 			e.preventDefault();
 
-			var frame = new wp.media.view.MediaFrame.Select({
-				title: dco_ca.set_attachment_title,
+			let frame = new wp.media.view.MediaFrame.Select({
+				title: dcoCA.set_attachment_title,
 				multiple: false,
 				library: {
 					uploadedTo: null
 				},
 
 				button: {
-					text: dco_ca.set_attachment_title
+					text: dcoCA.set_attachment_title
 				}
 			});
 
-			frame.on('select', function () {
-				// We set multiple to false so only get one image from the uploader
-				var selection = frame.state().get('selection').first().toJSON();
+			frame.on( 'select', function() {
 
-				$('#dco-attachment-id').val(selection.id);
+				// We set multiple to false so only get one image from the uploader.
+				let selection = frame.state().get( 'selection' ).first().toJSON();
 
-				attachment_notice_need_hide = true;
+				$( '#dco-attachment-id' ).val( selection.id );
 
-				switch (selection.type) {
+				attachmentNoticeNeedHide = true;
+
+				switch ( selection.type ) {
 					case 'image':
-						if (selection.sizes.hasOwnProperty('medium')) {
-							var thumbnail = selection.sizes.medium;
+						if ( selection.sizes.hasOwnProperty( 'medium' ) ) {
+							let thumbnail = selection.sizes.medium;
 						} else {
-							var thumbnail = selection.sizes.full;
+							let thumbnail = selection.sizes.full;
 						}
 
-						if (!$('.dco-image-attachment').length) {
-							show_attachment_notice(thumbnail.url);
+						if ( ! $( '.dco-image-attachment' ).length ) {
+							showAttachmentNotice( thumbnail.url );
 							break;
 						}
 
-						$('.dco-image-attachment img')
+						$( '.dco-image-attachment img' )
 								.attr({
 									src: thumbnail.url,
 									width: thumbnail.width,
 									height: thumbnail.height
 								})
-								.removeAttr('srcset')
-								.removeAttr('sizes');
+								.removeAttr( 'srcset' )
+								.removeAttr( 'sizes' );
 						break;
 					case 'video':
-						if (!$('.dco-video-attachment').length) {
-							show_attachment_notice(selection.url);
+						if ( ! $( '.dco-video-attachment' ).length ) {
+							showAttachmentNotice( selection.url );
 							break;
 						}
 
-						$('.dco-video-attachment video')[0].setSrc(selection.url);
+						$( '.dco-video-attachment video' )[0].setSrc( selection.url );
 						break;
 					case 'audio':
-						if (!$('.dco-audio-attachment').length) {
-							show_attachment_notice(selection.url);
+						if ( ! $( '.dco-audio-attachment' ).length ) {
+							showAttachmentNotice( selection.url );
 							break;
 						}
 
-						$('.dco-audio-attachment audio')[0].setSrc(selection.url);
+						$( '.dco-audio-attachment audio' )[0].setSrc( selection.url );
 						break;
 					default:
-						if (!$('.dco-misc-attachment').length) {
-							show_attachment_notice(selection.url);
+						if ( ! $( '.dco-misc-attachment' ).length ) {
+							showAttachmentNotice( selection.url );
 							break;
 						}
 
-						$('.dco-misc-attachment a')
-								.attr('href', selection.url)
-								.text(selection.title);
+						$( '.dco-misc-attachment a' )
+								.attr( 'href', selection.url )
+								.text( selection.title );
 				}
 
-				if (attachment_notice_need_hide) {
-					hide_attachment_notice();
+				if ( attachmentNoticeNeedHide ) {
+					hideAttachmentNotice();
 				}
-				$('#dco-remove-attachment').removeClass('dco-hidden');
+				$( '#dco-remove-attachment' ).removeClass( 'dco-hidden' );
 			});
 
 			frame.open();
 		});
 
-		$('#dco-remove-attachment').click(function (e) {
+		$( '#dco-remove-attachment' ).click( function( e ) {
 			e.preventDefault();
 
-			$('#dco-attachment-id').val(0);
-			$('.dco-attachment-notice').addClass('dco-hidden');
-			$('#dco-remove-attachment').addClass('dco-hidden');
+			$( '#dco-attachment-id' ).val( 0 );
+			$( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
+			$( '#dco-remove-attachment' ).addClass( 'dco-hidden' );
 		});
 	});
-})(jQuery);
+}( jQuery ) );

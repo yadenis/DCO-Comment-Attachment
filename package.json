@@ -1,0 +1,37 @@
+{
+  "name": "dco-comment-attachment",
+  "description": "DCO Comment Attachment allows your visitors to attach files with their comments, such as documents and images.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "check_css": "stylelint assets/*.css",
+    "fix_css": "stylelint assets/*.css --fix",
+    "check_js": "eslint assets/*.js",
+    "fix_js": "eslint assets/*.js --fix"
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-config-wordpress": "^2.0.0",
+    "eslint-plugin-import": "^2.17.2",
+    "eslint-plugin-node": "^8.0.1",
+    "eslint-plugin-promise": "^4.1.1",
+    "eslint-plugin-standard": "^4.0.0",
+    "stylelint": "^10.0.1",
+    "stylelint-config-wordpress": "^14.0.0"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://yadenis@github.com/yadenis/dco-comment-attachment.git"
+  },
+  "author": "Denis Yanchevskiy",
+  "license": "GPL-2.0+",
+  "bugs": {
+    "url": "https://github.com/yadenis/dco-comment-attachment/issues"
+  },
+  "homepage": "https://github.com/yadenis/dco-comment-attachment#readme"
+}

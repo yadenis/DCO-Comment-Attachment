@@ -133,7 +133,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 			$strings = array(
 				'set_attachment_title' => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
 			);
-			wp_localize_script( 'dco-comment-attachment-admin', 'dco_ca', $strings );
+			wp_localize_script( 'dco-comment-attachment-admin', 'dcoCA', $strings );
 		}
 	}
 

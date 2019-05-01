@@ -10,6 +10,7 @@
 }
 
 @media (max-width: 359px) {
+
 	.dco-attachment-actions {
 		display: block;
 	}
@@ -21,6 +22,7 @@
 }
 
 @media (max-width: 359px) {
+
 	.dco-remove-attachment {
 		display: inline-block;
 		margin-top: 20px;
