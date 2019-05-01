@@ -1,0 +1,37 @@
+.dco-attachment-preview {
+	max-width: 100%;
+	height: auto !important;
+}
+
+.dco-attachment-actions {
+	display: flex;
+	align-items: center;
+	margin-top: 20px;
+}
+
+@media (max-width: 359px) {
+	.dco-attachment-actions {
+		display: block;
+	}
+}
+
+.dco-remove-attachment {
+	margin-left: 30px;
+	color: #a00;
+}
+
+@media (max-width: 359px) {
+	.dco-remove-attachment {
+		display: inline-block;
+		margin-top: 20px;
+		margin-left: 0;
+	}
+}
+
+.dco-remove-attachment:hover {
+	color: #dc3232;
+}
+
+.dco-hidden {
+	display: none !important;
+}

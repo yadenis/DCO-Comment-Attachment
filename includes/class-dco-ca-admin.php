@@ -44,6 +44,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		add_action( 'admin_action_deleteattachment', array( $this, 'delete_attachment_action' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_action( 'wp_ajax_delete_attachment', array( $this, 'delete_attachment_ajax' ) );
+		add_action( 'add_meta_boxes_comment', array( $this, 'add_attachment_metabox' ) );
+		add_action( 'edit_comment', array( $this, 'update_attachment' ) );
 	}
 
 	/**
@@ -118,9 +120,20 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @param string $hook_suffix The current admin page.
 	 */
 	public function enqueue_scripts( $hook_suffix ) {
-		// Only on comments page.
-		if ( 'edit-comments.php' === $hook_suffix ) {
+		// Only on comment edit page.
+		if ( 'comment.php' === $hook_suffix ) {
+			wp_enqueue_media();
+			wp_enqueue_style( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.css', array(), DCO_CA_VERSION );
+		}
+
+		// Only on comments page and comment edit page.
+		if ( in_array( $hook_suffix, array( 'edit-comments.php', 'comment.php' ), true ) ) {
 			wp_enqueue_script( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.js', array( 'jquery' ), DCO_CA_VERSION, true );
+
+			$strings = array(
+				'set_attachment_title' => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
+			);
+			wp_localize_script( 'dco-comment-attachment-admin', 'dco_ca', $strings );
 		}
 	}
 
@@ -155,6 +168,56 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		}
 
 		wp_send_json_success();
+	}
+
+	/**
+	 * Adds the attachment metabox for the comment editing page.
+	 *
+	 * @since 1.0
+	 */
+	public function add_attachment_metabox() {
+		add_meta_box( 'dco-comment-attachment', esc_html__( 'Attachment', 'dco-comment-attachment' ), array( $this, 'render_attachment_metabox' ), 'comment', 'normal' );
+	}
+
+	/**
+	 * Renders the attachment metabox on the comment editing page.
+	 *
+	 * @since 1.0
+	 */
+	public function render_attachment_metabox() {
+		$btn_text     = __( 'Add Attachment', 'dco-comment-attachment' );
+		$remove_class = ' dco-hidden';
+
+		if ( $this->has_attachment() ) {
+			$btn_text     = __( 'Replace Attachment', 'dco-comment-attachment' );
+			$remove_class = '';
+
+			$attachment_id = $this->get_attachment_id();
+			echo $this->get_attachment_preview( $attachment_id ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
+		<div class="dco-attachment-notice dco-hidden"><?php echo wp_kses_data( __( 'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.', 'dco-comment-attachment' ) ); ?></div>
+		<div class="dco-attachment-actions">
+			<a href="#" class="button" id="dco-add-attachment"><?php echo esc_html( $btn_text ); ?></a>
+			<a href="#" class="dco-remove-attachment<?php echo esc_attr( $remove_class ); ?>" id="dco-remove-attachment"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
+		</div>
+		<input type="hidden" name="dco_attachment_id" id="dco-attachment-id" value="<?php echo (int) $attachment_id; ?>">
+		<?php
+	}
+
+	/**
+	 * Updates the attachment after editing the comment.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 */
+	public function update_attachment( $comment_id ) {
+		check_admin_referer( 'update-comment_' . $comment_id );
+
+		if ( isset( $_POST['dco_attachment_id'] ) ) {
+			$this->assign_attachment( $comment_id, (int) $_POST['dco_attachment_id'] );
+		}
 	}
 
 }

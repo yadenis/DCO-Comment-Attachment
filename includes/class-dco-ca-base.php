@@ -112,6 +112,45 @@ class DCO_CA_Base {
 	}
 
 	/**
+	 * Assigns an attachment for the comment.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 * @param int $attachment_id The attachment ID.
+	 * @return int|bool Meta ID on success, false on failure.
+	 */
+	public function assign_attachment( $comment_id, $attachment_id ) {
+		$meta_key = $this->get_attachment_meta_key();
+		return update_comment_meta( $comment_id, $meta_key, $attachment_id );
+	}
+
+	/**
+	 * Generates HTML markup for the attachment based on it type.
+	 *
+	 * @since 1.0
+	 *
+	 * @param int $attachment_id The attachment ID.
+	 * @return string HTML markup for the attachment.
+	 */
+	public function get_attachment_preview( $attachment_id ) {
+		$url = wp_get_attachment_url( $attachment_id );
+
+		if ( wp_attachment_is_image( $attachment_id ) ) {
+			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, 'medium' ) . '</div>';
+		} elseif ( wp_attachment_is( 'video', $attachment_id ) ) {
+			$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
+		} elseif ( wp_attachment_is( 'audio', $attachment_id ) ) {
+			$attachment_content = '<div class="dco-attachment dco-audio-attachment">' . do_shortcode( '[audio src="' . esc_url( $url ) . '"]' ) . '</div>';
+		} else {
+			$title              = get_the_title( $attachment_id );
+			$attachment_content = '<div class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></div>';
+		}
+
+		return $attachment_content;
+	}
+
+	/**
 	 * Gets the meta key of the attachment ID for comment meta.
 	 *
 	 * @since 1.0
