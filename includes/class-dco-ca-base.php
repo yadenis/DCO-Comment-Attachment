@@ -72,7 +72,8 @@ class DCO_CA_Base {
 	 */
 	public function set_options() {
 		$default = array(
-			'attachment_size' => 'medium',
+			'thumbnail_size'  => 'medium',
+			'max_upload_size' => $this->get_max_upload_size( false, true ),
 		);
 
 		$options = get_option( self::ID );
@@ -175,12 +176,12 @@ class DCO_CA_Base {
 		$url = wp_get_attachment_url( $attachment_id );
 
 		if ( wp_attachment_is_image( $attachment_id ) ) {
-			$attachment_size = $this->get_option( 'attachment_size' );
+			$thumbnail_size = $this->get_option( 'thumbnail_size' );
 			if ( is_admin() ) {
-				$attachment_size = 'medium';
+				$thumbnail_size = 'medium';
 			}
 
-			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $attachment_size ) . '</div>';
+			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $thumbnail_size ) . '</div>';
 		} elseif ( wp_attachment_is( 'video', $attachment_id ) ) {
 			$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
 		} elseif ( wp_attachment_is( 'audio', $attachment_id ) ) {
@@ -191,6 +192,28 @@ class DCO_CA_Base {
 		}
 
 		return $attachment_content;
+	}
+
+	/**
+	 * Gets max upload file size.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $with_format Optional. Whether to int value or value with units. Default false for int.
+	 * @param bool $for_setting Optional. Whether to value from plugin settings or system value. Default false for plugin settings value.
+	 * @return int|string Default integer, value with units if $with_format is true.
+	 */
+	public function get_max_upload_size( $with_format = false, $for_setting = false ) {
+		$max_upload_size = $this->get_option( 'max_upload_size' ) * MB_IN_BYTES;
+		if ( $for_setting ) {
+			$max_upload_size = wp_max_upload_size();
+		}
+
+		if ( $with_format ) {
+			return size_format( $max_upload_size );
+		}
+
+		return $max_upload_size;
 	}
 
 	/**

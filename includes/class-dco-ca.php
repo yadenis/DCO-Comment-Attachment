@@ -78,7 +78,7 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function add_attachment_field( $submit_field ) {
 		$name            = $this->get_upload_field_name();
-		$max_upload_size = size_format( wp_max_upload_size() );
+		$max_upload_size = $this->get_max_upload_size( true );
 		ob_start();
 		?>
 		<p class="comment-form-attachment">
@@ -159,7 +159,7 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		// We need to do this check, because the maximum allowed upload file size in WordPress can be less than the specified on the server.
-		if ( $attachment['size'] > wp_max_upload_size() ) {
+		if ( $attachment['size'] > $this->get_max_upload_size() ) {
 			$upload_error = $this->get_upload_error( 1 );
 			$error        = $upload_error;
 		}
@@ -186,11 +186,9 @@ class DCO_CA extends DCO_CA_Base {
 	 * @return string|false The error message if an error occurred, false if upload success.
 	 */
 	private function get_upload_error( $error_code ) {
-		$max_upload_size = size_format( wp_max_upload_size() );
-
 		$upload_errors = array(
 			/* translators: %s: the maximum allowed upload file size */
-			1 => sprintf( __( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ), $max_upload_size ),
+			1 => sprintf( __( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ), $this->get_max_upload_size( true ) ),
 			2 => __( 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.', 'dco-comment-attachment' ),
 			3 => __( 'The uploaded file was only partially uploaded.', 'dco-comment-attachment' ),
 			6 => __( 'Missing a temporary folder.', 'dco-comment-attachment' ),
