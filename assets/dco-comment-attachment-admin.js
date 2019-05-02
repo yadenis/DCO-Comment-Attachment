@@ -38,7 +38,7 @@
 			});
 		});
 
-		$( '#dco-add-attachment' ).on( 'click', function( e ) {
+		$( '#dco-set-attachment' ).on( 'click', function( e ) {
 			e.preventDefault();
 
 			let frame = new wp.media.view.MediaFrame.Select({
@@ -116,6 +116,7 @@
 					hideAttachmentNotice();
 				}
 				$( '#dco-remove-attachment' ).removeClass( 'dco-hidden' );
+				$( '.dco-set-attachment' ).text( dcoCA.replace_attachment_label );
 			});
 
 			frame.open();
@@ -125,8 +126,11 @@
 			e.preventDefault();
 
 			$( '#dco-attachment-id' ).val( 0 );
+			$( '.dco-attachment' ).addClass( 'dco-hidden' );
 			$( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
 			$( '#dco-remove-attachment' ).addClass( 'dco-hidden' );
+
+			$( '.dco-set-attachment' ).text( dcoCA.add_attachment_label );
 		});
 	});
 }( jQuery ) );

@@ -130,7 +130,9 @@ class DCO_CA_Admin extends DCO_CA_Base {
 			wp_enqueue_script( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.js', array( 'jquery' ), DCO_CA_VERSION, true );
 
 			$strings = array(
-				'set_attachment_title' => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
+				'set_attachment_title'     => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
+				'add_attachment_label'     => esc_attr__( 'Add Attachment', 'dco-comment-attachment' ),
+				'replace_attachment_label' => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
 			);
 			wp_localize_script( 'dco-comment-attachment-admin', 'dcoCA', $strings );
 
@@ -199,7 +201,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		?>
 		<div class="dco-attachment-notice dco-hidden"><?php echo wp_kses_data( __( 'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.', 'dco-comment-attachment' ) ); ?></div>
 		<div class="dco-attachment-actions">
-			<a href="#" class="button" id="dco-add-attachment"><?php echo esc_html( $btn_text ); ?></a>
+			<a href="#" class="button dco-set-attachment" id="dco-set-attachment"><?php echo esc_html( $btn_text ); ?></a>
 			<a href="#" class="dco-remove-attachment<?php echo esc_attr( $remove_class ); ?>" id="dco-remove-attachment"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
 		</div>
 		<input type="hidden" name="dco_attachment_id" id="dco-attachment-id" value="<?php echo (int) $attachment_id; ?>">
