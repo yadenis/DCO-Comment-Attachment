@@ -7,7 +7,7 @@
  * @copyright 2019
  * @license GPLv2+
  *
- * @since 1.0
+ * @since 1.0.0
  */
 
 defined( 'ABSPATH' ) || die;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || die;
 /**
  * Class with plugin settings.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @see DCO_CA_Base
  */
@@ -24,7 +24,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Constructor
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -35,7 +35,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Initializes hooks.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function init_hooks() {
 		parent::init_hooks();
@@ -122,7 +122,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Gets plugin settings sections.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return array Settings sections.
 	 */
@@ -137,7 +137,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Gets plugin settings fields.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return array Settings fields.
 	 */
@@ -158,7 +158,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Outputs the settings section content.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param array $args Section arguments.
 	 */
@@ -168,7 +168,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Outputs the settings field markup.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param array $args Field arguments.
 	 */
@@ -214,7 +214,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Gets thumbnail sizes registered on the site.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return array Thumbnail sizes.
 	 */

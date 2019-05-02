@@ -7,7 +7,7 @@
  * @copyright 2019
  * @license GPLv2+
  *
- * @since 1.0
+ * @since 1.0.0
  */
 
 defined( 'ABSPATH' ) || die;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || die;
 /**
  * Class with public functions.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @see DCO_CA_Base
  */
@@ -24,7 +24,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * The name of the upload field used in the commenting form.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @var string $upload_field_name The name of the upload input.
 	 */
@@ -33,7 +33,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Constructor
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -44,7 +44,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Initializes hooks.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function init_hooks() {
 		parent::init_hooks();
@@ -59,7 +59,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Enqueues scripts and styles.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
 		// Only when comments is used.
@@ -71,7 +71,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Adds a file upload field to the form.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $submit_field HTML markup for the submit field.
 	 * @return string HTML markup for the file field and the submit field.
@@ -105,7 +105,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Gets allowed upload file types.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return array File types allowed for upload.
 	 */
@@ -129,7 +129,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Checks the attachment before posting a comment.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param array $commentdata Comment data.
 	 * @return array Comment data on success.
@@ -180,7 +180,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Gets the upload error message by the PHP upload error code.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $error_code The PHP upload error code.
 	 * @return string|false The error message if an error occurred, false if upload success.
@@ -208,7 +208,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Saves attachment after comment is posted.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $comment_id The comment ID.
 	 */
@@ -231,7 +231,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Displays an assigned attachment.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $comment_content Text of the comment.
 	 * @return string Text of the comment with an assigned attachment.
@@ -250,7 +250,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Gets the name of the upload field used in the commenting form.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @return string The name of the upload input.
 	 */

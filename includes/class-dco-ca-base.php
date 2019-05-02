@@ -7,7 +7,7 @@
  * @copyright 2019
  * @license GPLv2+
  *
- * @since 1.0
+ * @since 1.0.0
  */
 
 defined( 'ABSPATH' ) || die;
@@ -15,14 +15,14 @@ defined( 'ABSPATH' ) || die;
 /**
  * Class with basic functions.
  *
- * @since 1.0
+ * @since 1.0.0
  */
 class DCO_CA_Base {
 
 	/**
 	 * The plugin options ID.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @var string $id The plugin options ID.
 	 */
@@ -39,7 +39,7 @@ class DCO_CA_Base {
 	/**
 	 * The meta key of the attachment ID for comment meta.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @var string $attachment_meta_key The attachment ID meta key.
 	 */
@@ -48,7 +48,7 @@ class DCO_CA_Base {
 	/**
 	 * Constructor
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'init_hooks' ) );
@@ -57,7 +57,7 @@ class DCO_CA_Base {
 	/**
 	 * Initializes hooks.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function init_hooks() {
 		$this->set_options();
@@ -87,7 +87,7 @@ class DCO_CA_Base {
 	/**
 	 * Deletes an assigned attachment immediately before a comment is deleted from the database.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $comment_id The comment ID.
 	 * @return bool true on success, false on failure.
@@ -114,7 +114,7 @@ class DCO_CA_Base {
 	/**
 	 * Gets an assigned attachment ID.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $comment_id Optional. The comment ID.
 	 * @return int|string The assigned attachment ID on success, empty string on failure.
@@ -132,7 +132,7 @@ class DCO_CA_Base {
 	/**
 	 * Checks if a comment has an attachment.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $comment_id Optional. The comment ID.
 	 * @return bool Whether the comment has an attachment.
@@ -152,7 +152,7 @@ class DCO_CA_Base {
 	/**
 	 * Assigns an attachment for the comment.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $comment_id The comment ID.
 	 * @param int $attachment_id The attachment ID.
@@ -166,7 +166,7 @@ class DCO_CA_Base {
 	/**
 	 * Generates HTML markup for the attachment based on it type.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $attachment_id The attachment ID.
 	 * @return string HTML markup for the attachment.
@@ -223,7 +223,7 @@ class DCO_CA_Base {
 	/**
 	 * Gets the meta key of the attachment ID for comment meta.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * return string The attachment ID meta key.
 	 */

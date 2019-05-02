@@ -7,7 +7,7 @@
  * @copyright 2019
  * @license GPLv2+
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * Plugin Name: DCO Comment Attachment
  * Description: Allows your visitors to attach files with their comments

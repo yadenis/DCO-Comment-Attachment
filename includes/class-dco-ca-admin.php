@@ -7,7 +7,7 @@
  * @copyright 2019
  * @license GPLv2+
  *
- * @since 1.0
+ * @since 1.0.0
  */
 
 defined( 'ABSPATH' ) || die;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || die;
 /**
  * Class with admin functions.
  *
- * @since 1.0
+ * @since 1.0.0
  *
  * @see DCO_CA_Base
  */
@@ -24,7 +24,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Constructor
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function __construct() {
 		parent::__construct();
@@ -35,7 +35,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Initializes hooks.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function init_hooks() {
 		parent::init_hooks();
@@ -51,7 +51,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Adds additional comment action links.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param array      $actions An array of comment actions.
 	 * @param WP_Comment $comment The comment object.
@@ -75,7 +75,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Handles a request to delete an attachment on the comments page.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function delete_attachment_action() {
 		$comment_id = isset( $_GET['c'] ) ? (int) $_GET['c'] : 0;
@@ -115,7 +115,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Enqueues scripts and styles.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param string $hook_suffix The current admin page.
 	 */
@@ -143,7 +143,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Handles an ajax request to delete an attachment on the comments page.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function delete_attachment_ajax() {
 		$comment_id = isset( $_POST['id'] ) ? (int) $_POST['id'] : 0;
@@ -176,7 +176,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Adds the attachment metabox for the comment editing page.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function add_attachment_metabox() {
 		add_meta_box( 'dco-comment-attachment', esc_html__( 'Attachment', 'dco-comment-attachment' ), array( $this, 'render_attachment_metabox' ), 'comment', 'normal' );
@@ -185,7 +185,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Renders the attachment metabox on the comment editing page.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 */
 	public function render_attachment_metabox() {
 		$btn_text     = __( 'Add Attachment', 'dco-comment-attachment' );
@@ -211,7 +211,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Updates the attachment after editing the comment.
 	 *
-	 * @since 1.0
+	 * @since 1.0.0
 	 *
 	 * @param int $comment_id The comment ID.
 	 */
