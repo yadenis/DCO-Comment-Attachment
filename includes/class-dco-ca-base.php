@@ -20,6 +20,23 @@ defined( 'ABSPATH' ) || die;
 class DCO_CA_Base {
 
 	/**
+	 * The plugin options ID.
+	 *
+	 * @since 1.0
+	 *
+	 * @var string $id The plugin options ID.
+	 */
+	const ID = 'dco_ca';
+
+	/**
+	 * An array of plugin options.
+	 *
+	 * @since 1.0.0
+	 * @var array $options Plugin options.
+	 */
+	private $options = array();
+
+	/**
 	 * The meta key of the attachment ID for comment meta.
 	 *
 	 * @since 1.0
@@ -43,7 +60,28 @@ class DCO_CA_Base {
 	 * @since 1.0
 	 */
 	public function init_hooks() {
+		$this->set_options();
+
 		add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
+	}
+
+	/**
+	 * Sets plugin options to the `$options` property from the database.
+	 *
+	 * @since 1.0.0
+	 */
+	public function set_options() {
+		$default = array(
+			'attachment_size' => 'medium',
+		);
+
+		$options = get_option( self::ID );
+		if ( is_array( $options ) ) {
+			// Clears empty typos.
+			$options = array_map( 'trim', $options );
+		}
+
+		$this->options = wp_parse_args( $options, $default );
 	}
 
 	/**
@@ -137,7 +175,12 @@ class DCO_CA_Base {
 		$url = wp_get_attachment_url( $attachment_id );
 
 		if ( wp_attachment_is_image( $attachment_id ) ) {
-			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, 'medium' ) . '</div>';
+			$attachment_size = $this->get_option( 'attachment_size' );
+			if ( is_admin() ) {
+				$attachment_size = 'medium';
+			}
+
+			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $attachment_size ) . '</div>';
 		} elseif ( wp_attachment_is( 'video', $attachment_id ) ) {
 			$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
 		} elseif ( wp_attachment_is( 'audio', $attachment_id ) ) {
@@ -148,6 +191,33 @@ class DCO_CA_Base {
 		}
 
 		return $attachment_content;
+	}
+
+	/**
+	 * Gets all plugin options.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array $options An array of plugin options.
+	 */
+	public function get_options() {
+		return $this->options;
+	}
+
+	/**
+	 * Gets the plugin option by the name.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $name The option name.
+	 * @return mixed|false Returns the value of the option if it is found, false if the option does not exist.
+	 */
+	public function get_option( $name ) {
+		if ( isset( $this->options[ $name ] ) ) {
+			return $this->options[ $name ];
+		}
+
+		return false;
 	}
 
 	/**

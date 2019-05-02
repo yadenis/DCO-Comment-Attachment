@@ -123,17 +123,18 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		// Only on comment edit page.
 		if ( 'comment.php' === $hook_suffix ) {
 			wp_enqueue_media();
-			wp_enqueue_style( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.css', array(), DCO_CA_VERSION );
 		}
 
 		// Only on comments page and comment edit page.
-		if ( in_array( $hook_suffix, array( 'edit-comments.php', 'comment.php' ), true ) ) {
+		if ( in_array( $hook_suffix, array( 'edit-comments.php', 'comment.php', 'settings_page_dco-comment-attachment' ), true ) ) {
 			wp_enqueue_script( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.js', array( 'jquery' ), DCO_CA_VERSION, true );
 
 			$strings = array(
 				'set_attachment_title' => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
 			);
 			wp_localize_script( 'dco-comment-attachment-admin', 'dcoCA', $strings );
+
+			wp_enqueue_style( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.css', array(), DCO_CA_VERSION );
 		}
 	}
 

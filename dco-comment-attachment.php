@@ -30,4 +30,5 @@ require_once DCO_CA_PATH . 'includes/class-dco-ca.php';
 
 if ( is_admin() ) {
 	require_once DCO_CA_PATH . 'includes/class-dco-ca-admin.php';
+	require_once DCO_CA_PATH . 'includes/class-dco-ca-settings.php';
 }
