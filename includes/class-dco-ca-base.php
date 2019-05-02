@@ -20,15 +20,6 @@ defined( 'ABSPATH' ) || die;
 class DCO_CA_Base {
 
 	/**
-	 * The plugin options ID.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $id The plugin options ID.
-	 */
-	const ID = 'dco_ca';
-
-	/**
 	 * An array of plugin options.
 	 *
 	 * @since 1.0.0
@@ -71,12 +62,9 @@ class DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function set_options() {
-		$default = array(
-			'thumbnail_size'  => 'medium',
-			'max_upload_size' => $this->get_max_upload_size( false, true ),
-		);
+		$default = $this->get_default_options();
 
-		$options = get_option( self::ID );
+		$options = get_option( DCO_CA_Settings::ID );
 		if ( is_array( $options ) ) {
 			// Clears empty typos.
 			$options = array_map( 'trim', $options );
@@ -205,12 +193,17 @@ class DCO_CA_Base {
 	 */
 	public function get_max_upload_size( $with_format = false, $for_setting = false ) {
 		$max_upload_size = $this->get_option( 'max_upload_size' ) * MB_IN_BYTES;
-		if ( $for_setting ) {
-			$max_upload_size = wp_max_upload_size();
+
+		if ( $for_setting && $with_format ) {
+			return size_format( wp_max_upload_size() );
 		}
 
 		if ( $with_format ) {
 			return size_format( $max_upload_size );
+		}
+
+		if ( $for_setting ) {
+			return wp_max_upload_size() / MB_IN_BYTES;
 		}
 
 		return $max_upload_size;
@@ -221,7 +214,7 @@ class DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array $options An array of plugin options.
+	 * @return array An array of plugin options.
 	 */
 	public function get_options() {
 		return $this->options;
@@ -241,6 +234,24 @@ class DCO_CA_Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Gets default plugin options.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array An array of plugin default options.
+	 */
+	public function get_default_options() {
+		$options = array();
+
+		$fields = $GLOBALS['dco_ca_settings']->get_fields();
+		foreach ( $fields as $name => $field ) {
+			$options[ $name ] = $field['default'];
+		}
+
+		return $options;
 	}
 
 	/**

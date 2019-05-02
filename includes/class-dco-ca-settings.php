@@ -22,6 +22,15 @@ defined( 'ABSPATH' ) || die;
 class DCO_CA_Settings extends DCO_CA_Base {
 
 	/**
+	 * The plugin options ID.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @var string $id The plugin options ID.
+	 */
+	const ID = 'dco_ca';
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -50,7 +59,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function register_settings() {
-		register_setting( parent::ID, parent::ID );
+		register_setting( self::ID, self::ID );
 
 		$sections = $this->get_sections();
 		foreach ( $sections as $key => $title ) {
@@ -58,7 +67,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				$key,
 				$title,
 				array( $this, 'section_render' ),
-				parent::ID
+				self::ID
 			);
 		}
 
@@ -83,7 +92,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				$key,
 				$field['label'],
 				array( $this, 'field_render' ),
-				parent::ID,
+				self::ID,
 				$field['section'],
 				$args
 			);
@@ -110,8 +119,8 @@ class DCO_CA_Settings extends DCO_CA_Base {
 			<h1><?php esc_html_e( 'DCO Comment Attachment Settings', 'dco-comment-attachment' ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( parent::ID );
-				do_settings_sections( parent::ID );
+				settings_fields( self::ID );
+				do_settings_sections( self::ID );
 				submit_button();
 				?>
 			</form>
@@ -149,13 +158,15 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'desc'    => __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'dropdown',
-				'choices' => array(),
+				'default' => 'medium',
+				'choices' => $this->get_thumbnail_sizes(),
 			),
 			'max_upload_size' => array(
 				'label'   => esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
 				/* translators: %s: the maximum allowed upload file size */
 				'desc'    => sprintf( __( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ), $this->get_max_upload_size( true, true ) ),
 				'section' => 'on_site',
+				'default' => $this->get_max_upload_size( false, true ),
 				'type'    => 'number',
 			),
 		);
@@ -181,7 +192,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 * @param array $args Field arguments.
 	 */
 	public function field_render( $args ) {
-		$id           = parent::ID;
+		$id           = self::ID;
 		$name         = $args['name'];
 		$setting_val  = $this->get_option( $name );
 		$control_name = "{$id}[$name]";

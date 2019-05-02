@@ -109,7 +109,7 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @return array File types allowed for upload.
 	 */
-	private function get_allowed_upload_types() {
+	public function get_allowed_upload_types() {
 		$types = array();
 
 		$mimes = array_keys( get_allowed_mime_types() );
@@ -185,7 +185,7 @@ class DCO_CA extends DCO_CA_Base {
 	 * @param int $error_code The PHP upload error code.
 	 * @return string|false The error message if an error occurred, false if upload success.
 	 */
-	private function get_upload_error( $error_code ) {
+	public function get_upload_error( $error_code ) {
 		$upload_errors = array(
 			/* translators: %s: the maximum allowed upload file size */
 			1 => sprintf( __( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ), $this->get_max_upload_size( true ) ),
