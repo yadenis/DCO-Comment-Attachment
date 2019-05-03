@@ -46,6 +46,10 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		add_action( 'wp_ajax_delete_attachment', array( $this, 'delete_attachment_ajax' ) );
 		add_action( 'add_meta_boxes_comment', array( $this, 'add_attachment_metabox' ) );
 		add_action( 'edit_comment', array( $this, 'update_attachment' ) );
+
+		if ( $this->get_option( 'delete_with_comment' ) ) {
+			add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
+		}
 	}
 
 	/**
@@ -221,6 +225,33 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		if ( isset( $_POST['dco_attachment_id'] ) ) {
 			$this->assign_attachment( $comment_id, (int) $_POST['dco_attachment_id'] );
 		}
+	}
+
+	/**
+	 * Deletes an assigned attachment.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 * @return bool true on success, false on failure.
+	 */
+	public function delete_attachment( $comment_id ) {
+		if ( ! $this->has_attachment( $comment_id ) ) {
+			return false;
+		}
+
+		$attachment_id = $this->get_attachment_id( $comment_id );
+
+		if ( ! wp_delete_attachment( $attachment_id ) ) {
+			return false;
+		}
+
+		$meta_key = $this->get_attachment_meta_key();
+		if ( ! delete_comment_meta( $comment_id, $meta_key ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 }

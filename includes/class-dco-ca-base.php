@@ -52,8 +52,6 @@ class DCO_CA_Base {
 	 */
 	public function init_hooks() {
 		$this->set_options();
-
-		add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
 	}
 
 	/**
@@ -71,33 +69,6 @@ class DCO_CA_Base {
 		}
 
 		$this->options = wp_parse_args( $options, $default );
-	}
-
-	/**
-	 * Deletes an assigned attachment immediately before a comment is deleted from the database.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param int $comment_id The comment ID.
-	 * @return bool true on success, false on failure.
-	 */
-	public function delete_attachment( $comment_id ) {
-		if ( ! $this->has_attachment( $comment_id ) ) {
-			return false;
-		}
-
-		$attachment_id = $this->get_attachment_id( $comment_id );
-
-		if ( ! wp_delete_attachment( $attachment_id, true ) ) {
-			return false;
-		}
-
-		$meta_key = $this->get_attachment_meta_key();
-		if ( ! delete_comment_meta( $comment_id, $meta_key ) ) {
-			return false;
-		}
-
-		return true;
 	}
 
 	/**

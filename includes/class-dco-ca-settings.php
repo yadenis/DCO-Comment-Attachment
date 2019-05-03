@@ -182,6 +182,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
+			'delete_with_comment' => array(
+				'label'   => esc_html__( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If unchecked, the attachment will be available after the comment has been deleted.', 'dco-comment-attachment' ),
+				'section' => 'in_admin',
+				'type'    => 'checkbox',
+				'default' => 1,
+			),
 		);
 
 		return $fields;
