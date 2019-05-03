@@ -153,20 +153,27 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 */
 	public function get_fields() {
 		$fields = array(
-			'thumbnail_size'  => array(
+			'thumbnail_size'      => array(
 				'label'   => esc_html__( 'Attachment image size', 'dco-comment-attachment' ),
 				'desc'    => __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'dropdown',
 				'default' => 'medium',
 			),
-			'max_upload_size' => array(
+			'max_upload_size'     => array(
 				'label'   => esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
 				/* translators: %s: the maximum allowed upload file size */
 				'desc'    => sprintf( __( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ), $this->get_max_upload_size( true, true ) ),
 				'section' => 'on_site',
 				'type'    => 'number',
 				'default' => $this->get_max_upload_size( false, true ),
+			),
+			'required_attachment' => array(
+				'label'   => esc_html__( 'Is attachment required?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, the user will not be able to post a comment without attaching an attachment.', 'dco-comment-attachment' ),
+				'section' => 'on_site',
+				'type'    => 'checkbox',
+				'default' => 0,
 			),
 		);
 
@@ -202,13 +209,16 @@ class DCO_CA_Settings extends DCO_CA_Base {
 					$this->field_max_upload_size_render( $setting_val, $control_name, $args );
 				}
 				break;
+			case 'checkbox':
+				$this->field_checkbox_render( $setting_val, $control_name, $args );
+				break;
 			case 'dropdown':
 				if ( 'thumbnail_size' === $args['name'] ) {
 					$this->field_thumbnail_size_render( $setting_val, $control_name, $args );
 				}
 				break;
 		}
-		echo '<div class="dco-field-desc">' . esc_html( $args['desc'] ) . '</div>';
+		echo '<p class="description">' . esc_html( $args['desc'] ) . '</p>';
 	}
 
 	/**
@@ -216,13 +226,27 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $setting_val The setting value from DB.
-	 * @param string $control_name The name attribute for the setting field.
-	 * @param array  $args Field arguments.
+	 * @param int|float $setting_val The setting value from DB.
+	 * @param string    $control_name The name attribute for the setting field.
+	 * @param array     $args Field arguments.
 	 */
 	public function field_max_upload_size_render( $setting_val, $control_name, $args ) {
 		$max = $this->get_max_upload_size( false, true );
 		echo '<input type="number" name="' . esc_attr( $control_name ) . '" class="dco-field regular-text" value="' . esc_attr( $setting_val ) . '" min="1" max="' . esc_attr( $max ) . '">';
+	}
+
+	/**
+	 * Outputs the setting checkbox field markup.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $setting_val The setting value from DB.
+	 * @param string $control_name The name attribute for the setting field.
+	 * @param array  $args Field arguments.
+	 */
+	public function field_checkbox_render( $setting_val, $control_name, $args ) {
+		echo '<input type="hidden" name="' . esc_attr( $control_name ) . '" value="0">';
+		echo '<input type="checkbox" name="' . esc_attr( $control_name ) . '" value="1"' . checked( 1, $setting_val, false ) . '>';
 	}
 
 	/**

@@ -82,7 +82,14 @@ class DCO_CA extends DCO_CA_Base {
 		ob_start();
 		?>
 		<p class="comment-form-attachment">
-			<label for="attachment"><?php esc_html_e( 'Attachment', 'dco-comment-attachment' ); ?></label>
+			<label for="attachment">
+				<?php
+				esc_html_e( 'Attachment', 'dco-comment-attachment' );
+				if ( $this->get_option( 'required_attachment' ) ) {
+					echo ' <span class="required">*</span>';
+				}
+				?>
+			</label>
 			<input id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file" /><br>
 			<?php
 			/* translators: %s: the maximum allowed upload file size */
@@ -146,35 +153,46 @@ class DCO_CA extends DCO_CA_Base {
 		$name       = $attachment['name'];
 		$error_code = $attachment['error'];
 
-		// Check that the file has been uploaded.
-		if ( ! isset( $tmp_name ) || ! is_uploaded_file( $tmp_name ) ) {
-			return $commentdata;
-		}
-
-		$error = '';
-
 		$upload_error = $this->get_upload_error( $error_code );
 		if ( $upload_error ) {
-			$error = $upload_error;
+			$this->display_error( $upload_error );
+		}
+
+		// Check that the file has been uploaded.
+		if ( ! isset( $tmp_name ) || ! is_uploaded_file( $tmp_name ) ) {
+			if ( $this->get_option( 'required_attachment' ) ) {
+				$this->display_error( __( 'Attachment is required.', 'dco-comment-attachment' ) );
+			} else {
+				return $commentdata;
+			}
 		}
 
 		// We need to do this check, because the maximum allowed upload file size in WordPress can be less than the specified on the server.
 		if ( $attachment['size'] > $this->get_max_upload_size() ) {
 			$upload_error = $this->get_upload_error( 1 );
-			$error        = $upload_error;
+			$this->display_error( $upload_error );
 		}
 
 		$filetype = wp_check_filetype( $name );
 		if ( ! $filetype['ext'] ) {
-			$error = esc_html__( "WordPress doesn't allow this type of uploads.", 'dco-comment-attachment' );
+			$this->display_error( __( "WordPress doesn't allow this type of uploads.", 'dco-comment-attachment' ) );
 		}
 
+		return $commentdata;
+	}
+
+	/**
+	 * Displays the text of the error uploading attachment when sending a comment.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $error The text of error uploading attachment.
+	 */
+	public function display_error( $error ) {
 		if ( $error ) {
 			$err_title = __( 'ERROR', 'dco-comment-attachment' );
 			wp_die( '<p><strong>' . esc_html( $err_title ) . '</strong>: ' . esc_html( $error ) . '</p>', esc_html__( 'Comment Submission Failure', 'dco-comment-attachment' ), array( 'back_link' => true ) );
 		}
-
-		return $commentdata;
 	}
 
 	/**
