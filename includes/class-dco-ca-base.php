@@ -163,20 +163,22 @@ class DCO_CA_Base {
 	public function get_attachment_preview( $attachment_id ) {
 		$url = wp_get_attachment_url( $attachment_id );
 
-		if ( wp_attachment_is_image( $attachment_id ) ) {
+		$is_embed = $this->get_option( 'embed_attachment' );
+
+		if ( wp_attachment_is_image( $attachment_id ) && $is_embed ) {
 			$thumbnail_size = $this->get_option( 'thumbnail_size' );
 			if ( is_admin() ) {
 				$thumbnail_size = 'medium';
 			}
 
-			$attachment_content = '<div class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $thumbnail_size ) . '</div>';
-		} elseif ( wp_attachment_is( 'video', $attachment_id ) ) {
+			$attachment_content = '<p class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $thumbnail_size ) . '</p>';
+		} elseif ( wp_attachment_is( 'video', $attachment_id ) && $is_embed ) {
 			$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
-		} elseif ( wp_attachment_is( 'audio', $attachment_id ) ) {
+		} elseif ( wp_attachment_is( 'audio', $attachment_id ) && $is_embed ) {
 			$attachment_content = '<div class="dco-attachment dco-audio-attachment">' . do_shortcode( '[audio src="' . esc_url( $url ) . '"]' ) . '</div>';
 		} else {
 			$title              = get_the_title( $attachment_id );
-			$attachment_content = '<div class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></div>';
+			$attachment_content = '<p class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></p>';
 		}
 
 		return $attachment_content;

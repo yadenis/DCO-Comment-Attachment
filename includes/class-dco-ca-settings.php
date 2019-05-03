@@ -175,6 +175,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 0,
 			),
+			'embed_attachment'    => array(
+				'label'   => esc_html__( 'Embed attachment?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.', 'dco-comment-attachment' ),
+				'section' => 'on_site',
+				'type'    => 'checkbox',
+				'default' => 1,
+			),
 		);
 
 		return $fields;
