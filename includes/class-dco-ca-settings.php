@@ -80,12 +80,16 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'      => $field['type'],
 			);
 
-			if ( 'dropdown' === $field['type'] && isset( $field['choices'] ) ) {
+			if ( isset( $field['choices'] ) ) {
 				$args['choices'] = $field['choices'];
 			}
 
 			if ( isset( $field['atts'] ) ) {
 				$args['atts'] = $field['atts'];
+			}
+
+			if ( isset( $field['label_for'] ) && ! $field['label_for'] ) {
+				unset( $args['label_for'] );
 			}
 
 			add_settings_field(
@@ -153,14 +157,14 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 */
 	public function get_fields() {
 		$fields = array(
-			'thumbnail_size'      => array(
+			'thumbnail_size'           => array(
 				'label'   => esc_html__( 'Attachment image size', 'dco-comment-attachment' ),
 				'desc'    => __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'dropdown',
 				'default' => 'medium',
 			),
-			'max_upload_size'     => array(
+			'max_upload_size'          => array(
 				'label'   => esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
 				/* translators: %s: the maximum allowed upload file size */
 				'desc'    => sprintf( __( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ), $this->get_max_upload_size( true, true ) ),
@@ -168,26 +172,38 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'number',
 				'default' => $this->get_max_upload_size( false, true ),
 			),
-			'required_attachment' => array(
+			'required_attachment'      => array(
 				'label'   => esc_html__( 'Is attachment required?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, the user will not be able to post a comment without attaching an attachment.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'checkbox',
 				'default' => 0,
 			),
-			'embed_attachment'    => array(
+			'embed_attachment'         => array(
 				'label'   => esc_html__( 'Embed attachment?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
-			'delete_with_comment' => array(
+			'delete_with_comment'      => array(
 				'label'   => esc_html__( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
-				'desc'    => __( 'If unchecked, the attachment will be available after the comment has been deleted.', 'dco-comment-attachment' ),
+				'desc'    => __( 'If unchecked, the attachment will be available in Media Library after the comment has been deleted.', 'dco-comment-attachment' ),
 				'section' => 'in_admin',
 				'type'    => 'checkbox',
 				'default' => 1,
+			),
+			'delete_attachment_action' => array(
+				'label'     => esc_html__( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' ),
+				'desc'      => '',
+				'section'   => 'in_admin',
+				'type'      => 'radio',
+				'default'   => 1,
+				'choices'   => array(
+					'1' => __( 'Delete attachment from Media Library', 'dco-comment-attachment' ),
+					'0' => __( 'Unattach attachment from comment', 'dco-comment-attachment' ),
+				),
+				'label_for' => false,
 			),
 		);
 
@@ -216,23 +232,29 @@ class DCO_CA_Settings extends DCO_CA_Base {
 		$name         = $args['name'];
 		$setting_val  = $this->get_option( $name );
 		$control_name = "{$id}[$name]";
+		$control_id   = $name;
 
 		switch ( $args['type'] ) {
 			case 'number':
 				if ( 'max_upload_size' === $args['name'] ) {
-					$this->field_max_upload_size_render( $setting_val, $control_name, $args );
+					$this->field_max_upload_size_render( $setting_val, $control_name, $control_id, $args );
 				}
 				break;
 			case 'checkbox':
-				$this->field_checkbox_render( $setting_val, $control_name, $args );
+				$this->field_checkbox_render( $setting_val, $control_name, $control_id, $args );
+				break;
+			case 'radio':
+				$this->field_radio_render( $setting_val, $control_name, $control_id, $args );
 				break;
 			case 'dropdown':
 				if ( 'thumbnail_size' === $args['name'] ) {
-					$this->field_thumbnail_size_render( $setting_val, $control_name, $args );
+					$this->field_thumbnail_size_render( $setting_val, $control_name, $control_id, $args );
 				}
 				break;
 		}
-		echo '<p class="description">' . esc_html( $args['desc'] ) . '</p>';
+		if ( $args['desc'] ) {
+			echo '<p class="description">' . esc_html( $args['desc'] ) . '</p>';
+		}
 	}
 
 	/**
@@ -242,11 +264,12 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 *
 	 * @param int|float $setting_val The setting value from DB.
 	 * @param string    $control_name The name attribute for the setting field.
+	 * @param string    $control_id The id attribute for the setting field.
 	 * @param array     $args Field arguments.
 	 */
-	public function field_max_upload_size_render( $setting_val, $control_name, $args ) {
+	public function field_max_upload_size_render( $setting_val, $control_name, $control_id, $args ) {
 		$max = $this->get_max_upload_size( false, true );
-		echo '<input type="number" name="' . esc_attr( $control_name ) . '" class="dco-field regular-text" value="' . esc_attr( $setting_val ) . '" min="1" max="' . esc_attr( $max ) . '">';
+		echo '<input type="number" name="' . esc_attr( $control_name ) . '" class="regular-text" id="' . esc_attr( $control_id ) . '" value="' . esc_attr( $setting_val ) . '" min="1" max="' . esc_attr( $max ) . '">';
 	}
 
 	/**
@@ -256,11 +279,32 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 *
 	 * @param int    $setting_val The setting value from DB.
 	 * @param string $control_name The name attribute for the setting field.
+	 * @param string $control_id The id attribute for the setting field.
 	 * @param array  $args Field arguments.
 	 */
-	public function field_checkbox_render( $setting_val, $control_name, $args ) {
+	public function field_checkbox_render( $setting_val, $control_name, $control_id, $args ) {
 		echo '<input type="hidden" name="' . esc_attr( $control_name ) . '" value="0">';
-		echo '<input type="checkbox" name="' . esc_attr( $control_name ) . '" value="1"' . checked( 1, $setting_val, false ) . '>';
+		echo '<input type="checkbox" name="' . esc_attr( $control_name ) . '" id="' . esc_attr( $control_id ) . '" value="1"' . checked( 1, $setting_val, false ) . '>';
+	}
+
+	/**
+	 * Outputs the setting radio field markup.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int    $setting_val The setting value from DB.
+	 * @param string $control_name The name attribute for the setting field.
+	 * @param string $control_id The id attribute for the setting field.
+	 * @param array  $args Field arguments.
+	 */
+	public function field_radio_render( $setting_val, $control_name, $control_id, $args ) {
+		echo '<fieldset>';
+		$radios = array();
+		foreach ( $args['choices'] as $v => $choice ) {
+			$radios[] = '<label><input type="radio" name="' . esc_attr( $control_name ) . '" value="' . esc_attr( $v ) . '"' . checked( $v, $setting_val, false ) . '> ' . esc_html( $choice ) . '</label>';
+		}
+		echo implode( '<br>', $radios ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo '</fieldset>';
 	}
 
 	/**
@@ -270,11 +314,12 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 *
 	 * @param string $setting_val The setting value from DB.
 	 * @param string $control_name The name attribute for the setting field.
+	 * @param string $control_id The id attribute for the setting field.
 	 * @param array  $args Field arguments.
 	 */
-	public function field_thumbnail_size_render( $setting_val, $control_name, $args ) {
+	public function field_thumbnail_size_render( $setting_val, $control_name, $control_id, $args ) {
 		$choices = $this->get_thumbnail_sizes();
-		echo '<select name="' . esc_attr( $control_name ) . '" class="dco-field">';
+		echo '<select name="' . esc_attr( $control_name ) . '" id="' . esc_attr( $control_id ) . '">';
 		foreach ( $choices as $val => $choice ) {
 			$width  = $choice['width'];
 			$height = $choice['height'];

@@ -105,7 +105,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 			comment_footer_die( esc_html__( 'The comment has no attachment.', 'dco-comment-attachment' ) . sprintf( ' <a href="%s">' . esc_html__( 'Go back', 'dco-comment-attachment' ) . '</a>.', 'edit-comments.php' ) );
 		}
 
-		if ( ! $this->delete_attachment( $comment_id ) ) {
+		$delete = $this->get_option( 'delete_attachment_action' );
+		if ( ! $this->delete_attachment( $comment_id, $delete ) ) {
 			comment_footer_die( esc_html__( 'An error occurred while deleting the attachment.', 'dco-comment-attachment' ) );
 		}
 
@@ -170,7 +171,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 			wp_send_json_error( new WP_Error( 'attachment_not_exists', esc_html__( 'The comment has no attachment.', 'dco-comment-attachment' ) ) );
 		}
 
-		if ( ! $this->delete_attachment( $comment_id ) ) {
+		$delete = $this->get_option( 'delete_attachment_action' );
+		if ( ! $this->delete_attachment( $comment_id, $delete ) ) {
 			wp_send_json_error( new WP_Error( 'deleting_error', esc_html__( 'An error occurred while deleting the attachment.', 'dco-comment-attachment' ) ) );
 		}
 
@@ -222,8 +224,11 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	public function update_attachment( $comment_id ) {
 		check_admin_referer( 'update-comment_' . $comment_id );
 
-		if ( isset( $_POST['dco_attachment_id'] ) ) {
-			$this->assign_attachment( $comment_id, (int) $_POST['dco_attachment_id'] );
+		$attachment_id = isset( $_POST['dco_attachment_id'] ) ? (int) $_POST['dco_attachment_id'] : 0;
+		if ( $attachment_id ) {
+			$this->assign_attachment( $comment_id, $attachment_id );
+		} else {
+			$this->unassign_attachment( $comment_id );
 		}
 	}
 
@@ -232,26 +237,39 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $comment_id The comment ID.
+	 * @param int  $comment_id The comment ID.
+	 * @param bool $delete true to unassign and remove an attachment, false to unassign an attachment only.
 	 * @return bool true on success, false on failure.
 	 */
-	public function delete_attachment( $comment_id ) {
+	public function delete_attachment( $comment_id, $delete = true ) {
 		if ( ! $this->has_attachment( $comment_id ) ) {
 			return false;
 		}
 
 		$attachment_id = $this->get_attachment_id( $comment_id );
 
-		if ( ! wp_delete_attachment( $attachment_id ) ) {
+		if ( $delete && ! wp_delete_attachment( $attachment_id ) ) {
 			return false;
 		}
 
-		$meta_key = $this->get_attachment_meta_key();
-		if ( ! delete_comment_meta( $comment_id, $meta_key ) ) {
+		if ( ! $this->unassign_attachment( $comment_id ) ) {
 			return false;
 		}
 
 		return true;
+	}
+
+	/**
+	 * Unassigns an attachment for the comment.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param int $comment_id The comment ID.
+	 * @return int|bool Meta ID on success, false on failure.
+	 */
+	public function unassign_attachment( $comment_id ) {
+		$meta_key = $this->get_attachment_meta_key();
+		return delete_comment_meta( $comment_id, $meta_key );
 	}
 
 }
