@@ -63,7 +63,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 */
 	public function add_comment_action_links( $actions, $comment ) {
 		if ( $this->has_attachment() ) {
-			$comment_id = $comment->comment_ID;
+			$comment_id = (int) $comment->comment_ID;
 			$nonce      = wp_create_nonce( "delete-comment-attachment_$comment_id" );
 
 			$del_attach_nonce = esc_html( '_wpnonce=' . $nonce );
@@ -135,9 +135,11 @@ class DCO_CA_Admin extends DCO_CA_Base {
 			wp_enqueue_script( 'dco-comment-attachment-admin', DCO_CA_URL . 'assets/dco-comment-attachment-admin.js', array( 'jquery' ), DCO_CA_VERSION, true );
 
 			$strings = array(
-				'set_attachment_title'     => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
-				'add_attachment_label'     => esc_attr__( 'Add Attachment', 'dco-comment-attachment' ),
-				'replace_attachment_label' => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
+				'set_attachment_title'      => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
+				'add_attachment_label'      => esc_attr__( 'Add Attachment', 'dco-comment-attachment' ),
+				'replace_attachment_label'  => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
+				'delete_attachment_action'  => $this->get_option( 'delete_attachment_action' ),
+				'delete_attachment_confirm' => esc_attr__( 'This action will delete the attachment from the Media Library and cannot be undone. Continue?', 'dco-comment-attachment' ),
 			);
 			wp_localize_script( 'dco-comment-attachment-admin', 'dcoCA', $strings );
 

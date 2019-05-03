@@ -102,11 +102,17 @@ class DCO_CA_Base {
 			$comment_id = get_comment_ID();
 		}
 
-		if ( $this->get_attachment_id( $comment_id ) ) {
-			return true;
+		$attachment_id = $this->get_attachment_id( $comment_id );
+		if ( ! $attachment_id ) {
+			return false;
 		}
 
-		return false;
+		// Check the attachment exists.
+		if ( ! wp_get_attachment_url( $attachment_id ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
@@ -133,6 +139,10 @@ class DCO_CA_Base {
 	 */
 	public function get_attachment_preview( $attachment_id ) {
 		$url = wp_get_attachment_url( $attachment_id );
+
+		if ( ! $url ) {
+			return false;
+		}
 
 		$is_embed = $this->get_option( 'embed_attachment' );
 

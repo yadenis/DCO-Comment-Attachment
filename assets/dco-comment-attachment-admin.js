@@ -18,6 +18,10 @@
 		$( document ).on( 'click', '.dco-del-attachment', function( e ) {
 			e.preventDefault();
 
+			if ( 1 == dcoCA.delete_attachment_action && ! confirm( dcoCA.delete_attachment_confirm ) ) {
+				return;
+			}
+
 			let $this = $( this );
 			let nonce = $this.data( 'nonce' );
 			let id = $this.data( 'id' );
