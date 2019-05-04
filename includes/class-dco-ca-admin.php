@@ -46,6 +46,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		add_action( 'wp_ajax_delete_attachment', array( $this, 'delete_attachment_ajax' ) );
 		add_action( 'add_meta_boxes_comment', array( $this, 'add_attachment_metabox' ) );
 		add_action( 'edit_comment', array( $this, 'update_attachment' ) );
+		add_filter( 'plugin_action_links_' . DCO_CA_BASENAME, array( $this, 'add_plugin_links' ) );
 
 		if ( $this->get_option( 'delete_with_comment' ) ) {
 			add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
@@ -216,6 +217,25 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		</div>
 		<input type="hidden" name="dco_attachment_id" id="dco-attachment-id" value="<?php echo (int) $attachment_id; ?>">
 		<?php
+	}
+
+	/**
+	 * Adds additional actions for the plugin on the plugins page in the admin panel.
+	 *
+	 * @param array $actions An array of plugin action links.
+	 * @return array An array of plugin action links with additional plugin actions.
+	 */
+	public function add_plugin_links( $actions ) {
+		array_unshift(
+			$actions,
+			sprintf(
+				'<a href="%1$s">%2$s</a>',
+				admin_url( 'options-general.php?page=dco-comment-attachment' ),
+				esc_html__( 'Settings', 'dco-comment-attachment' )
+			)
+		);
+
+		return $actions;
 	}
 
 	/**
