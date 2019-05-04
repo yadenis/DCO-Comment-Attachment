@@ -140,6 +140,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 				'replace_attachment_label'  => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
 				'delete_attachment_action'  => $this->get_option( 'delete_attachment_action' ),
 				'delete_attachment_confirm' => esc_attr__( 'This action will delete the attachment from the Media Library and cannot be undone. Continue?', 'dco-comment-attachment' ),
+				'show_all'                  => esc_attr__( 'Show all', 'dco-comment-attachment' ),
+				'show_less'                 => esc_attr__( 'Show less', 'dco-comment-attachment' ),
 			);
 			wp_localize_script( 'dco-comment-attachment-admin', 'dcoCA', $strings );
 

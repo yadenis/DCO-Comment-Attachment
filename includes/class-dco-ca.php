@@ -54,6 +54,10 @@ class DCO_CA extends DCO_CA_Base {
 		add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
 		add_action( 'comment_post', array( $this, 'save_attachment' ) );
 		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+
+		if ( ! is_admin() ) {
+			add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
+		}
 	}
 
 	/**
@@ -99,40 +103,15 @@ class DCO_CA extends DCO_CA_Base {
 			?>
 			<br>
 			<?php
-			$types     = $this->get_allowed_upload_types();
-			$types_str = implode( ', ', $types );
+			$types = $this->get_allowed_file_types( 'html' );
 			/* translators: %s: the allowed file types list */
-			printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), esc_html( $types_str ) );
+			printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), wp_kses_data( $types ) );
 			?>
 		</p>
 		<?php
 		$file_field = ob_get_clean();
 
 		return $file_field . $submit_field;
-	}
-
-	/**
-	 * Gets allowed upload file types.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return array File types allowed for upload.
-	 */
-	public function get_allowed_upload_types() {
-		$types = array();
-
-		$mimes = array_keys( get_allowed_mime_types() );
-		foreach ( $mimes as $mime ) {
-			$ext = explode( '|', $mime );
-			foreach ( $ext as $ex ) {
-				$type = wp_ext2type( $ex );
-				if ( $type ) {
-					$types[] = $type;
-				}
-			}
-		}
-
-		return array_unique( $types );
 	}
 
 	/**
@@ -263,6 +242,37 @@ class DCO_CA extends DCO_CA_Base {
 		$attachment_content = $this->get_attachment_preview( $attachment_id );
 
 		return $comment_content . $attachment_content;
+	}
+
+	/**
+	 * Filters a standard list of allowed mime types and file extensions.
+	 *
+	 * @param array $mimes Mime types keyed by the file extension regex corresponding to those types.
+	 * @return array Filtered mime types array.
+	 */
+	public function filter_upload_mimes( $mimes ) {
+		$allowed_mimes = $this->get_option( 'allowed_file_types' );
+
+		$filtered_mimes = array();
+		foreach ( $mimes as $mime => $mime_type ) {
+			$exts = explode( '|', $mime );
+			if ( count( $exts ) > 1 ) {
+				$ext_items = array();
+				foreach ( $exts as $ext ) {
+					if ( in_array( $ext, $allowed_mimes, true ) ) {
+						$ext_items[] = $ext;
+					}
+				}
+				$exts                    = implode( '|', $ext_items );
+				$filtered_mimes[ $exts ] = $mime_type;
+			} else {
+				if ( in_array( $mime, $allowed_mimes, true ) ) {
+					$filtered_mimes[ $mime ] = $mime_type;
+				}
+			}
+		}
+
+		return $filtered_mimes;
 	}
 
 	/**

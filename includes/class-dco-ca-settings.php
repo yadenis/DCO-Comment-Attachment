@@ -186,6 +186,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
+			'allowed_file_types'       => array(
+				'label'   => esc_html__( 'Allowed File Types', 'dco-comment-attachment' ),
+				'desc'    => '* — ' . __( 'only for Administrators and Editors.', 'dco-comment-attachment' ),
+				'section' => 'on_site',
+				'type'    => 'checkbox',
+				'default' => $this->get_allowed_file_types( 'array' ),
+			),
 			'delete_with_comment'      => array(
 				'label'   => esc_html__( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If unchecked, the attachment will be available in Media Library after the comment has been deleted.', 'dco-comment-attachment' ),
@@ -241,7 +248,11 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				}
 				break;
 			case 'checkbox':
-				$this->field_checkbox_render( $setting_val, $control_name, $control_id, $args );
+				if ( 'allowed_file_types' === $args['name'] ) {
+					$this->field_allowed_file_types_render( $setting_val, $control_name, $control_id, $args );
+				} else {
+					$this->field_checkbox_render( $setting_val, $control_name, $control_id, $args );
+				}
 				break;
 			case 'radio':
 				$this->field_radio_render( $setting_val, $control_name, $control_id, $args );
@@ -343,6 +354,50 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	}
 
 	/**
+	 * Outputs the setting allowed_file_types field markup.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array  $setting_val The setting value from DB.
+	 * @param string $control_name The name attribute for the setting field.
+	 * @param string $control_id The id attribute for the setting field.
+	 * @param array  $args Field arguments.
+	 */
+	public function field_allowed_file_types_render( $setting_val, $control_name, $control_id, $args ) {
+		$special_exts = array( 'htm', 'html', 'js' );
+
+		/*
+		* Translators: If the type names in your language are wider or narrower than in English - you can change the width of the column here.
+		*/
+		$column_width = _x( '100', 'Allowed File Types Setting: column width in px', 'dco-comment-attachment' );
+
+		$types = $this->get_allowed_file_types();
+		$more  = 6;
+		foreach ( $types as $type ) {
+			echo '<div class="dco-file-type" style="width: ' . (int) $column_width . 'px;">';
+			echo '<label class="dco-file-type-name">' . $this->mb_ucfirst( esc_html( $type['name'] ) ) . '</label>';
+			echo '<div class="dco-file-type-items">';
+			$i = 1;
+			foreach ( $type['exts'] as $ext ) {
+				if ( $i === $more ) {
+					echo '</div><div class="dco-file-type-items-more">';
+				}
+				$special = '';
+				if ( in_array( $ext, $special_exts, true ) ) {
+					$special = ' *';
+				}
+				echo '<div class="dco-file-type-item"><label><input type="checkbox" name="' . esc_attr( $control_name ) . '[]" value="' . esc_attr( $ext ) . '"' . checked( in_array( $ext, $setting_val, true ), true, false ) . '> ' . esc_html( $ext . $special ) . '</label></div>';
+				$i++;
+			}
+			echo '</div>';
+			if ( $i > $more ) {
+				echo '<a href="#" class="dco-show-all">' . esc_html__( 'Show all', 'dco-comment-attachment' ) . '</a>';
+			}
+			echo '</div>';
+		}
+	}
+
+	/**
 	 * Gets thumbnail sizes registered on the site.
 	 *
 	 * @since 1.0.0
@@ -366,6 +421,17 @@ class DCO_CA_Settings extends DCO_CA_Base {
 		}
 
 		return array_merge( $sizes, wp_get_additional_image_sizes() );
+	}
+
+	/**
+	 * Helper function for make a string's first character uppercase.
+	 *
+	 * @param string $str Source string.
+	 * @return string String with first character uppercase.
+	 */
+	public function mb_ucfirst( $str ) {
+		$fc = mb_strtoupper( mb_substr( $str, 0, 1 ) );
+		return $fc . mb_substr( $str, 1 );
 	}
 
 }

@@ -136,5 +136,20 @@
 
 			$( '.dco-set-attachment' ).text( dcoCA.add_attachment_label );
 		});
+
+		$( '.dco-show-all' ).click( function( e ) {
+			e.preventDefault();
+
+			let $this = $( this );
+			let $more = $this.prev();
+
+			if ( $more.is( ':visible' ) ) {
+				$( this ).prev().removeClass( 'show' );
+				$this.text( dcoCA.show_all );
+			} else {
+				$( this ).prev().addClass( 'show' );
+				$this.text( dcoCA.show_less );
+			}
+		});
 	});
 }( jQuery ) );

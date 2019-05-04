@@ -61,12 +61,7 @@ class DCO_CA_Base {
 	 */
 	public function set_options() {
 		$default = $this->get_default_options();
-
 		$options = get_option( DCO_CA_Settings::ID );
-		if ( is_array( $options ) ) {
-			// Clears empty typos.
-			$options = array_map( 'trim', $options );
-		}
 
 		$this->options = wp_parse_args( $options, $default );
 	}
@@ -190,6 +185,96 @@ class DCO_CA_Base {
 		}
 
 		return $max_upload_size;
+	}
+
+	/**
+	 * Gets allowed upload file types.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $format html for HTML markup, array for flat array. Default array with types.
+	 * @return array|string File types allowed for upload.
+	 */
+	public function get_allowed_file_types( $format = 'default' ) {
+		$mimes = array_keys( get_allowed_mime_types() );
+
+		if ( 'array' === $format ) {
+			$new_mimes = array();
+			foreach ( $mimes as $mime ) {
+				$exts = explode( '|', $mime );
+				foreach ( $exts as $ext ) {
+					$new_mimes[] = $ext;
+				}
+			}
+
+			return $new_mimes;
+		}
+
+		$types = array(
+			'image'       => array(
+				'name' => __( 'image', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'audio'       => array(
+				'name' => __( 'audio', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'video'       => array(
+				'name' => __( 'video', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'document'    => array(
+				'name' => __( 'document', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'spreadsheet' => array(
+				'name' => __( 'spreadsheet', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'interactive' => array(
+				'name' => __( 'interactive', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'text'        => array(
+				'name' => __( 'text', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'archive'     => array(
+				'name' => __( 'archive', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'code'        => array(
+				'name' => __( 'code', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+			'other'       => array(
+				'name' => __( 'other', 'dco-comment-attachment' ),
+				'exts' => array(),
+			),
+		);
+
+		foreach ( $mimes as $mime ) {
+			$exts = explode( '|', $mime );
+			foreach ( $exts as $ext ) {
+				$type = wp_ext2type( $ext );
+				if ( $type && isset( $types[ $type ]['exts'] ) ) {
+					$types[ $type ]['exts'][] = $ext;
+				} else {
+					$types['other']['exts'][] = $ext;
+				}
+			}
+		}
+
+		if ( 'html' === $format ) {
+			$types_arr = array();
+			foreach ( $types as $type ) {
+				$title       = implode( ', ', $type['exts'] );
+				$types_arr[] = '<abbr title="' . esc_attr( $title ) . '">' . esc_html( $type['name'] ) . '</abbr>';
+			}
+			$types = implode( ', ', $types_arr );
+		}
+
+		return $types;
 	}
 
 	/**
