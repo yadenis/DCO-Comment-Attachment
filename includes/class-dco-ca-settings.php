@@ -371,6 +371,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 		*/
 		$column_width = _x( '100', 'Allowed File Types Setting: column width in px', 'dco-comment-attachment' );
 
+		echo '<div id="dco-file-types">';
 		$types = $this->get_allowed_file_types();
 		$more  = 6;
 		foreach ( $types as $type ) {
@@ -395,6 +396,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 			}
 			echo '</div>';
 		}
+		echo '</div>';
 	}
 
 	/**

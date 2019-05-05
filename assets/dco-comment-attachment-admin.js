@@ -3,19 +3,21 @@
 
 	var showAttachmentNotice = function( url ) {
 		$( '.dco-attachment' ).addClass( 'dco-hidden' );
-		$( '.dco-attachment-notice a' ).attr( 'href', url );
-		$( '.dco-attachment-notice' ).removeClass( 'dco-hidden' );
+
+		let $notice = $( '#dco-attachment-notice' );
+		$notice.children( 'a' ).attr( 'href', url );
+		$notice.removeClass( 'dco-hidden' );
 
 		attachmentNoticeNeedHide = false;
 	};
 
 	var hideAttachmentNotice = function() {
 		$( '.dco-attachment' ).removeClass( 'dco-hidden' );
-		$( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
+		$( '#dco-attachment-notice' ).addClass( 'dco-hidden' );
 	};
 
 	$( document ).ready( function() {
-		$( document ).on( 'click', '.dco-del-attachment', function( e ) {
+		$( '#the-comment-list' ).on( 'click', '.dco-del-attachment', function( e ) {
 			e.preventDefault();
 
 			if ( 1 == dcoCA.delete_attachment_action && ! confirm( dcoCA.delete_attachment_confirm ) ) {
@@ -42,7 +44,7 @@
 			});
 		});
 
-		$( '#dco-set-attachment' ).on( 'click', function( e ) {
+		$( '#dco-set-attachment' ).click( function( e ) {
 			e.preventDefault();
 
 			let frame = new wp.media.view.MediaFrame.Select({
@@ -51,13 +53,13 @@
 				library: {
 					uploadedTo: null
 				},
-
 				button: {
 					text: dcoCA.set_attachment_title
 				}
 			});
 
 			frame.on( 'select', function() {
+				var $attachment;
 
 				// We set multiple to false so only get one image from the uploader.
 				let selection = frame.state().get( 'selection' ).first().toJSON();
@@ -75,12 +77,13 @@
 							thumbnail = selection.sizes.full;
 						}
 
-						if ( ! $( '.dco-image-attachment' ).length ) {
+						$attachment = $( '.dco-image-attachment' );
+						if ( ! $attachment.length ) {
 							showAttachmentNotice( thumbnail.url );
 							break;
 						}
 
-						$( '.dco-image-attachment img' )
+						$attachment.children( 'img' )
 								.attr({
 									src: thumbnail.url,
 									width: thumbnail.width,
@@ -90,28 +93,31 @@
 								.removeAttr( 'sizes' );
 						break;
 					case 'video':
-						if ( ! $( '.dco-video-attachment' ).length ) {
+						$attachment = $( '.dco-video-attachment' );
+						if ( ! $attachment.length ) {
 							showAttachmentNotice( selection.url );
 							break;
 						}
 
-						$( '.dco-video-attachment video' )[0].setSrc( selection.url );
+						$attachment.find( 'video' )[0].setSrc( selection.url );
 						break;
 					case 'audio':
-						if ( ! $( '.dco-audio-attachment' ).length ) {
+						$attachment = $( '.dco-audio-attachment' );
+						if ( ! $attachment.length ) {
 							showAttachmentNotice( selection.url );
 							break;
 						}
 
-						$( '.dco-audio-attachment audio' )[0].setSrc( selection.url );
+						$attachment.find( 'audio' )[0].setSrc( selection.url );
 						break;
 					default:
-						if ( ! $( '.dco-misc-attachment' ).length ) {
+						$attachment = $( '.dco-misc-attachment' );
+						if ( ! $attachment.length ) {
 							showAttachmentNotice( selection.url );
 							break;
 						}
 
-						$( '.dco-misc-attachment a' )
+						$attachment.children( 'a' )
 								.attr( 'href', selection.url )
 								.text( selection.title );
 				}
@@ -120,7 +126,7 @@
 					hideAttachmentNotice();
 				}
 				$( '#dco-remove-attachment' ).removeClass( 'dco-hidden' );
-				$( '.dco-set-attachment' ).text( dcoCA.replace_attachment_label );
+				$( '#dco-set-attachment' ).text( dcoCA.replace_attachment_label );
 			});
 
 			frame.open();
@@ -131,23 +137,23 @@
 
 			$( '#dco-attachment-id' ).val( 0 );
 			$( '.dco-attachment' ).addClass( 'dco-hidden' );
-			$( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
-			$( '#dco-remove-attachment' ).addClass( 'dco-hidden' );
+			$( '#dco-attachment-notice' ).addClass( 'dco-hidden' );
+			$( this ).addClass( 'dco-hidden' );
 
-			$( '.dco-set-attachment' ).text( dcoCA.add_attachment_label );
+			$( '#dco-set-attachment' ).text( dcoCA.add_attachment_label );
 		});
 
-		$( '.dco-show-all' ).click( function( e ) {
+		$( '#dco-file-types' ).on( 'click', '.dco-show-all', function( e ) {
 			e.preventDefault();
 
 			let $this = $( this );
 			let $more = $this.prev();
 
 			if ( $more.is( ':visible' ) ) {
-				$( this ).prev().removeClass( 'show' );
+				$more.removeClass( 'show' );
 				$this.text( dcoCA.show_all );
 			} else {
-				$( this ).prev().addClass( 'show' );
+				$more.addClass( 'show' );
 				$this.text( dcoCA.show_less );
 			}
 		});
