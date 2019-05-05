@@ -55,7 +55,7 @@ class DCO_CA extends DCO_CA_Base {
 		add_action( 'comment_post', array( $this, 'save_attachment' ) );
 		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
 
-		if ( ! is_admin() ) {
+		if ( $this->is_comments_used() ) {
 			add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
 		}
 	}
@@ -66,8 +66,7 @@ class DCO_CA extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		// Only when comments is used.
-		if ( is_singular() && comments_open() ) {
+		if ( $this->is_comments_used() ) {
 			wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
 
 			wp_enqueue_style( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.css', array(), DCO_CA_VERSION );
@@ -273,6 +272,17 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		return $filtered_mimes;
+	}
+
+	/**
+	 * Checks that this is a single post and comments are enabled for this post.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool true if we are on a single post with allowed comments or false otherwise.
+	 */
+	public function is_comments_used() {
+		return is_singular() && comments_open();
 	}
 
 	/**
