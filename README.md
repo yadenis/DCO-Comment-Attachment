@@ -12,7 +12,7 @@ With plugin settings you can:
 Attachments are uploaded to the WordPress Media Library and deleted along with the comment (if this is set in the settings).
 
 # Version
-1.0.0
+1.1.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=dev)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
