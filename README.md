@@ -9,7 +9,13 @@ With plugin settings you can:
 - Specify whether the attachment will be embedded or displayed as a link.
 - Restrict attachment file types.
 
+You can also:
+- Add, replace or delete an attachment from a comment on Edit Comment screen.
+- Delete an attachment on Comments screen.
+
 Attachments are uploaded to the WordPress Media Library and deleted along with the comment (if this is set in the settings).
+
+DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
 1.1.0
