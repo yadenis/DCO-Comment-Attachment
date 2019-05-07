@@ -14,6 +14,7 @@ Allows your visitors to attach files with their comments
 DCO Comment Attachment allows your visitors to attach files with their comments, such as documents, images, videos, audios and others.
 
 With plugin settings you can:
+
 * Select an attachment image size from thumbnails available in your WordPress install.
 * Limit the maximum file upload size.
 * Make an attachment required.
@@ -21,6 +22,7 @@ With plugin settings you can:
 * Restrict attachment file types.
 
 You can also:
+
 * Add, replace or delete an attachment from a comment on Edit Comment screen.
 * Delete an attachment on Comments screen.
 
