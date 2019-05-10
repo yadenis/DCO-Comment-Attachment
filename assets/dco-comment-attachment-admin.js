@@ -157,5 +157,17 @@
 				$this.text( dcoCA.show_less );
 			}
 		});
+
+		$( '#dco-file-types' ).on( 'click', '.dco-file-type-name', function() {
+			let $this = $( this );
+			let $type = $this.parent();
+			let $checks = $type.find( 'input' );
+
+			if ( $checks.not( ':checked' ).length ) {
+				$checks.prop( 'checked', true );
+			} else {
+				$checks.prop( 'checked', false );
+			}
+		});
 	});
 }( jQuery ) );
