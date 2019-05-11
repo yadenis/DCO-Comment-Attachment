@@ -49,11 +49,24 @@ class DCO_CA extends DCO_CA_Base {
 	public function init_hooks() {
 		parent::init_hooks();
 
-		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
-		add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
-		add_action( 'comment_post', array( $this, 'save_attachment' ) );
-		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+		/**
+		 * Filters whether to disable an attachment upload field.
+		 *
+		 * Prevents an attachment upload field from being appended to the commenting form.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param bool $bool Whether to disable an attachment upload field.
+		 *                   Returning true to the filter will disable an attachment field.
+		 *                   Default empty string.
+		 */
+		if ( ! apply_filters( 'dco_ca_disable_attachment_field', '' ) ) {
+			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
+			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
+			add_action( 'comment_post', array( $this, 'save_attachment' ) );
+			add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+		}
 	}
 
 	/**
