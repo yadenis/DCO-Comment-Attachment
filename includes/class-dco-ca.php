@@ -54,10 +54,6 @@ class DCO_CA extends DCO_CA_Base {
 		add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
 		add_action( 'comment_post', array( $this, 'save_attachment' ) );
 		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
-
-		if ( $this->is_comments_used() ) {
-			add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
-		}
 	}
 
 	/**
@@ -84,6 +80,11 @@ class DCO_CA extends DCO_CA_Base {
 	public function add_attachment_field( $submit_field ) {
 		$name            = $this->get_upload_field_name();
 		$max_upload_size = $this->get_max_upload_size( true );
+
+		$this->enable_filter_upload();
+		$types = $this->get_allowed_file_types( 'html' );
+		$this->disable_filter_upload();
+
 		ob_start();
 		?>
 		<p class="comment-form-attachment">
@@ -102,7 +103,6 @@ class DCO_CA extends DCO_CA_Base {
 			?>
 			<br>
 			<?php
-			$types = $this->get_allowed_file_types( 'html' );
 			/* translators: %s: the allowed file types list */
 			printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), wp_kses_data( $types ) );
 			?>
@@ -153,7 +153,10 @@ class DCO_CA extends DCO_CA_Base {
 			$this->display_error( $upload_error );
 		}
 
+		$this->enable_filter_upload();
 		$filetype = wp_check_filetype( $name );
+		$this->disable_filter_upload();
+
 		if ( ! $filetype['ext'] ) {
 			$this->display_error( __( "WordPress doesn't allow this type of uploads.", 'dco-comment-attachment' ) );
 		}
@@ -217,7 +220,9 @@ class DCO_CA extends DCO_CA_Base {
 			require_once ABSPATH . 'wp-admin/includes/media.php';
 		}
 
+		$this->enable_filter_upload();
 		$attachment_id = media_handle_upload( $field_name, 0 );
+		$this->disable_filter_upload();
 
 		if ( ! is_wp_error( $attachment_id ) ) {
 			$this->assign_attachment( $comment_id, $attachment_id );
@@ -272,6 +277,24 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		return $filtered_mimes;
+	}
+
+	/**
+	 * Enables filtering of the standard list of allowed mime types and file extensions.
+	 *
+	 * @since 1.1.0
+	 */
+	public function enable_filter_upload() {
+		add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
+	}
+
+	/**
+	 * Disables filtering of the standard list of allowed mime types and file extensions.
+	 *
+	 * @since 1.1.0
+	 */
+	public function disable_filter_upload() {
+		remove_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
 	}
 
 	/**
