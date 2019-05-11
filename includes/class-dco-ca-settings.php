@@ -428,6 +428,8 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	/**
 	 * Helper function for make a string's first character uppercase.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param string $str Source string.
 	 * @return string String with first character uppercase.
 	 */

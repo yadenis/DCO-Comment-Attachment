@@ -70,7 +70,7 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
-	 * Adds a file upload field to the form.
+	 * Adds a file upload field to the commenting form.
 	 *
 	 * @since 1.0.0
 	 *
@@ -147,7 +147,8 @@ class DCO_CA extends DCO_CA_Base {
 			}
 		}
 
-		// We need to do this check, because the maximum allowed upload file size in WordPress can be less than the specified on the server.
+		// We need to do this check, because the maximum allowed upload file size in WordPress
+		// can be less than the specified on the server.
 		if ( $attachment['size'] > $this->get_max_upload_size() ) {
 			$upload_error = $this->get_upload_error( 1 );
 			$this->display_error( $upload_error );
@@ -184,7 +185,8 @@ class DCO_CA extends DCO_CA_Base {
 	 * @since 1.0.0
 	 *
 	 * @param int $error_code The PHP upload error code.
-	 * @return string|false The error message if an error occurred, false if upload success.
+	 * @return string|false The error message if an error occurred,
+	 *                      false if upload success.
 	 */
 	public function get_upload_error( $error_code ) {
 		$upload_errors = array(
@@ -251,7 +253,10 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Filters a standard list of allowed mime types and file extensions.
 	 *
-	 * @param array $mimes Mime types keyed by the file extension regex corresponding to those types.
+	 * @since 1.0.0
+	 *
+	 * @param array $mimes Mime types keyed by the file extension regex
+	 *                     corresponding to those types.
 	 * @return array Filtered mime types array.
 	 */
 	public function filter_upload_mimes( $mimes ) {
@@ -302,7 +307,8 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @return bool true if we are on a single post with allowed comments or false otherwise.
+	 * @return bool true if we are on a single post with allowed comments
+	 *              or false otherwise.
 	 */
 	public function is_comments_used() {
 		return is_singular() && comments_open();

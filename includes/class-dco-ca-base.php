@@ -23,6 +23,7 @@ class DCO_CA_Base {
 	 * An array of plugin options.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @var array $options Plugin options.
 	 */
 	private $options = array();
@@ -72,7 +73,8 @@ class DCO_CA_Base {
 	 * @since 1.0.0
 	 *
 	 * @param int $comment_id Optional. The comment ID.
-	 * @return int|string The assigned attachment ID on success, empty string on failure.
+	 * @return int|string The assigned attachment ID on success,
+	 *                    empty string on failure.
 	 */
 	public function get_attachment_id( $comment_id = 0 ) {
 		$meta_key = $this->get_attachment_meta_key();
@@ -165,8 +167,11 @@ class DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool $with_format Optional. Whether to int value or value with units. Default false for int.
-	 * @param bool $for_setting Optional. Whether to value from plugin settings or system value. Default false for plugin settings value.
+	 * @param bool $with_format Optional. Whether to int value or value with units.
+	 *                                    Default false for int.
+	 * @param bool $for_setting Optional. Whether to value from plugin settings
+	 *                                    or system value.
+	 *                                    Default false for plugin settings value.
 	 * @return int|string Default integer, value with units if $with_format is true.
 	 */
 	public function get_max_upload_size( $with_format = false, $for_setting = false ) {
@@ -192,7 +197,8 @@ class DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool $format html for HTML markup, array for flat array. Default array with types.
+	 * @param string $format html for HTML markup, array for flat array.
+	 *                       Default array with types.
 	 * @return array|string File types allowed for upload.
 	 */
 	public function get_allowed_file_types( $format = 'default' ) {
@@ -294,7 +300,8 @@ class DCO_CA_Base {
 	 * @since 1.0.0
 	 *
 	 * @param string $name The option name.
-	 * @return mixed|false Returns the value of the option if it is found, false if the option does not exist.
+	 * @return mixed|false Returns the value of the option if it is found,
+	 *                     false if the option does not exist.
 	 */
 	public function get_option( $name ) {
 		if ( isset( $this->options[ $name ] ) ) {

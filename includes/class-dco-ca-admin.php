@@ -60,7 +60,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 *
 	 * @param array      $actions An array of comment actions.
 	 * @param WP_Comment $comment The comment object.
-	 * @return array An array with standard comment actions and attachment actions if attachment exists.
+	 * @return array An array with standard comment actions
+	 *               and attachment actions if attachment exists.
 	 */
 	public function add_comment_action_links( $actions, $comment ) {
 		if ( $this->has_attachment() ) {
@@ -222,6 +223,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Adds additional actions for the plugin on the plugins page in the admin panel.
 	 *
+	 * @since 1.0.0
+	 *
 	 * @param array $actions An array of plugin action links.
 	 * @return array An array of plugin action links with additional plugin actions.
 	 */
@@ -262,7 +265,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @since 1.0.0
 	 *
 	 * @param int  $comment_id The comment ID.
-	 * @param bool $delete true to unassign and remove an attachment, false to unassign an attachment only.
+	 * @param bool $delete true to unassign and remove an attachment,
+	 *                     false to unassign an attachment only.
 	 * @return bool true on success, false on failure.
 	 */
 	public function delete_attachment( $comment_id, $delete = true ) {
