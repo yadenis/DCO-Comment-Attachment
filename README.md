@@ -1,6 +1,6 @@
 # DCO Comment Attachment
 
-DCO Comment Attachment allows your visitors to attach files with their comments, such as documents, images, videos, audios and others.
+DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments.
 
 With plugin settings you can:
 - Select an attachment image size from thumbnails available in your WordPress install.

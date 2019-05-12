@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Allows your visitors to attach files with their comments
 
 == Description ==
-DCO Comment Attachment allows your visitors to attach files with their comments, such as documents, images, videos, audios and others.
+DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments.
 
 With plugin settings you can:
 
