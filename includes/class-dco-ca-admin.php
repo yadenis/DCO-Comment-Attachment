@@ -265,9 +265,9 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @since 1.0.0
 	 *
 	 * @param int  $comment_id The comment ID.
-	 * @param bool $delete true to unassign and remove an attachment,
+	 * @param bool $delete True to unassign and remove an attachment,
 	 *                     false to unassign an attachment only.
-	 * @return bool true on success, false on failure.
+	 * @return bool True on success, false on failure.
 	 */
 	public function delete_attachment( $comment_id, $delete = true ) {
 		if ( ! $this->has_attachment( $comment_id ) ) {

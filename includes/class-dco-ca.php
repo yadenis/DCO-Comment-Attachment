@@ -324,7 +324,7 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.1.0
 	 *
-	 * @return bool true if we are on a single post with allowed comments
+	 * @return bool True if we are on a single post with allowed comments
 	 *              or false otherwise.
 	 */
 	public function is_comments_used() {
