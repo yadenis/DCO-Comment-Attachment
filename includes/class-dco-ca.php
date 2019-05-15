@@ -31,6 +31,16 @@ class DCO_CA extends DCO_CA_Base {
 	private $upload_field_name = 'attachment';
 
 	/**
+	 * Indicates whether the attachment field is enabled in the commenting form.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @var bool $enable_attachment_field Indicates whether the field is enabled.
+	 *                                    True if enabled or false otherwise.
+	 */
+	private $enable_attachment_field;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -49,24 +59,16 @@ class DCO_CA extends DCO_CA_Base {
 	public function init_hooks() {
 		parent::init_hooks();
 
-		/**
-		 * Filters whether to disable an attachment upload field.
-		 *
-		 * Prevents an attachment upload field from being appended to the commenting form.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param bool $bool Whether to disable an attachment upload field.
-		 *                   Returning true to the filter will disable an attachment field.
-		 *                   Default empty string.
-		 */
-		if ( ! apply_filters( 'dco_ca_disable_attachment_field', '' ) ) {
-			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		$this->set_enable_attachment_field();
+
+		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
 			add_action( 'comment_post', array( $this, 'save_attachment' ) );
-			add_filter( 'comment_text', array( $this, 'display_attachment' ) );
 		}
+
+		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
 	}
 
 	/**
@@ -76,7 +78,9 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function enqueue_scripts() {
 		if ( $this->is_comments_used() ) {
-			wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
+			if ( $this->is_attachment_field_enabled() ) {
+				wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
+			}
 
 			wp_enqueue_style( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.css', array(), DCO_CA_VERSION );
 		}
@@ -328,6 +332,17 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
+	 * Checks that the attachment field is enabled or not.
+	 *
+	 * @since 1.1.0
+	 *
+	 * @return bool True if the attachment field is enabled or false otherwise.
+	 */
+	public function is_attachment_field_enabled() {
+		return $this->enable_attachment_field;
+	}
+
+	/**
 	 * Gets the name of the upload field used in the commenting form.
 	 *
 	 * @since 1.0.0
@@ -336,6 +351,26 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function get_upload_field_name() {
 		return $this->upload_field_name;
+	}
+
+	/**
+	 * Sets that the attachment field is enabled in the commenting form or not.
+	 *
+	 * @since 1.1.0
+	 */
+	public function set_enable_attachment_field() {
+		/**
+		 * Filters whether to disable the attachment upload field.
+		 *
+		 * Prevents the attachment upload field from being appended to the commenting form.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param bool $bool Whether to disable the attachment upload field.
+		 *                   Returning true to the filter will disable the attachment field.
+		 *                   Default false.
+		 */
+		$this->enable_attachment_field = ! apply_filters( 'dco_ca_disable_attachment_field', false );
 	}
 
 }
