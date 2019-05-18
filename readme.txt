@@ -1,8 +1,8 @@
 === DCO Comment Attachment ===
 Contributors: denisco
-Tags: comment, attachment, image, video, audio
+Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
-Tested up to: 5.1
+Tested up to: 5.2
 Requires PHP: 5.3
 Stable tag: 1.1.0
 License: GPLv2 or later
@@ -19,6 +19,7 @@ With plugin settings you can:
 * Limit the maximum file upload size.
 * Make an attachment required.
 * Specify whether the attachment will be embedded or displayed as a link.
+* Attach an attachment to a commented post.
 * Restrict attachment file types.
 
 You can also:
@@ -35,6 +36,12 @@ DCO Comment Attachment is also available on [GitHub](https://github.com/yadenis/
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.1.0 =
+* Now you can select and deselect Allowed File Types by the type in one click.
+* Added `dco_ca_disable_attachment_field` hook for disable the upload attachment field.
+* Reduced the effect of mime types filtering. Now it applies only for comment attachment upload.
+* Added the feature to attach an attachment to a commented post.
 
 = 1.0.0 =
 * Initial Release
