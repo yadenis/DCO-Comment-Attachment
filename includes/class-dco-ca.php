@@ -64,7 +64,7 @@ class DCO_CA extends DCO_CA_Base {
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
-			add_action( 'comment_post', array( $this, 'save_attachment' ) );
+			add_action( 'comment_post', array( $this, 'save_attachment' ), 10, 3 );
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -228,10 +228,14 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param int $comment_id The comment ID.
+	 * @param int        $comment_id The comment ID.
+	 * @param int|string $comment_approved 1 if the comment is approved, 0 if not,
+	 *                                     'spam' if spam.
+	 * @param array      $comment Comment data.
 	 */
-	public function save_attachment( $comment_id ) {
-		$field_name = $this->get_upload_field_name();
+	public function save_attachment( $comment_id, $comment_approved, $comment ) {
+		$field_name     = $this->get_upload_field_name();
+		$attach_to_post = $this->get_option( 'attach_to_post' );
 
 		if ( ! function_exists( 'media_handle_upload' ) ) {
 			require_once ABSPATH . 'wp-admin/includes/image.php';
@@ -239,8 +243,13 @@ class DCO_CA extends DCO_CA_Base {
 			require_once ABSPATH . 'wp-admin/includes/media.php';
 		}
 
+		$post_id = 0;
+		if ( $attach_to_post ) {
+			$post_id = $comment['comment_post_ID'];
+		}
+
 		$this->enable_filter_upload();
-		$attachment_id = media_handle_upload( $field_name, 0 );
+		$attachment_id = media_handle_upload( $field_name, $post_id );
 		$this->disable_filter_upload();
 
 		if ( ! is_wp_error( $attachment_id ) ) {

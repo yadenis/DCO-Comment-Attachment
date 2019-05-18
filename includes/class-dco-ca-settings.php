@@ -186,6 +186,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
+			'attach_to_post'           => array(
+				'label'   => esc_html__( 'Attach to commented post?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, the attachment will be attach to the commented post and can be filtered with the "Uploaded to this post" option.', 'dco-comment-attachment' ),
+				'section' => 'on_site',
+				'type'    => 'checkbox',
+				'default' => 1,
+			),
 			'allowed_file_types'       => array(
 				'label'   => esc_html__( 'Allowed File Types', 'dco-comment-attachment' ),
 				'desc'    => '* — ' . __( 'only for Administrators and Editors.', 'dco-comment-attachment' ),
