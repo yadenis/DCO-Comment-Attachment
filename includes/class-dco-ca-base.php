@@ -321,7 +321,7 @@ class DCO_CA_Base {
 	public function get_default_options() {
 		$options = array();
 
-		$fields = dco_ca('_settings')->get_fields();
+		$fields = dco_ca( '_settings' )->get_fields();
 		foreach ( $fields as $name => $field ) {
 			$options[ $name ] = $field['default'];
 		}
