@@ -95,39 +95,125 @@ class DCO_CA extends DCO_CA_Base {
 	 * @return string HTML markup for the file field and the submit field.
 	 */
 	public function add_attachment_field( $submit_field ) {
-		$name            = $this->get_upload_field_name();
-		$max_upload_size = $this->get_max_upload_size( true );
-
-		$this->enable_filter_upload();
-		$types = $this->get_allowed_file_types( 'html' );
-		$this->disable_filter_upload();
-
 		ob_start();
 		?>
 		<p class="comment-form-attachment">
-			<label for="attachment">
-				<?php
-				esc_html_e( 'Attachment', 'dco-comment-attachment' );
-				if ( $this->get_option( 'required_attachment' ) ) {
-					echo ' <span class="required">*</span>';
-				}
-				?>
-			</label>
-			<input id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file" /><br>
 			<?php
-			/* translators: %s: the maximum allowed upload file size */
-			printf( esc_html__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ), esc_html( $max_upload_size ) );
-			?>
-			<br>
-			<?php
-			/* translators: %s: the allowed file types list */
-			printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), wp_kses_data( $types ) );
+			$this->form_element( 'label' );
+			$this->form_element( 'input' );
+			$this->form_element( 'upload-size' );
+			$this->form_element( 'file-types' );
 			?>
 		</p>
 		<?php
-		$file_field = ob_get_clean();
+		/**
+		 * Filters the attachment field markup.
+		 *
+		 * @since 1.1.1
+		 *
+		 * @param string $markup HTML markup for the attachment field.
+		 */
+		$file_field = apply_filters( 'dco_ca_attachment_field', ob_get_clean() );
 
 		return $file_field . $submit_field;
+	}
+
+	/**
+	 * Generate HTML markup for the form element.
+	 *
+	 * @since 1.1.1
+	 *
+	 * @param string $type The type of the form element.
+	 * @return void HTML markup for the specified form element.
+	 */
+	public function form_element( $type ) {
+		$markup = '';
+		switch ( $type ) {
+			case 'label':
+				ob_start();
+				$required = $this->get_option( 'required_attachment' );
+				?>
+				<label for="attachment">
+					<?php
+					esc_html_e( 'Attachment', 'dco-comment-attachment' );
+					if ( $required ) {
+						echo ' <span class="required">*</span>';
+					}
+					?>
+				</label>
+				<?php
+				/**
+				 * Filters the label form element markup.
+				 *
+				 * @since 1.1.1
+				 *
+				 * @param string $markup HTML markup for the label form element.
+				 * @param bool $required Whether to attachment is required.
+				 */
+				$markup = apply_filters( 'dco_ca_form_element_label', ob_get_clean(), $required );
+				break;
+			case 'input':
+				ob_start();
+				$name = $this->get_upload_field_name();
+				?>
+				<input id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file" />
+				<?php
+				/**
+				 * Filters the input form element markup.
+				 *
+				 * @since 1.1.1
+				 *
+				 * @param string $markup HTML markup for the input form element.
+				 * @param string $name Name of the attachment input.
+				 */
+				$markup = apply_filters( 'dco_ca_form_element_input', ob_get_clean(), $name );
+				break;
+			case 'upload-size':
+				ob_start();
+				$max_upload_size = $this->get_max_upload_size( true );
+				/* translators: %s: the maximum allowed upload file size */
+				printf( esc_html__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ), esc_html( $max_upload_size ) );
+
+				/**
+				 * Filters the maximum upload file size form element markup.
+				 *
+				 * @since 1.1.1
+				 *
+				 * @param string $markup HTML markup for the maximum upload
+				 *                       file size form element.
+				 * @param string $max_upload_size The max upload file size with format.
+				 */
+				$markup = apply_filters( 'dco_ca_form_element_upload_size', '<br>' . ob_get_clean(), $max_upload_size );
+				break;
+			case 'file-types':
+				ob_start();
+				$this->enable_filter_upload();
+				$types = $this->get_allowed_file_types( 'html' );
+				$this->disable_filter_upload();
+				/* translators: %s: the allowed file types list */
+				printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), wp_kses_data( $types ) );
+
+				/**
+				 * Filters the allowed file types list form element markup.
+				 *
+				 * @since 1.1.1
+				 *
+				 * @param string $markup HTML markup for the allowed file
+				 *                       types list form element.
+				 * @param string $types The file types list allowed for upload.
+				 */
+				$markup = apply_filters( 'dco_ca_form_element_file_types', '<br>' . ob_get_clean(), $types );
+				break;
+		}
+
+		/**
+		 * Filters the form element markup.
+		 *
+		 * @since 1.1.1
+		 *
+		 * @param string $markup HTML markup for the form element.
+		 */
+		echo apply_filters( 'dco_ca_form_element', $markup ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
@@ -145,7 +231,9 @@ class DCO_CA extends DCO_CA_Base {
 			return $commentdata;
 		}
 
-		$attachment = $_FILES[ $field_name ]; // phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		$attachment = $_FILES[ $field_name ];
+		// phpcs:enable
 		$tmp_name   = $attachment['tmp_name'];
 		$name       = $attachment['name'];
 		$error_code = $attachment['error'];
