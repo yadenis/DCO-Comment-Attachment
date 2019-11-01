@@ -441,8 +441,8 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 * @return string String with first character uppercase.
 	 */
 	public function mb_ucfirst( $str ) {
-		$fc = mb_strtoupper( mb_substr( $str, 0, 1 ) );
-		return $fc . mb_substr( $str, 1 );
+		$fc = mb_strtoupper( mb_substr( $str, 0, 1, 'UTF-8' ), 'UTF-8' );
+		return $fc . mb_substr( $str, 1, null, 'UTF-8' );
 	}
 
 }
