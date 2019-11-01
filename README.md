@@ -19,11 +19,14 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-1.1.0
+1.1.1
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=dev)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
 # Changelog
+## 1.1.1
+- Added filters for the attachment field customization
+
 ## 1.1.0
 - Now you can select and deselect Allowed File Types by the type in one click.
 - Added `dco_ca_disable_attachment_field` hook for disable the upload attachment field.
