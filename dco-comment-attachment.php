@@ -25,6 +25,8 @@ define( 'DCO_CA_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DCO_CA_BASENAME', plugin_basename( __FILE__ ) );
 define( 'DCO_CA_VERSION', '1.1.0' );
 
+require_once DCO_CA_PATH . 'includes/functions.php';
+
 require_once DCO_CA_PATH . 'includes/back-compat.php';
 
 require_once DCO_CA_PATH . 'includes/class-dco-ca-base.php';
