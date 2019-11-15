@@ -266,10 +266,18 @@ class DCO_CA_Base {
 				if ( $type && isset( $types[ $type ]['exts'] ) ) {
 					$types[ $type ]['exts'][] = $ext;
 				} else {
-					$types['other']['exts'][] = $ext;
+					if (!empty($ext)) {
+                        $types['other']['exts'][] = $ext;
+                    }
 				}
 			}
 		}
+
+		foreach ($types as $key => $type) {
+		    if (empty($type['exts'])) {
+                unset($types[$key]);
+            }
+        }
 
 		if ( 'html' === $format ) {
 			$types_arr = array();
