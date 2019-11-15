@@ -262,15 +262,15 @@ class DCO_CA_Base {
 		foreach ( $mimes as $mime ) {
 			$exts = explode( '|', $mime );
 			foreach ( $exts as $ext ) {
-				$type = wp_ext2type( $ext );
-				if ( $type && isset( $types[ $type ]['exts'] ) ) {
-					$types[ $type ]['exts'][] = $ext;
-				} else {
-					if (!empty($ext)) {
+                if (!empty($ext)) {
+                    $type = wp_ext2type($ext);
+                    if ($type && isset($types[$type]['exts'])) {
+                        $types[$type]['exts'][] = $ext;
+                    } else {
                         $types['other']['exts'][] = $ext;
                     }
-				}
-			}
+                }
+            }
 		}
 
 		foreach ($types as $key => $type) {
