@@ -274,8 +274,10 @@ class DCO_CA_Base {
 		if ( 'html' === $format ) {
 			$types_arr = array();
 			foreach ( $types as $type ) {
-				$title       = implode( ', ', $type['exts'] );
-				$types_arr[] = '<abbr title="' . esc_attr( $title ) . '">' . esc_html( $type['name'] ) . '</abbr>';
+				if ($type['exts']) {
+					$title = implode( ', ', $type['exts'] );
+					$types_arr[] = '<abbr title="' . esc_attr( $title ) . '">' . esc_html( $type['name'] ) . '</abbr>';
+				}
 			}
 			$types = implode( ', ', $types_arr );
 		}
