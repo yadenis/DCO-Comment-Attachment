@@ -19,11 +19,14 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-1.1.1
+1.1.2
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=dev)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
 # Changelog
+## 1.1.2
+- Fixed display of empty allowed types if the website administrator has forbidden the upload of all extensions of this type. (thank you [@nunofrsilva](https://github.com/nunofrsilva))
+
 ## 1.1.1
 - Added filters for the attachment field customization
 

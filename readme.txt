@@ -2,9 +2,9 @@
 Contributors: denisco
 Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
-Tested up to: 5.2
+Tested up to: 5.3
 Requires PHP: 5.4
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,9 @@ DCO Comment Attachment is also available on [GitHub](https://github.com/yadenis/
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.1.2 =
+* Fixed display of empty allowed types if the website administrator has forbidden the upload of all extensions of this type. (thank you @nunofrsilva)
 
 = 1.1.1 =
 * Added filters for the attachment field customization
