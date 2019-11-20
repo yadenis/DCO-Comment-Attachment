@@ -386,10 +386,10 @@ class DCO_CA extends DCO_CA_Base {
 						$ext_items[] = $ext;
 					}
 				}
-				if( $ext_items ) {
-                    $exts = implode( '|', $ext_items );
-                    $filtered_mimes[ $exts ] = $mime_type;
-                }
+				if ( $ext_items ) {
+					$exts                    = implode( '|', $ext_items );
+					$filtered_mimes[ $exts ] = $mime_type;
+				}
 			} else {
 				if ( in_array( $mime, $allowed_mimes, true ) ) {
 					$filtered_mimes[ $mime ] = $mime_type;
