@@ -43,7 +43,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Indicates whether the attachment display is enabled in the comments list.
 	 *
-	 * @since 1.1.3
+	 * @since 1.2.0
 	 *
 	 * @var bool $enable_display_attachment Indicates whether the attachment is displayed.
 	 *                                      True if enabled or false otherwise.
@@ -384,7 +384,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Embeds links.
 	 *
-	 * @since 1.1.3
+	 * @since 1.2.0
 	 *
 	 * @param string $comment_content Text of the comment.
 	 * @return string Text of the comment with embedded links.
@@ -473,7 +473,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Checks that attachment displayed or not.
 	 *
-	 * @since 1.1.3
+	 * @since 1.2.0
 	 *
 	 * @return bool True if the attachment display is enabled or false otherwise.
 	 */
@@ -516,7 +516,7 @@ class DCO_CA extends DCO_CA_Base {
 		 *
 		 * Prevents the attachment from being displayed in the comments list.
 		 *
-		 * @since 1.1.3
+		 * @since 1.2.0
 		 *
 		 * @param bool $bool Whether to disable the attachment display.
 		 *                   Returning true to the filter will disable the attachment display.

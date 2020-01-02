@@ -20,13 +20,13 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-1.1.3
+1.2.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=dev)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
 # Changelog
-## 1.1.3
-- Added the feature for autoembed links in comment text. You can disable it in Setting -> DCO Comment Attachment.
+## 1.2.0
+- Added the feature for autoembed links in comment text. You can disable it in Settings -> DCO Comment Attachment.
 - Introduced `dco_ca_disable_display_attachment` hook. Now you can display attachment in custom place with `add_filter('dco_ca_disable_display_attachment', '__return_true');` filter and `dco_ca()->display_attachment()` function.
 
 ## 1.1.2
