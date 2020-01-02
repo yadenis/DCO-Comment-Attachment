@@ -1,6 +1,6 @@
 # DCO Comment Attachment
 
-DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments.
+DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments. Also they will be able autoembed links from Youtube, Facebook, Twitter and other services in the comment text.
 
 With plugin settings you can:
 - Select an attachment image size from thumbnails available in your WordPress install.
@@ -9,6 +9,7 @@ With plugin settings you can:
 - Specify whether the attachment will be embedded or displayed as a link.
 - Attach an attachment to a commented post.
 - Restrict attachment file types.
+- Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
 
 You can also:
 - Add, replace or delete an attachment from a comment on Edit Comment screen.
@@ -25,8 +26,8 @@ DCO Comment Attachment is also available on [WordPress.org](https://wordpress.or
 
 # Changelog
 ## 1.1.3
-* Added the feature for autoembed links in comment text. You can disable it in Setting -> DCO Comment Attachment.
-* Introduced `dco_ca_disable_display_attachment` hook. Now you can display attachment in custom place with `add_filter('dco_ca_disable_display_attachment', '__return_true');` filter and `dco_ca()->display_attachment()` function.
+- Added the feature for autoembed links in comment text. You can disable it in Setting -> DCO Comment Attachment.
+- Introduced `dco_ca_disable_display_attachment` hook. Now you can display attachment in custom place with `add_filter('dco_ca_disable_display_attachment', '__return_true');` filter and `dco_ca()->display_attachment()` function.
 
 ## 1.1.2
 - Fixed display of empty allowed types if the website administrator has forbidden the upload of all extensions of this type. (thank you [@nunofrsilva](https://github.com/nunofrsilva))

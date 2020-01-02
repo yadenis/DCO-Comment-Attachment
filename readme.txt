@@ -11,7 +11,7 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Allows your visitors to attach files with their comments
 
 == Description ==
-DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments.
+DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments. Also they will be able autoembed links from Youtube, Facebook, Twitter and other services in the comment text.
 
 With plugin settings you can:
 
@@ -21,6 +21,7 @@ With plugin settings you can:
 * Specify whether the attachment will be embedded or displayed as a link.
 * Attach an attachment to a commented post.
 * Restrict attachment file types.
+* Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
 
 You can also:
 
