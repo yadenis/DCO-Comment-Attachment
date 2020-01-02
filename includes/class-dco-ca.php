@@ -69,6 +69,10 @@ class DCO_CA extends DCO_CA_Base {
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+
+		if ( $this->get_option( 'autoembed_links' ) && ! is_admin() ) {
+			add_filter( 'comment_text', array( $this, 'autoembed_links' ), 5 );
+		}
 	}
 
 	/**
@@ -362,6 +366,18 @@ class DCO_CA extends DCO_CA_Base {
 		$attachment_content = $this->get_attachment_preview( $attachment_id );
 
 		return $comment_content . $attachment_content;
+	}
+
+	/**
+	 * Embeds links.
+	 *
+	 * @since 1.1.3
+	 *
+	 * @param string $comment_content Text of the comment.
+	 * @return string Text of the comment with embedded links.
+	 */
+	public function autoembed_links( $comment_content ) {
+		return $GLOBALS['wp_embed']->autoembed( $comment_content );
 	}
 
 	/**

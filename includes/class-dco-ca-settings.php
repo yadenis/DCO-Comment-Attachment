@@ -186,6 +186,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
+			'autoembed_links'          => array(
+				'label'   => esc_html__( 'Autoembed links?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' ),
+				'section' => 'on_site',
+				'type'    => 'checkbox',
+				'default' => 1,
+			),
 			'attach_to_post'           => array(
 				'label'   => esc_html__( 'Attach to commented post?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, the attachment will be attach to the commented post and can be filtered with the "Uploaded to this post" option.', 'dco-comment-attachment' ),
