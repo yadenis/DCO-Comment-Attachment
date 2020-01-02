@@ -41,6 +41,16 @@ class DCO_CA extends DCO_CA_Base {
 	private $enable_attachment_field;
 
 	/**
+	 * Indicates whether the attachment display is enabled in the comments list.
+	 *
+	 * @since 1.1.3
+	 *
+	 * @var bool $enable_display_attachment Indicates whether the attachment is displayed.
+	 *                                      True if enabled or false otherwise.
+	 */
+	private $enable_display_attachment;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -59,7 +69,7 @@ class DCO_CA extends DCO_CA_Base {
 	public function init_hooks() {
 		parent::init_hooks();
 
-		$this->set_enable_attachment_field();
+		$this->set_variables();
 
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
@@ -68,7 +78,10 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
-		add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+
+		if ( $this->is_attachment_displayed() ) {
+			add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+		}
 
 		if ( $this->get_option( 'autoembed_links' ) && ! is_admin() ) {
 			add_filter( 'comment_text', array( $this, 'autoembed_links' ), 5 );
@@ -354,10 +367,10 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $comment_content Text of the comment.
+	 * @param string $comment_content Optional. Text of the comment.
 	 * @return string Text of the comment with an assigned attachment.
 	 */
-	public function display_attachment( $comment_content ) {
+	public function display_attachment( $comment_content = '' ) {
 		if ( ! $this->has_attachment() ) {
 			return $comment_content;
 		}
@@ -458,6 +471,17 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
+	 * Checks that attachment displayed or not.
+	 *
+	 * @since 1.1.3
+	 *
+	 * @return bool True if the attachment display is enabled or false otherwise.
+	 */
+	public function is_attachment_displayed() {
+		return $this->enable_display_attachment;
+	}
+
+	/**
 	 * Gets the name of the upload field used in the commenting form.
 	 *
 	 * @since 1.0.0
@@ -473,7 +497,7 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.1.0
 	 */
-	public function set_enable_attachment_field() {
+	private function set_variables() {
 		/**
 		 * Filters whether to disable the attachment upload field.
 		 *
@@ -486,6 +510,19 @@ class DCO_CA extends DCO_CA_Base {
 		 *                   Default false.
 		 */
 		$this->enable_attachment_field = ! apply_filters( 'dco_ca_disable_attachment_field', false );
+
+		/**
+		 * Filters whether to disable the attachment display.
+		 *
+		 * Prevents the attachment from being displayed in the comments list.
+		 *
+		 * @since 1.1.3
+		 *
+		 * @param bool $bool Whether to disable the attachment display.
+		 *                   Returning true to the filter will disable the attachment display.
+		 *                   Default false.
+		 */
+		$this->enable_display_attachment = ! apply_filters( 'dco_ca_disable_display_attachment', false );
 	}
 
 }
