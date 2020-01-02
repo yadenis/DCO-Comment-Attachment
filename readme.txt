@@ -4,7 +4,7 @@ Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
 Tested up to: 5.3
 Requires PHP: 5.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -36,6 +36,10 @@ DCO Comment Attachment is also available on [GitHub](https://github.com/yadenis/
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.1.3 =
+* Added the feature for autoembed links in comment text. You can disable it in Setting -> DCO Comment Attachment.
+* Introduced `dco_ca_disable_display_attachment` hook. Now you can display attachment in custom place with `add_filter('dco_ca_disable_display_attachment', '__return_true');` filter and `dco_ca()->display_attachment()` function.
 
 = 1.1.2 =
 * Fixed display of empty allowed types if the website administrator has forbidden the upload of all extensions of this type. (thank you @nunofrsilva)
