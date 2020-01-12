@@ -4,7 +4,7 @@ Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
 Tested up to: 5.3
 Requires PHP: 5.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,9 @@ DCO Comment Attachment is also available on [GitHub](https://github.com/yadenis/
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.2.1 =
+* Fixed Quick Edit Comment function bug (thank you @bbceg)
 
 = 1.2.0 =
 * Added the feature for autoembed links in comment text. You can disable it in Settings -> DCO Comment Attachment.

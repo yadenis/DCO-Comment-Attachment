@@ -249,6 +249,10 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @param int $comment_id The comment ID.
 	 */
 	public function update_attachment( $comment_id ) {
+		if ( 'comment' !== get_current_screen()->id ) {
+			return false;
+		}
+
 		check_admin_referer( 'update-comment_' . $comment_id );
 
 		$attachment_id = isset( $_POST['dco_attachment_id'] ) ? (int) $_POST['dco_attachment_id'] : 0;
