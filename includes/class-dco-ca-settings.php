@@ -36,8 +36,6 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function __construct() {
-		parent::__construct();
-
 		add_action( 'init', array( $this, 'init_hooks' ) );
 	}
 
