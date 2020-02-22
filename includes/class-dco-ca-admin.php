@@ -303,5 +303,3 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	}
 
 }
-
-$GLOBALS['dco_ca_admin'] = new DCO_CA_Admin();

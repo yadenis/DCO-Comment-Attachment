@@ -524,5 +524,3 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 }
-
-$GLOBALS['dco_ca'] = new DCO_CA();

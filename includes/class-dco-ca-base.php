@@ -343,5 +343,3 @@ class DCO_CA_Base {
 	}
 
 }
-
-$GLOBALS['dco_ca_base'] = new DCO_CA_Base();

@@ -34,3 +34,7 @@ require_once DCO_CA_PATH . 'includes/class-dco-ca.php';
 
 require_once DCO_CA_PATH . 'includes/class-dco-ca-admin.php';
 require_once DCO_CA_PATH . 'includes/class-dco-ca-settings.php';
+
+$GLOBALS['dco_ca']          = new DCO_CA();
+$GLOBALS['dco_ca_admin']    = new DCO_CA_Admin();
+$GLOBALS['dco_ca_settings'] = new DCO_CA_Settings();
