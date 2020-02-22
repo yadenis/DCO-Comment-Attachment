@@ -134,7 +134,7 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
-	 * Generate HTML markup for the form element.
+	 * Generates HTML markup for the form element.
 	 *
 	 * @since 1.1.1
 	 *
