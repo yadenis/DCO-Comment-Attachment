@@ -13,7 +13,7 @@
     "test": "tests"
   },
   "devDependencies": {
-    "@wordpress/scripts": "^6.1.1"
+    "@wordpress/scripts": "^8.0.0"
   },
   "dependencies": {},
   "repository": {
