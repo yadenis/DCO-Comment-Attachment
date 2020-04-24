@@ -1,187 +1,219 @@
 ( function( $ ) {
-	var attachmentNoticeNeedHide, $wrap;
+	let attachmentNoticeNeedHide, $wrap;
 
-	var showAttachmentNotice = function( url ) {
+	const showAttachmentNotice = function( url ) {
 		$wrap.find( '.dco-attachment' ).addClass( 'dco-hidden' );
 
-		let $notice = $wrap.find( '.dco-attachment-notice' );
+		const $notice = $wrap.find( '.dco-attachment-notice' );
 		$notice.children( 'a' ).attr( 'href', url );
 		$notice.removeClass( 'dco-hidden' );
 
 		attachmentNoticeNeedHide = false;
 	};
 
-	var hideAttachmentNotice = function() {
+	const hideAttachmentNotice = function() {
 		$wrap.find( '.dco-attachment' ).removeClass( 'dco-hidden' );
 		$wrap.find( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
 	};
 
 	$( document ).ready( function() {
-		$( '#the-comment-list' ).on( 'click', '.dco-del-attachment', function( e ) {
-			e.preventDefault();
+		$( '#the-comment-list' ).on( 'click', '.dco-del-attachment', function(
+			event
+		) {
+			event.preventDefault();
 
-			if ( 1 == dcoCA.delete_attachment_action && ! confirm( dcoCA.delete_attachment_confirm ) ) {
+			/* eslint-disable no-undef, no-alert */
+			if (
+				1 === dcoCA.delete_attachment_action &&
+				! confirm( dcoCA.delete_attachment_confirm )
+			) {
 				return;
 			}
+			/* eslint-enable no-undef, no-alert */
 
-			let $this = $( this );
-			let nonce = $this.data( 'nonce' );
-			let id = $this.data( 'id' );
+			const $this = $( this );
+			const nonce = $this.data( 'nonce' );
+			const id = $this.data( 'id' );
 
-			let data = {
+			const data = {
 				action: 'delete_attachment',
-				id: id,
-				_ajax_nonce: nonce // eslint-disable-line camelcase
+				id,
+				_ajax_nonce: nonce, // eslint-disable-line camelcase
 			};
 
+			// eslint-disable-next-line no-undef
 			$.post( ajaxurl, data, function( response ) {
 				if ( response.success ) {
-					let $comment = $this.closest( '.comment' );
-					let $attachment = $comment.children( '.dco-attachment' );
+					const $comment = $this.closest( '.comment' );
+					const $attachment = $comment.children( '.dco-attachment' );
 					$attachment.remove();
 					$this.remove();
 				}
-			});
-		});
+			} );
+		} );
 
-		$( '#dco-comment-attachment' ).on('click', '.dco-set-attachment', function( e ) {
-			e.preventDefault();
-			
-			$wrap = $( this ).closest('.dco-attachment-wrap');
+		$( '#dco-comment-attachment' ).on(
+			'click',
+			'.dco-set-attachment',
+			function( event ) {
+				event.preventDefault();
 
-			let frame = new wp.media.view.MediaFrame.Select({
-				title: dcoCA.set_attachment_title,
-				multiple: false,
-				library: {
-					uploadedTo: null
-				},
-				button: {
-					text: dcoCA.set_attachment_title
-				}
-			});
+				$wrap = $( this ).closest( '.dco-attachment-wrap' );
 
-			frame.on( 'select', function() {
-				var $attachment;
-				var $removeAttachment = $wrap.find( '.dco-remove-attachment' );
+				const frame = new wp.media.view.MediaFrame.Select( {
+					title: dcoCA.set_attachment_title, // eslint-disable-line no-undef
+					multiple: false,
+					library: {
+						uploadedTo: null,
+					},
+					button: {
+						text: dcoCA.set_attachment_title, // eslint-disable-line no-undef
+					},
+				} );
 
-				// We set multiple to false so only get one image from the uploader.
-				let selection = frame.state().get( 'selection' ).first().toJSON();
+				frame.on( 'select', function() {
+					let $attachment;
+					const $removeAttachment = $wrap.find(
+						'.dco-remove-attachment'
+					);
 
-				if( $removeAttachment.hasClass( 'dco-hidden' ) ) {
-					$wrap.trigger('dco_ca_before_adding');
-				} else {
-					$wrap.trigger('dco_ca_before_replacing');
-				}
+					// We set multiple to false so only get one image from the uploader.
+					const selection = frame
+						.state()
+						.get( 'selection' )
+						.first()
+						.toJSON();
 
-				$wrap.find( '.dco-attachment-id' ).val( selection.id );
+					if ( $removeAttachment.hasClass( 'dco-hidden' ) ) {
+						$wrap.trigger( 'dco_ca_before_adding' );
+					} else {
+						$wrap.trigger( 'dco_ca_before_replacing' );
+					}
 
-				attachmentNoticeNeedHide = true;
+					$wrap.find( '.dco-attachment-id' ).val( selection.id );
 
-				switch ( selection.type ) {
-					case 'image':
-						let thumbnail;
-						if ( selection.sizes.hasOwnProperty( 'medium' ) ) {
-							thumbnail = selection.sizes.medium;
-						} else {
-							thumbnail = selection.sizes.full;
-						}
+					attachmentNoticeNeedHide = true;
 
-						$attachment = $wrap.find( '.dco-image-attachment' );
-						if ( ! $attachment.length ) {
-							showAttachmentNotice( thumbnail.url );
-							break;
-						}
+					switch ( selection.type ) {
+						case 'image':
+							let thumbnail;
+							if ( selection.sizes.hasOwnProperty( 'medium' ) ) {
+								thumbnail = selection.sizes.medium;
+							} else {
+								thumbnail = selection.sizes.full;
+							}
 
-						$attachment.children( 'img' )
-								.attr({
+							$attachment = $wrap.find( '.dco-image-attachment' );
+							if ( ! $attachment.length ) {
+								showAttachmentNotice( thumbnail.url );
+								break;
+							}
+
+							$attachment
+								.children( 'img' )
+								.attr( {
 									src: thumbnail.url,
 									width: thumbnail.width,
-									height: thumbnail.height
-								})
+									height: thumbnail.height,
+								} )
 								.removeAttr( 'srcset' )
 								.removeAttr( 'sizes' );
-						break;
-					case 'video':
-						$attachment = $wrap.find( '.dco-video-attachment' );
-						if ( ! $attachment.length ) {
-							showAttachmentNotice( selection.url );
 							break;
-						}
+						case 'video':
+							$attachment = $wrap.find( '.dco-video-attachment' );
+							if ( ! $attachment.length ) {
+								showAttachmentNotice( selection.url );
+								break;
+							}
 
-						$attachment.find( 'video' )[0].setSrc( selection.url );
-						break;
-					case 'audio':
-						$attachment = $wrap.find( '.dco-audio-attachment' );
-						if ( ! $attachment.length ) {
-							showAttachmentNotice( selection.url );
+							$attachment
+								.find( 'video' )[ 0 ]
+								.setSrc( selection.url );
 							break;
-						}
+						case 'audio':
+							$attachment = $wrap.find( '.dco-audio-attachment' );
+							if ( ! $attachment.length ) {
+								showAttachmentNotice( selection.url );
+								break;
+							}
 
-						$attachment.find( 'audio' )[0].setSrc( selection.url );
-						break;
-					default:
-						$attachment = $wrap.find( '.dco-misc-attachment' );
-						if ( ! $attachment.length ) {
-							showAttachmentNotice( selection.url );
+							$attachment
+								.find( 'audio' )[ 0 ]
+								.setSrc( selection.url );
 							break;
-						}
+						default:
+							$attachment = $wrap.find( '.dco-misc-attachment' );
+							if ( ! $attachment.length ) {
+								showAttachmentNotice( selection.url );
+								break;
+							}
 
-						$attachment.children( 'a' )
+							$attachment
+								.children( 'a' )
 								.attr( 'href', selection.url )
 								.text( selection.title );
-				}
+					}
 
-				if ( attachmentNoticeNeedHide ) {
-					hideAttachmentNotice();
-				}
-				$removeAttachment.removeClass( 'dco-hidden' );
-				$wrap.find( '.dco-set-attachment' ).text( dcoCA.replace_attachment_label );
-			});
+					if ( attachmentNoticeNeedHide ) {
+						hideAttachmentNotice();
+					}
+					$removeAttachment.removeClass( 'dco-hidden' );
+					$wrap
+						.find( '.dco-set-attachment' )
+						.text( dcoCA.replace_attachment_label ); // eslint-disable-line no-undef
+				} );
 
-			frame.open();
-		});
+				frame.open();
+			}
+		);
 
-		$( '#dco-comment-attachment' ).on('click', '.dco-remove-attachment', function( e ) {
-			e.preventDefault();
+		$( '#dco-comment-attachment' ).on(
+			'click',
+			'.dco-remove-attachment',
+			function( event ) {
+				event.preventDefault();
 
-			let $this = $( this );
-			$wrap = $this.closest('.dco-attachment-wrap');
+				const $this = $( this );
+				$wrap = $this.closest( '.dco-attachment-wrap' );
 
-			$wrap.find( '.dco-attachment-id' ).val( 0 );
-			$wrap.find( '.dco-attachment' ).addClass( 'dco-hidden' );
-			$wrap.find( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
-			$this.addClass( 'dco-hidden' );
+				$wrap.find( '.dco-attachment-id' ).val( 0 );
+				$wrap.find( '.dco-attachment' ).addClass( 'dco-hidden' );
+				$wrap.find( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
+				$this.addClass( 'dco-hidden' );
 
-			$wrap.find( '.dco-set-attachment' ).text( dcoCA.add_attachment_label );
-			
-			$wrap.trigger('dco_ca_removed');
-		});
+				$wrap
+					.find( '.dco-set-attachment' )
+					.text( dcoCA.add_attachment_label ); // eslint-disable-line no-undef
 
-		$( '#dco-file-types' ).on( 'click', '.dco-show-all', function( e ) {
-			e.preventDefault();
+				$wrap.trigger( 'dco_ca_removed' );
+			}
+		);
 
-			let $this = $( this );
-			let $more = $this.prev();
+		$( '#dco-file-types' ).on( 'click', '.dco-show-all', function( event ) {
+			event.preventDefault();
+
+			const $this = $( this );
+			const $more = $this.prev();
 
 			if ( $more.is( ':visible' ) ) {
 				$more.removeClass( 'show' );
-				$this.text( dcoCA.show_all );
+				$this.text( dcoCA.show_all ); // eslint-disable-line no-undef
 			} else {
 				$more.addClass( 'show' );
-				$this.text( dcoCA.show_less );
+				$this.text( dcoCA.show_less ); // eslint-disable-line no-undef
 			}
-		});
+		} );
 
 		$( '#dco-file-types' ).on( 'click', '.dco-file-type-name', function() {
-			let $this = $( this );
-			let $type = $this.parent();
-			let $checks = $type.find( 'input' );
+			const $this = $( this );
+			const $type = $this.parent();
+			const $checks = $type.find( 'input' );
 
 			if ( $checks.not( ':checked' ).length ) {
 				$checks.prop( 'checked', true );
 			} else {
 				$checks.prop( 'checked', false );
 			}
-		});
-	});
-}( jQuery ) );
+		} );
+	} );
+} )( jQuery ); // eslint-disable-line no-undef

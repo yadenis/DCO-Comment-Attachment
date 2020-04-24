@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "check_css": "wp-scripts lint-style assets/*.css",
-    "fix_css": "wp-scripts lint-stylet assets/*.css --fix",
+    "fix_css": "wp-scripts lint-style assets/*.css --fix",
     "check_js": "wp-scripts lint-js assets/*.js",
     "fix_js": "wp-scripts lint-js assets/*.js --fix"
   },
