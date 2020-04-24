@@ -1,10 +1,10 @@
 ( function( $ ) {
-	var attachmentNoticeNeedHide;
+	var attachmentNoticeNeedHide, $wrap;
 
 	var showAttachmentNotice = function( url ) {
-		$( '.dco-attachment' ).addClass( 'dco-hidden' );
+		$wrap.find( '.dco-attachment' ).addClass( 'dco-hidden' );
 
-		let $notice = $( '#dco-attachment-notice' );
+		let $notice = $wrap.find( '.dco-attachment-notice' );
 		$notice.children( 'a' ).attr( 'href', url );
 		$notice.removeClass( 'dco-hidden' );
 
@@ -12,8 +12,8 @@
 	};
 
 	var hideAttachmentNotice = function() {
-		$( '.dco-attachment' ).removeClass( 'dco-hidden' );
-		$( '#dco-attachment-notice' ).addClass( 'dco-hidden' );
+		$wrap.find( '.dco-attachment' ).removeClass( 'dco-hidden' );
+		$wrap.find( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
 	};
 
 	$( document ).ready( function() {
@@ -44,8 +44,10 @@
 			});
 		});
 
-		$( '#dco-set-attachment' ).click( function( e ) {
+		$( '#dco-comment-attachment' ).on('click', '.dco-set-attachment', function( e ) {
 			e.preventDefault();
+			
+			$wrap = $( this ).closest('.dco-attachment-wrap');
 
 			let frame = new wp.media.view.MediaFrame.Select({
 				title: dcoCA.set_attachment_title,
@@ -60,11 +62,18 @@
 
 			frame.on( 'select', function() {
 				var $attachment;
+				var $removeAttachment = $wrap.find( '.dco-remove-attachment' );
 
 				// We set multiple to false so only get one image from the uploader.
 				let selection = frame.state().get( 'selection' ).first().toJSON();
 
-				$( '#dco-attachment-id' ).val( selection.id );
+				if( $removeAttachment.hasClass( 'dco-hidden' ) ) {
+					$wrap.trigger('dco_ca_before_adding');
+				} else {
+					$wrap.trigger('dco_ca_before_replacing');
+				}
+
+				$wrap.find( '.dco-attachment-id' ).val( selection.id );
 
 				attachmentNoticeNeedHide = true;
 
@@ -77,7 +86,7 @@
 							thumbnail = selection.sizes.full;
 						}
 
-						$attachment = $( '.dco-image-attachment' );
+						$attachment = $wrap.find( '.dco-image-attachment' );
 						if ( ! $attachment.length ) {
 							showAttachmentNotice( thumbnail.url );
 							break;
@@ -93,7 +102,7 @@
 								.removeAttr( 'sizes' );
 						break;
 					case 'video':
-						$attachment = $( '.dco-video-attachment' );
+						$attachment = $wrap.find( '.dco-video-attachment' );
 						if ( ! $attachment.length ) {
 							showAttachmentNotice( selection.url );
 							break;
@@ -102,7 +111,7 @@
 						$attachment.find( 'video' )[0].setSrc( selection.url );
 						break;
 					case 'audio':
-						$attachment = $( '.dco-audio-attachment' );
+						$attachment = $wrap.find( '.dco-audio-attachment' );
 						if ( ! $attachment.length ) {
 							showAttachmentNotice( selection.url );
 							break;
@@ -111,7 +120,7 @@
 						$attachment.find( 'audio' )[0].setSrc( selection.url );
 						break;
 					default:
-						$attachment = $( '.dco-misc-attachment' );
+						$attachment = $wrap.find( '.dco-misc-attachment' );
 						if ( ! $attachment.length ) {
 							showAttachmentNotice( selection.url );
 							break;
@@ -125,22 +134,27 @@
 				if ( attachmentNoticeNeedHide ) {
 					hideAttachmentNotice();
 				}
-				$( '#dco-remove-attachment' ).removeClass( 'dco-hidden' );
-				$( '#dco-set-attachment' ).text( dcoCA.replace_attachment_label );
+				$removeAttachment.removeClass( 'dco-hidden' );
+				$wrap.find( '.dco-set-attachment' ).text( dcoCA.replace_attachment_label );
 			});
 
 			frame.open();
 		});
 
-		$( '#dco-remove-attachment' ).click( function( e ) {
+		$( '#dco-comment-attachment' ).on('click', '.dco-remove-attachment', function( e ) {
 			e.preventDefault();
 
-			$( '#dco-attachment-id' ).val( 0 );
-			$( '.dco-attachment' ).addClass( 'dco-hidden' );
-			$( '#dco-attachment-notice' ).addClass( 'dco-hidden' );
-			$( this ).addClass( 'dco-hidden' );
+			let $this = $( this );
+			$wrap = $this.closest('.dco-attachment-wrap');
 
-			$( '#dco-set-attachment' ).text( dcoCA.add_attachment_label );
+			$wrap.find( '.dco-attachment-id' ).val( 0 );
+			$wrap.find( '.dco-attachment' ).addClass( 'dco-hidden' );
+			$wrap.find( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
+			$this.addClass( 'dco-hidden' );
+
+			$wrap.find( '.dco-set-attachment' ).text( dcoCA.add_attachment_label );
+			
+			$wrap.trigger('dco_ca_removed');
 		});
 
 		$( '#dco-file-types' ).on( 'click', '.dco-show-all', function( e ) {

@@ -198,23 +198,27 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function render_attachment_metabox() {
-		$btn_text     = __( 'Add Attachment', 'dco-comment-attachment' );
-		$remove_class = ' dco-hidden';
-
-		if ( $this->has_attachment() ) {
-			$btn_text     = __( 'Replace Attachment', 'dco-comment-attachment' );
-			$remove_class = '';
-
-			$attachment_id = $this->get_attachment_id();
-			echo $this->get_attachment_preview( $attachment_id ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
 		?>
-		<div id="dco-attachment-notice" class="dco-hidden"><?php echo wp_kses_data( __( 'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.', 'dco-comment-attachment' ) ); ?></div>
-		<div class="dco-attachment-actions">
-			<a href="#" class="button" id="dco-set-attachment"><?php echo esc_html( $btn_text ); ?></a>
-			<a href="#" class="dco-remove-attachment<?php echo esc_attr( $remove_class ); ?>" id="dco-remove-attachment"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
+		<div class="dco-attachment-wrap">
+			<?php
+			$btn_text     = __( 'Add Attachment', 'dco-comment-attachment' );
+			$remove_class = ' dco-hidden';
+
+			if ( $this->has_attachment() ) {
+				$btn_text     = __( 'Replace Attachment', 'dco-comment-attachment' );
+				$remove_class = '';
+
+				$attachment_id = $this->get_attachment_id();
+				echo $this->get_attachment_preview( $attachment_id ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+			?>
+			<div class="dco-attachment-notice dco-hidden"><?php echo wp_kses_data( __( 'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.', 'dco-comment-attachment' ) ); ?></div>
+			<div class="dco-attachment-actions">
+				<a href="#" class="button dco-set-attachment"><?php echo esc_html( $btn_text ); ?></a>
+				<a href="#" class="dco-remove-attachment<?php echo esc_attr( $remove_class ); ?>"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
+			</div>
+			<input type="hidden" name="dco_attachment_id" class="dco-attachment-id" value="<?php echo (int) $attachment_id; ?>">
 		</div>
-		<input type="hidden" name="dco_attachment_id" id="dco-attachment-id" value="<?php echo (int) $attachment_id; ?>">
 		<?php
 	}
 
