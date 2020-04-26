@@ -141,25 +141,62 @@ class DCO_CA_Base {
 			return false;
 		}
 
-		$is_embed = $this->get_option( 'embed_attachment' );
+		$embed_type = $this->get_embed_type( $url );
 
-		if ( wp_attachment_is_image( $attachment_id ) && $is_embed ) {
-			$thumbnail_size = $this->get_option( 'thumbnail_size' );
-			if ( is_admin() ) {
-				$thumbnail_size = 'medium';
-			}
+		switch ( $embed_type ) {
+			case 'image':
+				$thumbnail_size = $this->get_option( 'thumbnail_size' );
+				if ( is_admin() ) {
+					$thumbnail_size = 'medium';
+				}
 
-			$attachment_content = '<p class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $thumbnail_size ) . '</p>';
-		} elseif ( wp_attachment_is( 'video', $attachment_id ) && $is_embed ) {
-			$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
-		} elseif ( wp_attachment_is( 'audio', $attachment_id ) && $is_embed ) {
-			$attachment_content = '<div class="dco-attachment dco-audio-attachment">' . do_shortcode( '[audio src="' . esc_url( $url ) . '"]' ) . '</div>';
-		} else {
-			$title              = get_the_title( $attachment_id );
-			$attachment_content = '<p class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></p>';
+				$attachment_content = '<p class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $thumbnail_size ) . '</p>';
+				break;
+			case 'video':
+				$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
+				break;
+			case 'audio':
+				$attachment_content = '<div class="dco-attachment dco-audio-attachment">' . do_shortcode( '[audio src="' . esc_url( $url ) . '"]' ) . '</div>';
+				break;
+			case 'misc':
+				$title              = get_the_title( $attachment_id );
+				$attachment_content = '<p class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></p>';
 		}
 
 		return $attachment_content;
+	}
+
+	/**
+	 * Gets the embed type of the attachment by its extension.
+	 *
+	 * @since 1.3.0
+	 *
+	 * @param string $url The attachment URL.
+	 * @return string The embed type (image, video, audio, misc).
+	 */
+	public function get_embed_type( $url ) {
+		if ( ! $this->get_option( 'embed_attachment' ) ) {
+			return 'misc';
+		}
+
+		$ext = wp_check_filetype( $url )['ext'];
+
+		// WordPress doesn't have a list of supported image formats.
+		// See https://core.trac.wordpress.org/ticket/41801 .
+		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' );
+		if ( in_array( $ext, $image_exts, true ) ) {
+			return 'image';
+		}
+
+		if ( in_array( $ext, wp_get_video_extensions(), true ) ) {
+			return 'video';
+		}
+
+		if ( in_array( $ext, wp_get_audio_extensions(), true ) ) {
+			return 'audio';
+		}
+
+		return 'misc';
 	}
 
 	/**
