@@ -24,7 +24,7 @@
 
 			/* eslint-disable no-undef, no-alert */
 			if (
-				1 === dcoCA.delete_attachment_action &&
+				1 === parseInt( dcoCA.delete_attachment_action ) &&
 				! confirm( dcoCA.delete_attachment_confirm )
 			) {
 				return;
