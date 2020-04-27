@@ -200,7 +200,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 			),
 			'allowed_file_types'       => array(
 				'label'   => esc_html__( 'Allowed File Types', 'dco-comment-attachment' ),
-				'desc'    => '* — ' . __( 'only for Administrators and Editors.', 'dco-comment-attachment' ),
+				'desc'    => '* — ' . __( 'available for embedding.', 'dco-comment-attachment' ) . '<br>** — ' . __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'checkbox',
 				'default' => $this->get_allowed_file_types( 'array' ),
@@ -276,7 +276,8 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				break;
 		}
 		if ( $args['desc'] ) {
-			echo '<p class="description">' . esc_html( $args['desc'] ) . '</p>';
+			$allowed_tags = array( 'br' => array() );
+			echo '<p class="description">' . wp_kses( $args['desc'], $allowed_tags ) . '</p>';
 		}
 	}
 
@@ -377,6 +378,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 */
 	public function field_allowed_file_types_render( $setting_val, $control_name, $control_id, $args ) {
 		$special_exts = array( 'htm', 'html', 'js' );
+		$embed_exts   = array_merge( wp_get_video_extensions(), wp_get_audio_extensions(), $this->get_image_exts() );
 
 		/*
 		* Translators: If the type names in your language are wider or narrower than in English - you can change the width of the column here.
@@ -395,11 +397,14 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				if ( $i === $more ) {
 					echo '</div><div class="dco-file-type-items-more">';
 				}
-				$special = '';
-				if ( in_array( $ext, $special_exts, true ) ) {
-					$special = ' *';
+				$mark = '';
+				if ( in_array( $ext, $embed_exts, true ) ) {
+					$mark = ' *';
 				}
-				echo '<div class="dco-file-type-item"><label><input type="checkbox" name="' . esc_attr( $control_name ) . '[]" value="' . esc_attr( $ext ) . '"' . checked( in_array( $ext, $setting_val, true ), true, false ) . '> ' . esc_html( $ext . $special ) . '</label></div>';
+				if ( in_array( $ext, $special_exts, true ) ) {
+					$mark = ' **';
+				}
+				echo '<div class="dco-file-type-item"><label><input type="checkbox" name="' . esc_attr( $control_name ) . '[]" value="' . esc_attr( $ext ) . '"' . checked( in_array( $ext, $setting_val, true ), true, false ) . '> ' . esc_html( $ext . $mark ) . '</label></div>';
 				$i++;
 			}
 			echo '</div>';

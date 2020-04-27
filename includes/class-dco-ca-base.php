@@ -38,6 +38,18 @@ class DCO_CA_Base {
 	private $attachment_meta_key = 'attachment_id';
 
 	/**
+	 * The list of image formats available for embedding.
+	 *
+	 * WordPress doesn't have a list of supported image formats.
+	 * See https://core.trac.wordpress.org/ticket/41801
+	 *
+	 * @since 1.3.0
+	 *
+	 * @var array $image_exts The list of image formats.
+	 */
+	private $image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' );
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -181,10 +193,7 @@ class DCO_CA_Base {
 
 		$ext = wp_check_filetype( $url )['ext'];
 
-		// WordPress doesn't have a list of supported image formats.
-		// See https://core.trac.wordpress.org/ticket/41801 .
-		$image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' );
-		if ( in_array( $ext, $image_exts, true ) ) {
+		if ( in_array( $ext, $this->get_image_exts(), true ) ) {
 			return 'image';
 		}
 
@@ -377,6 +386,17 @@ class DCO_CA_Base {
 	 */
 	public function get_attachment_meta_key() {
 		return $this->attachment_meta_key;
+	}
+
+	/**
+	 * Gets the list of image formats available for embedding.
+	 *
+	 * @since 1.3.0
+	 *
+	 * return array The list of image formats.
+	 */
+	public function get_image_exts() {
+		return $this->image_exts;
 	}
 
 }
