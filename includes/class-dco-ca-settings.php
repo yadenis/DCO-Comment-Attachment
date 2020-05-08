@@ -192,7 +192,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'default' => 1,
 			),
 			'autoembed_links'          => array(
-				'label'   => esc_html__( 'Autoembed links?', 'dco-comment-attachment' ),
+				'label'   => esc_html__( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' ),
 				'section' => 'on_site',
 				'type'    => 'checkbox',
