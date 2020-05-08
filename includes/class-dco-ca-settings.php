@@ -162,6 +162,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'dropdown',
 				'default' => 'medium',
 			),
+			'link_thumbnail'           => array(
+				'label'   => esc_html__( 'Link thumbnail to full-size image?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, clicking on the thumbnail will open a full-size image.', 'dco-comment-attachment' ),
+				'section' => 'on_site',
+				'type'    => 'checkbox',
+				'default' => 1,
+			),
 			'max_upload_size'          => array(
 				'label'   => esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
 				/* translators: %s: the maximum allowed upload file size */

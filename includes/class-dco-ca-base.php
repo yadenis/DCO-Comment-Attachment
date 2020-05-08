@@ -162,7 +162,13 @@ class DCO_CA_Base {
 					$thumbnail_size = 'medium';
 				}
 
-				$attachment_content = '<p class="dco-attachment dco-image-attachment">' . wp_get_attachment_image( $attachment_id, $thumbnail_size ) . '</p>';
+				$img = wp_get_attachment_image( $attachment_id, $thumbnail_size );
+				if ( ! is_admin() && $this->get_option( 'link_thumbnail' ) ) {
+					$full_img_url = wp_get_attachment_image_url( $attachment_id, 'full' );
+					$img          = '<a href="' . esc_url( $full_img_url ) . '">' . $img . '</a>';
+				}
+
+				$attachment_content = '<p class="dco-attachment dco-image-attachment">' . $img . '</p>';
 				break;
 			case 'video':
 				$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
