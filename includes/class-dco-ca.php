@@ -118,6 +118,7 @@ class DCO_CA extends DCO_CA_Base {
 			$this->form_element( 'input' );
 			$this->form_element( 'upload-size' );
 			$this->form_element( 'file-types' );
+			$this->form_element( 'autoembed-links-notification' );
 			?>
 		</p>
 		<?php
@@ -218,6 +219,24 @@ class DCO_CA extends DCO_CA_Base {
 				 * @param string $types The file types list allowed for upload.
 				 */
 				$markup = apply_filters( 'dco_ca_form_element_file_types', '<br>' . ob_get_clean(), $types );
+				break;
+			case 'autoembed-links-notification':
+				ob_start();
+				$autoembed_links = $this->get_option( 'autoembed_links' );
+				if ( $autoembed_links ) {
+					esc_html_e( 'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.', 'dco-comment-attachment' );
+				}
+
+				/**
+				 * Filters the autoembed links notification form element markup.
+				 *
+				 * @since 1.3.0
+				 *
+				 * @param string $markup HTML markup for the autoembed links
+				 *                       notification list form element.
+				 * @param bool $autoembed_links Whether the links is automatically embedded.
+				 */
+				$markup = apply_filters( 'dco_ca_form_element_autoembed_links_notification', '<br>' . ob_get_clean(), $autoembed_links );
 				break;
 		}
 
