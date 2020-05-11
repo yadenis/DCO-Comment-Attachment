@@ -29,27 +29,6 @@ class DCO_CA_Base {
 	private $options = array();
 
 	/**
-	 * The meta key of the attachment ID for comment meta.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $attachment_meta_key The attachment ID meta key.
-	 */
-	private $attachment_meta_key = 'attachment_id';
-
-	/**
-	 * The list of image formats available for embedding.
-	 *
-	 * WordPress doesn't have a list of supported image formats.
-	 * See https://core.trac.wordpress.org/ticket/41801
-	 *
-	 * @since 1.3.0
-	 *
-	 * @var array $image_exts The list of image formats.
-	 */
-	private $image_exts = array( 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' );
-
-	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -391,18 +370,21 @@ class DCO_CA_Base {
 	 * return string The attachment ID meta key.
 	 */
 	public function get_attachment_meta_key() {
-		return $this->attachment_meta_key;
+		return 'attachment_id';
 	}
 
 	/**
 	 * Gets the list of image formats available for embedding.
+	 *
+	 * WordPress doesn't have a list of supported image formats.
+	 * See https://core.trac.wordpress.org/ticket/41801
 	 *
 	 * @since 1.3.0
 	 *
 	 * return array The list of image formats.
 	 */
 	public function get_image_exts() {
-		return $this->image_exts;
+		return array( 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' );
 	}
 
 }

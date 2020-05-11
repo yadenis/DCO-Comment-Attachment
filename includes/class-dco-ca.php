@@ -22,35 +22,6 @@ defined( 'ABSPATH' ) || die;
 class DCO_CA extends DCO_CA_Base {
 
 	/**
-	 * The name of the upload field used in the commenting form.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @var string $upload_field_name The name of the upload input.
-	 */
-	private $upload_field_name = 'attachment';
-
-	/**
-	 * Indicates whether the attachment field is enabled in the commenting form.
-	 *
-	 * @since 1.1.0
-	 *
-	 * @var bool $enable_attachment_field Indicates whether the field is enabled.
-	 *                                    True if enabled or false otherwise.
-	 */
-	private $enable_attachment_field;
-
-	/**
-	 * Indicates whether the attachment display is enabled in the comments list.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @var bool $enable_display_attachment Indicates whether the attachment is displayed.
-	 *                                      True if enabled or false otherwise.
-	 */
-	private $enable_display_attachment;
-
-	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -66,8 +37,6 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function init_hooks() {
 		parent::init_hooks();
-
-		$this->set_variables();
 
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
@@ -484,37 +453,6 @@ class DCO_CA extends DCO_CA_Base {
 	 * @return bool True if the attachment field is enabled or false otherwise.
 	 */
 	public function is_attachment_field_enabled() {
-		return $this->enable_attachment_field;
-	}
-
-	/**
-	 * Checks that attachment displayed or not.
-	 *
-	 * @since 1.2.0
-	 *
-	 * @return bool True if the attachment display is enabled or false otherwise.
-	 */
-	public function is_attachment_displayed() {
-		return $this->enable_display_attachment;
-	}
-
-	/**
-	 * Gets the name of the upload field used in the commenting form.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string The name of the upload input.
-	 */
-	public function get_upload_field_name() {
-		return $this->upload_field_name;
-	}
-
-	/**
-	 * Sets that the attachment field is enabled in the commenting form or not.
-	 *
-	 * @since 1.1.0
-	 */
-	private function set_variables() {
 		/**
 		 * Filters whether to disable the attachment upload field.
 		 *
@@ -526,8 +464,17 @@ class DCO_CA extends DCO_CA_Base {
 		 *                   Returning true to the filter will disable the attachment field.
 		 *                   Default false.
 		 */
-		$this->enable_attachment_field = ! apply_filters( 'dco_ca_disable_attachment_field', false );
+		return ! apply_filters( 'dco_ca_disable_attachment_field', false );
+	}
 
+	/**
+	 * Checks that attachment displayed or not.
+	 *
+	 * @since 1.2.0
+	 *
+	 * @return bool True if the attachment display is enabled or false otherwise.
+	 */
+	public function is_attachment_displayed() {
 		/**
 		 * Filters whether to disable the attachment display.
 		 *
@@ -539,7 +486,18 @@ class DCO_CA extends DCO_CA_Base {
 		 *                   Returning true to the filter will disable the attachment display.
 		 *                   Default false.
 		 */
-		$this->enable_display_attachment = ! apply_filters( 'dco_ca_disable_display_attachment', false );
+		return ! apply_filters( 'dco_ca_disable_display_attachment', false );
+	}
+
+	/**
+	 * Gets the name of the upload field used in the commenting form.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The name of the upload input.
+	 */
+	public function get_upload_field_name() {
+		return 'attachment';
 	}
 
 }
