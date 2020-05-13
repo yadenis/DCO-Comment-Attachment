@@ -453,6 +453,12 @@ class DCO_CA extends DCO_CA_Base {
 	 * @return bool True if the attachment field is enabled or false otherwise.
 	 */
 	public function is_attachment_field_enabled() {
+		$disable = false;
+
+		if ( ! $this->is_user_can_upload() ) {
+			$disable = true;
+		}
+
 		/**
 		 * Filters whether to disable the attachment upload field.
 		 *
@@ -460,11 +466,11 @@ class DCO_CA extends DCO_CA_Base {
 		 *
 		 * @since 1.1.0
 		 *
-		 * @param bool $bool Whether to disable the attachment upload field.
-		 *                   Returning true to the filter will disable the attachment field.
-		 *                   Default false.
+		 * @param bool $disable Whether to disable the attachment upload field.
+		 *                      Returning true to the filter will disable the attachment field.
+		 *                      Default false.
 		 */
-		return ! apply_filters( 'dco_ca_disable_attachment_field', false );
+		return ! apply_filters( 'dco_ca_disable_attachment_field', $disable );
 	}
 
 	/**
@@ -487,6 +493,27 @@ class DCO_CA extends DCO_CA_Base {
 		 *                   Default false.
 		 */
 		return ! apply_filters( 'dco_ca_disable_display_attachment', false );
+	}
+
+	/**
+	 * Checks that the current user can upload the attachment.
+	 *
+	 * @return bool True if the user can upload or false otherwise.
+	 */
+	public function is_user_can_upload() {
+		$who_can_upload = (int) $this->get_option( 'who_can_upload' );
+
+		// All users.
+		if ( 1 === $who_can_upload ) {
+			return true;
+		}
+
+		// Only logged users.
+		if ( 2 === $who_can_upload && is_user_logged_in() ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**

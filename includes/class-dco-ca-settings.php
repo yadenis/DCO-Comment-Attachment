@@ -212,6 +212,18 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => $this->get_allowed_file_types( 'array' ),
 			),
+			'who_can_upload'           => array(
+				'label'     => esc_html__( 'Who can upload attachment?', 'dco-comment-attachment' ),
+				'desc'      => '',
+				'section'   => 'on_site',
+				'type'      => 'radio',
+				'default'   => 1,
+				'choices'   => array(
+					'1' => __( 'All users', 'dco-comment-attachment' ),
+					'2' => __( 'Only logged users', 'dco-comment-attachment' ),
+				),
+				'label_for' => false,
+			),
 			'delete_with_comment'      => array(
 				'label'   => esc_html__( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If unchecked, the attachment will be available in Media Library after the comment has been deleted.', 'dco-comment-attachment' ),
