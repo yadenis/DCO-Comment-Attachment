@@ -2,9 +2,9 @@
 Contributors: denisco
 Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
-Tested up to: 5.3
+Tested up to: 5.4
 Requires PHP: 5.4
-Stable tag: 1.2.1
+Stable tag: 1.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,12 +16,14 @@ DCO Comment Attachment allows your visitors to attach images, videos, audios, do
 With plugin settings you can:
 
 * Select an attachment image size from thumbnails available in your WordPress install.
+* Link thumbnail to full-size image.
 * Limit the maximum file upload size.
 * Make an attachment required.
 * Specify whether the attachment will be embedded or displayed as a link.
+* Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
 * Attach an attachment to a commented post.
 * Restrict attachment file types.
-* Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
+* Decide who will be able to upload attachments: all users or only logged users.
 
 You can also:
 
@@ -37,6 +39,13 @@ DCO Comment Attachment is also available on [GitHub](https://github.com/yadenis/
 2. Activate the plugin through the 'Plugins' menu in WordPress
 
 == Changelog ==
+
+= 1.3.0 =
+* Added the feature to link a thumbnail to a full-size image.
+* Added the feature for restrict uploading attachments only to logged users.
+* Added notification about automatically embedded links, when it's enabled.
+* Fixed bug with incorrect display of attachment types that do not support embedding. (thank you @nazzareno)
+* Removed jQuery dependency on the frontend.
 
 = 1.2.1 =
 * Fixed Quick Edit Comment function bug (thank you @bbceg)
