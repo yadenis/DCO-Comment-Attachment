@@ -139,8 +139,10 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 */
 	public function get_sections() {
 		$sections = array(
-			'on_site'  => esc_html__( 'Attachments on Site', 'dco-comment-attachment' ),
-			'in_admin' => esc_html__( 'Attachments in Admin Panel', 'dco-comment-attachment' ),
+			'general'  => esc_html__( 'General', 'dco-comment-attachment' ),
+			'images'  => esc_html__( 'Images', 'dco-comment-attachment' ),
+			'permissions'  => esc_html__( 'Permissions', 'dco-comment-attachment' ),
+			'in_admin' => esc_html__( 'Admin Panel', 'dco-comment-attachment' ),
 		);
 
 		return $sections;
@@ -155,67 +157,67 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 */
 	public function get_fields() {
 		$fields = array(
-			'thumbnail_size'           => array(
-				'label'   => esc_html__( 'Attachment image size', 'dco-comment-attachment' ),
-				'desc'    => __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
-				'type'    => 'dropdown',
-				'default' => 'medium',
-			),
-			'link_thumbnail'           => array(
-				'label'   => esc_html__( 'Link thumbnail to full-size image?', 'dco-comment-attachment' ),
-				'desc'    => __( 'If checked, clicking on the thumbnail will open a full-size image.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
-				'type'    => 'checkbox',
-				'default' => 0,
-			),
 			'max_upload_size'          => array(
 				'label'   => esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
 				/* translators: %s: the maximum allowed upload file size */
 				'desc'    => sprintf( __( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ), $this->get_max_upload_size( true, true ) ),
-				'section' => 'on_site',
+				'section' => 'general',
 				'type'    => 'number',
 				'default' => $this->get_max_upload_size( false, true ),
 			),
 			'required_attachment'      => array(
 				'label'   => esc_html__( 'Is attachment required?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, the user will not be able to post a comment without attaching an attachment.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
+				'section' => 'general',
 				'type'    => 'checkbox',
 				'default' => 0,
 			),
 			'embed_attachment'         => array(
 				'label'   => esc_html__( 'Embed attachment?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
+				'section' => 'general',
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
 			'autoembed_links'          => array(
 				'label'   => esc_html__( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
+				'section' => 'general',
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
 			'attach_to_post'           => array(
 				'label'   => esc_html__( 'Attach to commented post?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, the attachment will be attach to the commented post and can be filtered with the "Uploaded to this post" option.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
+				'section' => 'general',
 				'type'    => 'checkbox',
 				'default' => 1,
+			),
+			'thumbnail_size'           => array(
+				'label'   => esc_html__( 'Attachment image size', 'dco-comment-attachment' ),
+				'desc'    => __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
+				'section' => 'images',
+				'type'    => 'dropdown',
+				'default' => 'medium',
+			),
+			'link_thumbnail'           => array(
+				'label'   => esc_html__( 'Link thumbnail to full-size image?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, clicking on the thumbnail will open a full-size image.', 'dco-comment-attachment' ),
+				'section' => 'images',
+				'type'    => 'checkbox',
+				'default' => 0,
 			),
 			'allowed_file_types'       => array(
 				'label'   => esc_html__( 'Allowed File Types', 'dco-comment-attachment' ),
 				'desc'    => '* — ' . __( 'available for embedding.', 'dco-comment-attachment' ) . '<br>** — ' . __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' ),
-				'section' => 'on_site',
+				'section' => 'permissions',
 				'type'    => 'checkbox',
 				'default' => $this->get_allowed_file_types( 'array' ),
 			),
 			'who_can_upload'           => array(
 				'label'     => esc_html__( 'Who can upload attachment?', 'dco-comment-attachment' ),
 				'desc'      => '',
-				'section'   => 'on_site',
+				'section'   => 'permissions',
 				'type'      => 'radio',
 				'default'   => 1,
 				'choices'   => array(
