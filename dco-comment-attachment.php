@@ -16,9 +16,15 @@
  * Author URI: https://denisco.pro
  * License: GPLv2 or later
  * Text Domain: dco-comment-attachment
- */
+ * Domain Path: /languages
+*/
 
 defined( 'ABSPATH' ) || die;
+
+function dco_load_plugin_textdomain() {
+    load_plugin_textdomain( 'dco-comment-attachment', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
+}
+add_action( 'plugins_loaded', 'dco_load_plugin_textdomain' );
 
 define( 'DCO_CA_URL', plugin_dir_url( __FILE__ ) );
 define( 'DCO_CA_PATH', plugin_dir_path( __FILE__ ) );
