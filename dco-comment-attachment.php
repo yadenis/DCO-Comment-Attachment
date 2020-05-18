@@ -20,21 +20,26 @@
 
 defined( 'ABSPATH' ) || die;
 
-define( 'DCO_CA_URL', plugin_dir_url( __FILE__ ) );
-define( 'DCO_CA_PATH', plugin_dir_path( __FILE__ ) );
-define( 'DCO_CA_BASENAME', plugin_basename( __FILE__ ) );
-define( 'DCO_CA_VERSION', '1.3.0' );
+// Deactivate the plugin if the Pro version is activated.
+if ( ! defined( 'DCO_CA_PRO_BASENAME' ) ) {
+	define( 'DCO_CA_URL', plugin_dir_url( __FILE__ ) );
+	define( 'DCO_CA_PATH', plugin_dir_path( __FILE__ ) );
+	define( 'DCO_CA_BASENAME', plugin_basename( __FILE__ ) );
+	define( 'DCO_CA_VERSION', '1.3.0' );
 
-require_once DCO_CA_PATH . 'includes/functions.php';
+	require_once DCO_CA_PATH . 'includes/functions.php';
 
-require_once DCO_CA_PATH . 'includes/back-compat.php';
+	require_once DCO_CA_PATH . 'includes/back-compat.php';
 
-require_once DCO_CA_PATH . 'includes/class-dco-ca-base.php';
-require_once DCO_CA_PATH . 'includes/class-dco-ca.php';
+	require_once DCO_CA_PATH . 'includes/class-dco-ca-base.php';
+	require_once DCO_CA_PATH . 'includes/class-dco-ca.php';
 
-require_once DCO_CA_PATH . 'includes/class-dco-ca-admin.php';
-require_once DCO_CA_PATH . 'includes/class-dco-ca-settings.php';
+	require_once DCO_CA_PATH . 'includes/class-dco-ca-admin.php';
+	require_once DCO_CA_PATH . 'includes/class-dco-ca-settings.php';
 
-$GLOBALS['dco_ca']          = new DCO_CA();
-$GLOBALS['dco_ca_admin']    = new DCO_CA_Admin();
-$GLOBALS['dco_ca_settings'] = new DCO_CA_Settings();
+	$GLOBALS['dco_ca']          = new DCO_CA();
+	$GLOBALS['dco_ca_admin']    = new DCO_CA_Admin();
+	$GLOBALS['dco_ca_settings'] = new DCO_CA_Settings();
+} else {
+	add_action( 'admin_init', 'dco_ca_deactivate_plugin' );
+}

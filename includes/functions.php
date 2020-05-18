@@ -25,3 +25,12 @@ if ( ! function_exists( 'dco_ca' ) ) {
 		return isset( $GLOBALS[ $name ] ) ? $GLOBALS[ $name ] : false;
 	}
 }
+
+/**
+ * Deactivates the plugin.
+ *
+ * @since 1.4.0
+ */
+function dco_ca_deactivate_plugin() {
+	deactivate_plugins( 'dco-comment-attachment/dco-comment-attachment.php' );
+}
