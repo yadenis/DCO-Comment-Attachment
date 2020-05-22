@@ -138,7 +138,14 @@ class DCO_CA_Base {
 			case 'image':
 				$thumbnail_size = $this->get_option( 'thumbnail_size' );
 				if ( is_admin() ) {
-					$thumbnail_size = 'medium';
+					/**
+					* Filters the attachment image size for the admin panel.
+					*
+					* @since 1.4.0
+					*
+					* @param string $size The thumbnail size of the attachment image.
+					*/
+					$thumbnail_size = apply_filters( 'dco_ca_admin_thumbnail_size', 'medium' );
 				}
 
 				$img = wp_get_attachment_image( $attachment_id, $thumbnail_size );
@@ -338,7 +345,16 @@ class DCO_CA_Base {
 	 */
 	public function get_option( $name ) {
 		if ( isset( $this->options[ $name ] ) ) {
-			return $this->options[ $name ];
+			/**
+			* Filters the value of the plugin option.
+			*
+			* The dynamic portion of the hook name, `$name`, refers to the option name.
+			*
+			* @since 1.4.0
+			*
+			* @param mixed $value Value of the option.
+			*/
+			return apply_filters( "dco_ca_get_option_{$name}", $this->options[ $name ] );
 		}
 
 		return false;
