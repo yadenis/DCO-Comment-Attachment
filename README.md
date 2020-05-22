@@ -22,11 +22,14 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-1.3.0
+1.3.1
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=dev)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
 # Changelog
+## 1.3.1
+- Fixed image embed bug when attachment url has get parameters
+
 ## 1.3.0
 - Added the feature to link a thumbnail to a full-size image.
 - Added the feature for restrict uploading attachments only to logged users.
