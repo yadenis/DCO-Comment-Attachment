@@ -82,12 +82,18 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				$args['choices'] = $field['choices'];
 			}
 
-			if ( isset( $field['atts'] ) ) {
-				$args['atts'] = $field['atts'];
+			$args['class'] = '';
+			if ( isset( $field['class'] ) ) {
+				$args['class'] = $field['class'];
 			}
 
 			if ( isset( $field['label_for'] ) && ! $field['label_for'] ) {
 				unset( $args['label_for'] );
+			}
+
+			if ( isset( $field['pro'] ) && ! defined( 'DCO_CA_PRO_BASENAME' ) ) {
+				$args['pro']    = true;
+				$args['class'] .= ' dco-ca-pro';
 			}
 
 			add_settings_field(
@@ -139,10 +145,11 @@ class DCO_CA_Settings extends DCO_CA_Base {
 	 */
 	public function get_sections() {
 		$sections = array(
-			'general'  => esc_html__( 'General', 'dco-comment-attachment' ),
-			'images'  => esc_html__( 'Images', 'dco-comment-attachment' ),
-			'permissions'  => esc_html__( 'Permissions', 'dco-comment-attachment' ),
-			'in_admin' => esc_html__( 'Admin Panel', 'dco-comment-attachment' ),
+			'general'         => esc_html__( 'General', 'dco-comment-attachment' ),
+			'images'          => esc_html__( 'Images', 'dco-comment-attachment' ),
+			'multiple_upload' => esc_html__( 'Multiple upload', 'dco-comment-attachment' ),
+			'permissions'     => esc_html__( 'Permissions', 'dco-comment-attachment' ),
+			'in_admin'        => esc_html__( 'Admin Panel', 'dco-comment-attachment' ),
 		);
 
 		return $sections;
@@ -192,6 +199,30 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'section' => 'general',
 				'type'    => 'checkbox',
 				'default' => 1,
+			),
+			'enable_multiple_upload'   => array(
+				'label'   => esc_html__( 'Enable multiple upload?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, users will be able to upload multiple attachments at once.', 'dco-comment-attachment' ),
+				'section' => 'multiple_upload',
+				'type'    => 'checkbox',
+				'default' => 0,
+				'pro'     => true,
+			),
+			'combine_images'           => array(
+				'label'   => esc_html__( 'Combine images to gallery?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.', 'dco-comment-attachment' ),
+				'section' => 'multiple_upload',
+				'type'    => 'checkbox',
+				'default' => 1,
+				'pro'     => true,
+			),
+			'gallery_size'             => array(
+				'label'   => esc_html__( 'Gallery image size', 'dco-comment-attachment' ),
+				'desc'    => __( 'The size of the thumbnail for the gallery of attached images.', 'dco-comment-attachment' ),
+				'section' => 'multiple_upload',
+				'type'    => 'dropdown',
+				'default' => 'thumbnail',
+				'pro'     => true,
 			),
 			'thumbnail_size'           => array(
 				'label'   => esc_html__( 'Attachment image size', 'dco-comment-attachment' ),
@@ -291,14 +322,21 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				$this->field_radio_render( $setting_val, $control_name, $control_id, $args );
 				break;
 			case 'dropdown':
-				if ( 'thumbnail_size' === $args['name'] ) {
+				if ( 'thumbnail_size' === $args['name'] || 'gallery_size' === $args['name'] ) {
 					$this->field_thumbnail_size_render( $setting_val, $control_name, $control_id, $args );
 				}
 				break;
 		}
 		if ( $args['desc'] ) {
-			$allowed_tags = array( 'br' => array() );
-			echo '<p class="description">' . wp_kses( $args['desc'], $allowed_tags ) . '</p>';
+			$allowed_tags     = array(
+				'br' => array(),
+				'a'  => array(
+					'href'   => array(),
+					'target' => array(),
+				),
+			);
+			$available_in_pro = isset( $args['pro'] ) ? '<a href="https://denisco.pro/dco-comment-attachment-pro/" target="_blank">' . esc_html__( 'Available in Pro version', 'dco-comment-attachment' ) . '</a>. ' : '';
+			echo '<p class="description">' . wp_kses( $available_in_pro . $args['desc'], $allowed_tags ) . '</p>';
 		}
 	}
 
