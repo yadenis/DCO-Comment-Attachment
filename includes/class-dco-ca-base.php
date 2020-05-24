@@ -152,6 +152,7 @@ class DCO_CA_Base {
 				if ( ! is_admin() && $this->get_option( 'link_thumbnail' ) ) {
 					$full_img_url = wp_get_attachment_image_url( $attachment_id, 'full' );
 					$img          = '<a href="' . esc_url( $full_img_url ) . '">' . $img . '</a>';
+					$img          = $this->activate_lightbox( $img );
 				}
 
 				$attachment_content = '<p class="dco-attachment dco-image-attachment">' . $img . '</p>';
@@ -198,6 +199,44 @@ class DCO_CA_Base {
 		}
 
 		return 'misc';
+	}
+
+	/**
+	 * Adds compatibility with lightbox plugins.
+	 *
+	 * Supports:
+	 *  - Simple Lightbox
+	 *  - Easy FancyBox
+	 *  - Responsive Lightbox & Gallery
+	 *  - FooBox Image Lightbox WordPress Plugin
+	 *  - FancyBox for WordPress
+	 *
+	 * @since 1.4.0
+	 *
+	 * @param string $img The image markup.
+	 * @return string The image markup with lightbox support.
+	 */
+	public function activate_lightbox( $img ) {
+		$comment_id = get_comment_ID();
+
+		// Responsive Lightbox & Gallery 2.2.2.
+		if ( function_exists( 'Responsive_Lightbox' ) ) {
+			$selector = Responsive_Lightbox()->options['settings']['selector'];
+			$rel      = $selector . '-gallery-' . $comment_id;
+			$img      = str_replace( '<a', '<a data-rel="' . $rel . '"', $img );
+		}
+
+		// Simple Lightbox 2.8.1.
+		if ( function_exists( 'slb_activate' ) ) {
+			$img = slb_activate( $img, $comment_id );
+		}
+
+		// FooBox Image Lightbox WordPress Plugin 2.7.8.
+		if ( class_exists( 'FooBox' ) ) {
+			$img = str_replace( '<a', '<a class="foobox"', $img );
+		}
+
+		return $img;
 	}
 
 	/**
