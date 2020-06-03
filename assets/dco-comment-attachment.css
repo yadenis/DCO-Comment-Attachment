@@ -1,3 +1,7 @@
 .dco-image-attachment {
 	line-height: 0;
 }
+
+.comment-form-attachment span {
+	display: block;
+}
