@@ -115,13 +115,9 @@ class DCO_CA extends DCO_CA_Base {
 		ob_start();
 		?>
 		<p class="comment-form-attachment">
-			<span class="comment-form-attachment__fields">
-				<?php
-				$this->form_element( 'label' );
-				$this->form_element( 'input' );
-				?>
-			</span>
 			<?php
+			$this->form_element( 'label' );
+			$this->form_element( 'input' );
 			$this->form_element( 'upload-size' );
 			$this->form_element( 'file-types' );
 			?>
@@ -209,7 +205,7 @@ class DCO_CA extends DCO_CA_Base {
 				 *                       file size form element.
 				 * @param string $max_upload_size The max upload file size with format.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_upload_size', '<br>' . ob_get_clean(), $max_upload_size );
+				$markup = apply_filters( 'dco_ca_form_element_upload_size', ob_get_clean(), $max_upload_size );
 				break;
 			case 'file-types':
 				ob_start();
@@ -233,7 +229,7 @@ class DCO_CA extends DCO_CA_Base {
 				 *                       types list form element.
 				 * @param string $types The file types list allowed for upload.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_file_types', '<br>' . ob_get_clean(), $types );
+				$markup = apply_filters( 'dco_ca_form_element_file_types', ob_get_clean(), $types );
 				break;
 		}
 
