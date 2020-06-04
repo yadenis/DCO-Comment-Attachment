@@ -118,7 +118,7 @@ class DCO_CA extends DCO_CA_Base {
 				ob_start();
 				$required = $this->get_option( 'required_attachment' );
 				?>
-				<label for="attachment">
+				<label class="comment-form-attachment__label" for="attachment">
 					<?php
 					esc_html_e( 'Attachment', 'dco-comment-attachment' );
 					if ( $required ) {
@@ -141,7 +141,7 @@ class DCO_CA extends DCO_CA_Base {
 				ob_start();
 				$name = $this->get_upload_field_name();
 				?>
-				<input id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file" />
+				<input class="comment-form-attachment__input" id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file" />
 				<?php
 				/**
 				 * Filters the input form element markup.
@@ -156,9 +156,14 @@ class DCO_CA extends DCO_CA_Base {
 			case 'upload-size':
 				ob_start();
 				$max_upload_size = $this->get_max_upload_size( true );
-				/* translators: %s: the maximum allowed upload file size */
-				printf( esc_html__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ), esc_html( $max_upload_size ) );
-
+				?>
+				<span class="comment-form-attachment__file-size-notice">
+					<?php
+					/* translators: %s: the maximum allowed upload file size */
+					printf( esc_html__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ), esc_html( $max_upload_size ) );
+					?>
+				</span>
+				<?php
 				/**
 				 * Filters the maximum upload file size form element markup.
 				 *
@@ -168,16 +173,21 @@ class DCO_CA extends DCO_CA_Base {
 				 *                       file size form element.
 				 * @param string $max_upload_size The max upload file size with format.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_upload_size', '<br>' . ob_get_clean(), $max_upload_size );
+				$markup = apply_filters( 'dco_ca_form_element_upload_size', ob_get_clean(), $max_upload_size );
 				break;
 			case 'file-types':
 				ob_start();
 				$this->enable_filter_upload();
 				$types = $this->get_allowed_file_types( 'html' );
 				$this->disable_filter_upload();
-				/* translators: %s: the allowed file types list */
-				printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), wp_kses_data( $types ) );
-
+				?>
+				<span class="comment-form-attachment__file-types-notice">
+					<?php
+					/* translators: %s: the allowed file types list */
+					printf( esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ), wp_kses_data( $types ) );
+					?>
+				</span>
+				<?php
 				/**
 				 * Filters the allowed file types list form element markup.
 				 *
@@ -187,7 +197,7 @@ class DCO_CA extends DCO_CA_Base {
 				 *                       types list form element.
 				 * @param string $types The file types list allowed for upload.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_file_types', '<br>' . ob_get_clean(), $types );
+				$markup = apply_filters( 'dco_ca_form_element_file_types', ob_get_clean(), $types );
 				break;
 			case 'autoembed-links-notification':
 				ob_start();
