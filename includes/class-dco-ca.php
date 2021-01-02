@@ -87,7 +87,7 @@ class DCO_CA extends DCO_CA_Base {
 			$this->form_element( 'input' );
 			$this->form_element( 'upload-size' );
 			$this->form_element( 'file-types' );
-			$this->form_element( 'autoembed-links-notification' );
+			$this->form_element( 'autoembed-links' );
 			?>
 		</p>
 		<?php
@@ -200,6 +200,9 @@ class DCO_CA extends DCO_CA_Base {
 				$markup = apply_filters( 'dco_ca_form_element_file_types', ob_get_clean(), $types );
 				break;
 			case 'autoembed-links-notification':
+				_deprecated_argument( __FUNCTION__, esc_html__( 'DCO Comment Attachment 2.0.0', 'dco-comment-attachment' ), esc_html__( 'The type "autoembed-links-notification" is deprecated. Use "autoembed-links" instead.', 'dco-comment-attachment' ) );
+				// No break for deprecated compatibility.
+			case 'autoembed-links':
 				ob_start();
 				$autoembed_links = $this->get_option( 'autoembed_links' );
 				if ( $autoembed_links ) :
@@ -219,7 +222,11 @@ class DCO_CA extends DCO_CA_Base {
 				 *                       notification list form element.
 				 * @param bool $autoembed_links Whether the links is automatically embedded.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_autoembed_links_notification', ob_get_clean(), $autoembed_links );
+				if ( has_filter( 'dco_ca_form_element_autoembed_links_notification' ) ) {
+					$markup = apply_filters_deprecated( 'dco_ca_form_element_autoembed_links_notification', array( ob_get_clean(), $autoembed_links ), 'DCO Comment Attachment 2.0.0', 'dco_ca_form_element_autoembed_links' );
+				} else {
+					$markup = apply_filters( 'dco_ca_form_element_autoembed_links', ob_get_clean(), $autoembed_links );
+				}
 				break;
 		}
 
