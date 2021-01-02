@@ -81,13 +81,3 @@
 .dco-file-type-items-more.show {
 	display: block;
 }
-
-.dco-ca-pro label,
-.dco-ca-pro .description,
-.dco-ca-pro input {
-	color: #999;
-}
-
-.dco-ca-pro input {
-	border-color: #999;
-}

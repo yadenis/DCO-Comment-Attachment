@@ -202,9 +202,13 @@ class DCO_CA extends DCO_CA_Base {
 			case 'autoembed-links-notification':
 				ob_start();
 				$autoembed_links = $this->get_option( 'autoembed_links' );
-				if ( $autoembed_links ) {
-					esc_html_e( 'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.', 'dco-comment-attachment' );
-				}
+				if ( $autoembed_links ) :
+					?>
+					<span class="comment-form-attachment__autoembed-links-notice">
+						<?php esc_html_e( 'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.', 'dco-comment-attachment' ); ?>
+					</span>
+					<?php
+				endif;
 
 				/**
 				 * Filters the autoembed links notification form element markup.
@@ -215,7 +219,7 @@ class DCO_CA extends DCO_CA_Base {
 				 *                       notification list form element.
 				 * @param bool $autoembed_links Whether the links is automatically embedded.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_autoembed_links_notification', '<br>' . ob_get_clean(), $autoembed_links );
+				$markup = apply_filters( 'dco_ca_form_element_autoembed_links_notification', ob_get_clean(), $autoembed_links );
 				break;
 		}
 
@@ -225,8 +229,9 @@ class DCO_CA extends DCO_CA_Base {
 		 * @since 1.1.1
 		 *
 		 * @param string $markup HTML markup for the form element.
+		 * @param string $type The type of the form element.
 		 */
-		echo apply_filters( 'dco_ca_form_element', $markup ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo apply_filters( 'dco_ca_form_element', $markup, $type ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**

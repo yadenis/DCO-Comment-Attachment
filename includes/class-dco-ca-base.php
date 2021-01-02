@@ -141,7 +141,7 @@ class DCO_CA_Base {
 					/**
 					* Filters the attachment image size for the admin panel.
 					*
-					* @since 1.4.0
+					* @since 2.0.0
 					*
 					* @param string $size The thumbnail size of the attachment image.
 					*/
@@ -211,7 +211,7 @@ class DCO_CA_Base {
 	 *  - FooBox Image Lightbox WordPress Plugin
 	 *  - FancyBox for WordPress
 	 *
-	 * @since 1.4.0
+	 * @since 2.0.0
 	 *
 	 * @param string $img The image markup.
 	 * @return string The image markup with lightbox support.
@@ -389,7 +389,7 @@ class DCO_CA_Base {
 			*
 			* The dynamic portion of the hook name, `$name`, refers to the option name.
 			*
-			* @since 1.4.0
+			* @since 2.0.0
 			*
 			* @param mixed $value Value of the option.
 			*/
