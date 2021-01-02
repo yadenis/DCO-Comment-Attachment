@@ -64,6 +64,13 @@ class DCO_CA extends DCO_CA_Base {
 		if ( $this->is_comments_used() ) {
 			if ( $this->is_attachment_field_enabled() ) {
 				wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
+				wp_localize_script(
+					'dco-comment-attachment',
+					'dco_ca',
+					array(
+						'commenting_form_not_found' => __( 'The commenting form not found.', 'dco-comment-attachment' ),
+					)
+				);
 			}
 
 			wp_enqueue_style( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.css', array(), DCO_CA_VERSION );
