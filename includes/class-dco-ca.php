@@ -465,12 +465,6 @@ class DCO_CA extends DCO_CA_Base {
 				$attachments_content = array_diff( $attachments_content, $not_images );
 
 				$gallery_start = '<div class="dco-attachment-gallery">';
-
-				// For "FooBox Image Lightbox WordPress Plugin 2.7.8" support.
-				if ( class_exists( 'FooBox' ) ) {
-					$gallery_start = str_replace( 'dco-attachment-gallery', 'dco-attachment-gallery foobox', $gallery_start );
-				}
-
 				array_unshift( $attachments_content, $gallery_start );
 				$attachments_content[] = '</div>';
 				$attachments_content   = array_merge( $attachments_content, $not_images );

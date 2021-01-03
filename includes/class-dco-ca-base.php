@@ -213,11 +213,11 @@ class DCO_CA_Base {
 	 * Adds compatibility with lightbox plugins.
 	 *
 	 * Supports:
-	 *  - Simple Lightbox
-	 *  - Easy FancyBox
-	 *  - Responsive Lightbox & Gallery
-	 *  - FooBox Image Lightbox WordPress Plugin
-	 *  - FancyBox for WordPress
+	 *  - Simple Lightbox 2.8.1
+	 *  - Easy FancyBox 1.8.18
+	 *  - Responsive Lightbox & Gallery 2.3.1
+	 *  - FooBox Image Lightbox 2.7.8
+	 *  - FancyBox for WordPress 3.3.0
 	 *
 	 * @since 2.0.0
 	 *
@@ -227,19 +227,21 @@ class DCO_CA_Base {
 	public function activate_lightbox( $img ) {
 		$comment_id = get_comment_ID();
 
-		// Simple Lightbox 2.8.1.
+		// Simple Lightbox.
 		if ( function_exists( 'slb_activate' ) ) {
 			$img = slb_activate( $img, $comment_id );
-		}
-
-		// Responsive Lightbox & Gallery 2.2.2.
-		if ( function_exists( 'Responsive_Lightbox' ) ) {
+			// Responsive Lightbox & Gallery.
+		} elseif ( function_exists( 'Responsive_Lightbox' ) ) {
 			$selector = Responsive_Lightbox()->options['settings']['selector'];
 			$rel      = $selector . '-gallery-' . $comment_id;
 			$img      = str_replace( '<a', '<a data-rel="' . $rel . '"', $img );
+			// Other lightbox plugins.
+		} else {
+			$rel = 'dco-ca-gallery-' . $comment_id;
+			$img = str_replace( '<a', '<a rel="' . $rel . '"', $img );
 		}
-
-		// FooBox Image Lightbox WordPress Plugin 2.7.8.
+		
+		// FooBox Image Lightbox.
 		if ( class_exists( 'FooBox' ) ) {
 			$img = str_replace( '<a', '<a class="foobox"', $img );
 		}

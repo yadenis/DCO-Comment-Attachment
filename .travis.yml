@@ -27,10 +27,6 @@ matrix:
       env: WP_VERSION=latest
     - php: 5.6
       env: WP_VERSION=4.6
-    - php: 5.5
-      env: WP_VERSION=5.1
-    - php: 5.4
-      env: WP_VERSION=5.1
  
 before_install:
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
@@ -46,6 +42,8 @@ script:
   - |
     # If we've set the $WP_TRAVISCI variable to run PHPCS, do that instead
     if [[ "$WP_TRAVISCI" == "phpcs" ]]; then
+      composer global require wp-coding-standards/wpcs
+      composer global require phpcompatibility/php-compatibility
       ./vendor/bin/phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs,$HOME/.composer/vendor/phpcompatibility/php-compatibility
       ./vendor/bin/phpcs
     fi
