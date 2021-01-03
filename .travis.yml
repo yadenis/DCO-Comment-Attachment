@@ -42,8 +42,5 @@ script:
   - |
     # If we've set the $WP_TRAVISCI variable to run PHPCS, do that instead
     if [[ "$WP_TRAVISCI" == "phpcs" ]]; then
-      composer global require wp-coding-standards/wpcs
-      composer global require phpcompatibility/php-compatibility
-      ./vendor/bin/phpcs --config-set installed_paths $HOME/.composer/vendor/wp-coding-standards/wpcs,$HOME/.composer/vendor/phpcompatibility/php-compatibility
       ./vendor/bin/phpcs
     fi

@@ -1,7 +1,11 @@
 {
-    "require-dev": {
-        "squizlabs/php_codesniffer": "*",
+	"require-dev": {
+		"squizlabs/php_codesniffer": "*",
 		"wp-coding-standards/wpcs": "*",
 		"phpcompatibility/php-compatibility": "*"
-    }
+	},
+	"scripts": {
+		"post-install-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility",
+		"post-update-cmd": "\"vendor/bin/phpcs\" --config-set installed_paths vendor/wp-coding-standards/wpcs,vendor/phpcompatibility/php-compatibility"
+	}
 }
