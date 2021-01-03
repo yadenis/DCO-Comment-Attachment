@@ -46,9 +46,7 @@
 				$.post( ajaxurl, data, function ( response ) {
 					if ( response.success ) {
 						const $comment = $this.closest( '.comment' );
-						const $attachment = $comment.children(
-							'.dco-attachment'
-						);
+						const $attachment = $comment.find( '.dco-attachment' );
 						$attachment.remove();
 						$this.remove();
 					}
@@ -90,6 +88,9 @@
 
 					if ( $removeAttachment.hasClass( 'dco-hidden' ) ) {
 						$wrap.trigger( 'dco_ca_before_adding' );
+
+						const $clone = $wrap.clone( true, true );
+						$( '#dco-comment-attachment .inside' ).append( $clone );
 					} else {
 						$wrap.trigger( 'dco_ca_before_replacing' );
 					}
@@ -177,18 +178,7 @@
 			function ( event ) {
 				event.preventDefault();
 
-				const $this = $( this );
-				$wrap = $this.closest( '.dco-attachment-wrap' );
-
-				$wrap.find( '.dco-attachment-id' ).val( 0 );
-				$wrap.find( '.dco-attachment' ).addClass( 'dco-hidden' );
-				$wrap.find( '.dco-attachment-notice' ).addClass( 'dco-hidden' );
-				$this.addClass( 'dco-hidden' );
-
-				$wrap
-					.find( '.dco-set-attachment' )
-					.text( dcoCA.add_attachment_label ); // eslint-disable-line no-undef
-
+				$wrap = $( this ).closest( '.dco-attachment-wrap' ).remove();
 				$wrap.trigger( 'dco_ca_removed' );
 			}
 		);

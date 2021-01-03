@@ -189,7 +189,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function add_attachment_metabox() {
-		add_meta_box( 'dco-comment-attachment', esc_html__( 'Attachment', 'dco-comment-attachment' ), array( $this, 'render_attachment_metabox' ), 'comment', 'normal' );
+		add_meta_box( 'dco-comment-attachment', esc_html__( 'Attachments', 'dco-comment-attachment' ), array( $this, 'render_attachment_metabox' ), 'comment', 'normal' );
 	}
 
 	/**
@@ -198,26 +198,32 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function render_attachment_metabox() {
+		if ( $this->has_attachment() ) :
+			$attachment_id = $this->get_attachment_id();
+			foreach ( (array) $attachment_id as $attach_id ) :
+				?>
+				<div class="dco-attachment-wrap">
+					<?php
+					echo $this->get_attachment_preview( $attach_id ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+					?>
+					<div class="dco-attachment-notice dco-hidden"><?php echo wp_kses_data( __( 'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.', 'dco-comment-attachment' ) ); ?></div>
+					<div class="dco-attachment-actions">
+						<a href="#" class="button dco-set-attachment"><?php esc_html_e( 'Replace Attachment', 'dco-comment-attachment' ); ?></a>
+						<a href="#" class="dco-remove-attachment"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
+					</div>
+					<input type="hidden" name="dco_attachment_id[]" class="dco-attachment-id" value="<?php echo (int) $attach_id; ?>">
+				</div>
+				<?php
+			endforeach;
+		endif;
 		?>
 		<div class="dco-attachment-wrap">
-			<?php
-			$btn_text     = __( 'Add Attachment', 'dco-comment-attachment' );
-			$remove_class = ' dco-hidden';
-
-			if ( $this->has_attachment() ) {
-				$btn_text     = __( 'Replace Attachment', 'dco-comment-attachment' );
-				$remove_class = '';
-
-				$attachment_id = $this->get_attachment_id();
-				echo $this->get_attachment_preview( $attachment_id ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
-			}
-			?>
 			<div class="dco-attachment-notice dco-hidden"><?php echo wp_kses_data( __( 'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.', 'dco-comment-attachment' ) ); ?></div>
 			<div class="dco-attachment-actions">
-				<a href="#" class="button dco-set-attachment"><?php echo esc_html( $btn_text ); ?></a>
-				<a href="#" class="dco-remove-attachment<?php echo esc_attr( $remove_class ); ?>"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
+				<a href="#" class="button dco-set-attachment"><?php echo esc_html_e( 'Add Attachment', 'dco-comment-attachment' ); ?></a>
+				<a href="#" class="dco-remove-attachment dco-hidden"><?php esc_html_e( 'Remove Attachment', 'dco-comment-attachment' ); ?></a>
 			</div>
-			<input type="hidden" name="dco_attachment_id" class="dco-attachment-id" value="<?php echo (int) $attachment_id; ?>">
+			<input type="hidden" name="dco_attachment_id[]" class="dco-attachment-id" value="">
 		</div>
 		<?php
 	}
@@ -257,8 +263,13 @@ class DCO_CA_Admin extends DCO_CA_Base {
 
 		check_admin_referer( 'update-comment_' . $comment_id );
 
-		$attachment_id = isset( $_POST['dco_attachment_id'] ) ? (int) $_POST['dco_attachment_id'] : 0;
+		$attachment_id = isset( $_POST['dco_attachment_id'] ) ? array_map( 'intval', $_POST['dco_attachment_id'] ) : array();
 		if ( $attachment_id ) {
+			// We need to delete the last empty element, because it's used
+			// as a placeholder in the attachments edit form.
+			// @see DCO_CA_Admin::render_attachment_metabox.
+			array_pop( $attachment_id );
+
 			$this->assign_attachment( $comment_id, $attachment_id );
 		} else {
 			$this->unassign_attachment( $comment_id );
@@ -282,8 +293,14 @@ class DCO_CA_Admin extends DCO_CA_Base {
 
 		$attachment_id = $this->get_attachment_id( $comment_id );
 
-		if ( $delete && ! wp_delete_attachment( $attachment_id ) ) {
-			return false;
+		if ( $delete ) {
+			$result = true;
+			foreach ( (array) $attachment_id as $attach_id ) {
+				if ( ! wp_delete_attachment( $attach_id ) ) {
+					$result = false;
+				}
+			}
+			return $result;
 		}
 
 		if ( ! $this->unassign_attachment( $comment_id ) ) {

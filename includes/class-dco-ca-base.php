@@ -95,12 +95,14 @@ class DCO_CA_Base {
 			return false;
 		}
 
-		// Check the attachment exists.
-		if ( ! wp_get_attachment_url( $attachment_id ) ) {
-			return false;
+		// Check that at least one attachment exists.
+		foreach ( (array) $attachment_id as $attach_id ) {
+			if ( wp_get_attachment_url( $attach_id ) ) {
+				return true;
+			}
 		}
 
-		return true;
+		return false;
 	}
 
 	/**
@@ -114,6 +116,12 @@ class DCO_CA_Base {
 	 */
 	public function assign_attachment( $comment_id, $attachment_id ) {
 		$meta_key = $this->get_attachment_meta_key();
+
+		// Compatibility with 1.x version.
+		if ( is_array( $attachment_id ) && 1 === count( $attachment_id ) ) {
+			$attachment_id = current( $attachment_id );
+		}
+
 		return update_comment_meta( $comment_id, $meta_key, $attachment_id );
 	}
 
@@ -139,12 +147,12 @@ class DCO_CA_Base {
 				$thumbnail_size = $this->get_option( 'thumbnail_size' );
 				if ( is_admin() ) {
 					/**
-					* Filters the attachment image size for the admin panel.
-					*
-					* @since 2.0.0
-					*
-					* @param string $size The thumbnail size of the attachment image.
-					*/
+					 * Filters the attachment image size for the admin panel.
+					 *
+					 * @since 2.0.0
+					 *
+					 * @param string $size The thumbnail size of the attachment image.
+					 */
 					$thumbnail_size = apply_filters( 'dco_ca_admin_thumbnail_size', 'medium' );
 				}
 
@@ -219,16 +227,16 @@ class DCO_CA_Base {
 	public function activate_lightbox( $img ) {
 		$comment_id = get_comment_ID();
 
+		// Simple Lightbox 2.8.1.
+		if ( function_exists( 'slb_activate' ) ) {
+			$img = slb_activate( $img, $comment_id );
+		}
+
 		// Responsive Lightbox & Gallery 2.2.2.
 		if ( function_exists( 'Responsive_Lightbox' ) ) {
 			$selector = Responsive_Lightbox()->options['settings']['selector'];
 			$rel      = $selector . '-gallery-' . $comment_id;
 			$img      = str_replace( '<a', '<a data-rel="' . $rel . '"', $img );
-		}
-
-		// Simple Lightbox 2.8.1.
-		if ( function_exists( 'slb_activate' ) ) {
-			$img = slb_activate( $img, $comment_id );
 		}
 
 		// FooBox Image Lightbox WordPress Plugin 2.7.8.
@@ -385,14 +393,14 @@ class DCO_CA_Base {
 	public function get_option( $name ) {
 		if ( isset( $this->options[ $name ] ) ) {
 			/**
-			* Filters the value of the plugin option.
-			*
-			* The dynamic portion of the hook name, `$name`, refers to the option name.
-			*
-			* @since 2.0.0
-			*
-			* @param mixed $value Value of the option.
-			*/
+			 * Filters the value of the plugin option.
+			 *
+			 * The dynamic portion of the hook name, `$name`, refers to the option name.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param mixed $value Value of the option.
+			 */
 			return apply_filters( "dco_ca_get_option_{$name}", $this->options[ $name ] );
 		}
 
