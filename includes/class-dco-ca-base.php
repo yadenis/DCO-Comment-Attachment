@@ -240,7 +240,7 @@ class DCO_CA_Base {
 			$rel = 'dco-ca-gallery-' . $comment_id;
 			$img = str_replace( '<a', '<a rel="' . $rel . '"', $img );
 		}
-		
+
 		// FooBox Image Lightbox.
 		if ( class_exists( 'FooBox' ) ) {
 			$img = str_replace( '<a', '<a class="foobox"', $img );

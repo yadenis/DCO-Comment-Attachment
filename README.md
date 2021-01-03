@@ -3,18 +3,22 @@
 DCO Comment Attachment allows your visitors to attach images, videos, audios, documents and other files with their comments. They will also be able to automatically embed links from Youtube, Facebook, Twitter and other services in the comment text.
 
 With plugin settings you can:
-- Select an attachment image size from thumbnails available in your WordPress install.
-- Link thumbnail to full-size image.
 - Limit the maximum file upload size.
 - Make an attachment required.
 - Specify whether the attachment will be embedded or displayed as a link.
 - Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
 - Attach an attachment to a commented post.
+- Select an attachment image size from thumbnails available in your WordPress install.
+- Link thumbnail to full-size image with lightbox plugins support (see FAQ for details).
+- Enable/Disable multiple upload.
+- Combine images to gallery.
+- Select an attachment image size for the images gallery.
 - Restrict attachment file types.
 - Decide who will be able to upload attachments: all users or only logged users.
 
 You can also:
 - Add, replace or delete an attachment from a comment on Edit Comment screen.
+- Attach an unlimited number of attachments to the comment in the admin panel.
 - Delete an attachment on Comments screen.
 
 Attachments are uploaded to the WordPress Media Library and deleted along with the comment (if this is set in the settings).
@@ -22,11 +26,33 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-1.3.1
+2.0.0
 
-[![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=dev)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
+[![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
+
+# Frequently Asked Questions
+
+## What lightbox plugins are supported?
+ 
+DCO Comment Attachment tested with:
+- Simple Lightbox
+- Easy FancyBox
+- Responsive Lightbox & Gallery
+- FooBox Image Lightbox
+- FancyBox for WordPress
+
+Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachment/issues) if you need integration with another plugin.
 
 # Changelog
+## 2.0.0
+- Added the feature to upload multiple files.
+- Added support for some lightbox plugins (see FAQ for details).
+- Added additional markup to the form elements (thank you @matthewmcvickar)
+- Added error handling for JavaScript on the frontend (thank you @mrbalkon for the suggestion)
+- Improved Settings page
+- Filter `dco_ca_form_element_autoembed_links_notification` is deprecated. Use `dco_ca_form_element_autoembed_links` instead.
+- Type `autoembed-links-notification` for form_element function is deprecated. Use `autoembed-links` instead.
+
 ## 1.3.1
 - Fixed image embed bug when attachment url has get parameters
 

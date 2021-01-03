@@ -9,9 +9,6 @@
     "check_js": "wp-scripts lint-js assets/*.js",
     "fix_js": "wp-scripts lint-js assets/*.js --fix"
   },
-  "directories": {
-    "test": "tests"
-  },
   "devDependencies": {
     "@wordpress/scripts": "^12.6.0"
   },
