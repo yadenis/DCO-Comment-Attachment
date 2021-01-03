@@ -21,7 +21,7 @@ With plugin settings you can:
 * Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
 * Attach an attachment to a commented post.
 * Select an attachment image size from thumbnails available in your WordPress install.
-* Link thumbnail to full-size image with lightbox plugins support (see FAQ for details).
+* Link thumbnail to full-size image with lightbox plugins support (see [FAQ](#faq) for details).
 * Enable/Disable multiple upload.
 * Combine images to gallery.
 * Select an attachment image size for the images gallery.

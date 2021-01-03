@@ -9,7 +9,7 @@ With plugin settings you can:
 - Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
 - Attach an attachment to a commented post.
 - Select an attachment image size from thumbnails available in your WordPress install.
-- Link thumbnail to full-size image with lightbox plugins support (see FAQ for details).
+- Link thumbnail to full-size image with lightbox plugins support (see [FAQ](#faq) for details).
 - Enable/Disable multiple upload.
 - Combine images to gallery.
 - Select an attachment image size for the images gallery.
@@ -30,7 +30,7 @@ DCO Comment Attachment is also available on [WordPress.org](https://wordpress.or
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
-# Frequently Asked Questions
+# FAQ
 
 ## What lightbox plugins are supported?
  
