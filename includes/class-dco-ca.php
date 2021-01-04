@@ -669,6 +669,13 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function get_gallery_image_size( $size ) {
 		if ( 'dco_ca_admin_thumbnail_size' === current_filter() ) {
+			/**
+			* Filters the attachment image size in the gallery for the admin panel.
+			*
+			* @since 2.0.0
+			*
+			* @param string $size The thumbnail size of the attachment image.
+			*/
 			return apply_filters( 'dco_ca_admin_gallery_size', 'thumbnail' );
 		}
 
