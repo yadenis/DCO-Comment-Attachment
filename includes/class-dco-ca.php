@@ -669,7 +669,7 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function get_gallery_image_size( $size ) {
 		if ( 'dco_ca_admin_thumbnail_size' === current_filter() ) {
-			return apply_filters( 'dco_ca_pro_admin_gallery_size', 'thumbnail' );
+			return apply_filters( 'dco_ca_admin_gallery_size', 'thumbnail' );
 		}
 
 		if ( 'dco_ca_get_option_thumbnail_size' === current_filter() && $this->get_option( 'combine_images' ) ) {
