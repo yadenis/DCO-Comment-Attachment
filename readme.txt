@@ -97,3 +97,12 @@ Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comme
 
 = 1.0.0 =
 * Initial Release
+
+== Screenshots ==
+ 
+1. Examples of attachment types.
+2. A commenting form with an attachment field.
+3. List of comments in the admin panel.
+4. Screen for editing a comment in the admnin panel.
+5. Plugin settings page.
+6. An example of a lightbox with the Simple Lightbox plugin.
