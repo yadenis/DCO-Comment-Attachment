@@ -10,6 +10,7 @@
  * @since 1.0.0
  *
  * Plugin Name: DCO Comment Attachment
+ * Plugin URI: https://denisco.pro/dco-comment-attachment/
  * Description: Allows your visitors to attach files with their comments
  * Version: 2.0.0
  * Author: Denis Yanchevskiy
