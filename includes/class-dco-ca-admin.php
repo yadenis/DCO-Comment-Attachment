@@ -45,6 +45,8 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		add_action( 'add_meta_boxes_comment', array( $this, 'add_attachment_metabox' ) );
 		add_action( 'edit_comment', array( $this, 'update_attachment' ) );
 		add_filter( 'plugin_action_links_' . DCO_CA_BASENAME, array( $this, 'add_plugin_links' ) );
+		add_filter( 'comment_notification_text', array( $this, 'add_attachments_to_new_comment_email' ), 10, 2 );
+		add_filter( 'comment_moderation_text', array( $this, 'add_attachments_to_new_comment_email' ), 10, 2 );
 
 		if ( $this->get_option( 'delete_with_comment' ) ) {
 			add_action( 'delete_comment', array( $this, 'delete_attachment' ) );
@@ -321,6 +323,29 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	public function unassign_attachment( $comment_id ) {
 		$meta_key = $this->get_attachment_meta_key();
 		return delete_comment_meta( $comment_id, $meta_key );
+	}
+
+	/**
+	 * Adds links to attached attachments to the new comment notification email.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param string $notify_message The comment notification email text.
+	 * @param int    $comment_id     Comment ID.
+	 * @return string The comment notification email text with links to attached attachments.
+	 */
+	public function add_attachments_to_new_comment_email( $notify_message, $comment_id ) {
+		$attachment_id = $this->get_attachment_id( $comment_id );
+		if ( ! $attachment_id ) {
+			return $notify_message;
+		}
+
+		$attachments_list = "\r\n" . __( 'Attached attachments:', 'dco-comment-attachment' );
+		foreach ( (array) $attachment_id as $attach_id ) {
+			$attachments_list .= "\r\n- " . wp_get_attachment_url( $attach_id );
+		}
+
+		return $notify_message . $attachments_list;
 	}
 
 }

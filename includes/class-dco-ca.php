@@ -41,7 +41,7 @@ class DCO_CA extends DCO_CA_Base {
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
-			add_action( 'comment_post', array( $this, 'save_attachment' ), 10, 3 );
+			add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
