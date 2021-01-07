@@ -554,7 +554,7 @@ class DCO_CA extends DCO_CA_Base {
 	 * @since 1.1.0
 	 */
 	public function enable_filter_upload() {
-		add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
+		add_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ), 999 );
 	}
 
 	/**
@@ -563,7 +563,7 @@ class DCO_CA extends DCO_CA_Base {
 	 * @since 1.1.0
 	 */
 	public function disable_filter_upload() {
-		remove_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ) );
+		remove_filter( 'upload_mimes', array( $this, 'filter_upload_mimes' ), 999 );
 	}
 
 	/**
