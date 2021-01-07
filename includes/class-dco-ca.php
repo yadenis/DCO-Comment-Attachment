@@ -370,7 +370,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Determines if the comment will be automatically approved or manual moderation is required.
 	 *
-	 * @since x.x.x
+	 * @since 2.1.0
 	 *
 	 * @param int|string|WP_Error $approved The approval status. Accepts 1, 0, 'spam', 'trash',
 	 *                                      or WP_Error.

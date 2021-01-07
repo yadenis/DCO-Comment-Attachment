@@ -4,7 +4,7 @@ Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.donationalerts.com/r/denisco
@@ -58,6 +58,11 @@ Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comme
 
 == Changelog ==
 
+= 2.1.0 =
+* Added links to attached attachments to the new comment notification email.
+* Added the feature to force moderation comments with attachments.
+* Added compatible with SVG Support plugin.
+
 = 2.0.0 =
 * Added the feature to upload multiple files.
 * Added support for some lightbox plugins (see FAQ for details).
@@ -104,6 +109,6 @@ Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comme
 1. Examples of attachment types.
 2. A commenting form with an attachment field.
 3. List of comments in the admin panel.
-4. Screen for editing a comment in the admnin panel.
+4. Screen for editing a comment in the admin panel.
 5. Plugin settings page.
 6. An example of a lightbox with the Simple Lightbox plugin.

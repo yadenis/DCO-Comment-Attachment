@@ -328,7 +328,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Adds links to attached attachments to the new comment notification email.
 	 *
-	 * @since x.x.x
+	 * @since 2.1.0
 	 *
 	 * @param string $notify_message The comment notification email text.
 	 * @param int    $comment_id     Comment ID.

@@ -26,7 +26,7 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-2.0.0
+2.1.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
@@ -44,6 +44,11 @@ DCO Comment Attachment tested with:
 Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachment/issues) if you need integration with another plugin.
 
 # Changelog
+## 2.1.0
+- Added links to attached attachments to the new comment notification email.
+- Added the feature to force moderation comments with attachments.
+- Added compatible with SVG Support plugin.
+
 ## 2.0.0
 - Added the feature to upload multiple files.
 - Added support for some lightbox plugins (see FAQ for details).
