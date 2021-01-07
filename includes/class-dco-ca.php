@@ -41,6 +41,7 @@ class DCO_CA extends DCO_CA_Base {
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
+			add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
 			add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
 		}
 
@@ -364,6 +365,26 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		return false;
+	}
+
+	/**
+	 * Determines if the comment will be automatically approved or manual moderation is required.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int|string|WP_Error $approved The approval status. Accepts 1, 0, 'spam', 'trash',
+	 *                                      or WP_Error.
+	 * @return int|string|WP_Error Allowed comments return the approval status (0|1|'spam'|'trash').
+	 *                             Disallowed comments return a WP_Error.
+	 */
+	public function approve_comment( $approved ) {
+		$field_name = $this->get_upload_field_name();
+
+		if ( isset( $_FILES[ $field_name ] ) && $this->get_option( 'manually_moderation' ) ) {
+			$approved = 0;
+		}
+
+		return $approved;
 	}
 
 	/**

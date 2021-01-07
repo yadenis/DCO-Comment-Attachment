@@ -244,6 +244,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				),
 				'label_for' => false,
 			),
+			'manually_moderation'      => array(
+				'label'   => esc_html__( 'Manually moderate comments with attachments', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, all comments with attachments must be manually approved before they appear on the site.', 'dco-comment-attachment' ),
+				'section' => 'permissions',
+				'type'    => 'checkbox',
+				'default' => 0,
+			),
 			'delete_with_comment'      => array(
 				'label'   => esc_html__( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If unchecked, the attachment will be available in Media Library after the comment has been deleted.', 'dco-comment-attachment' ),
