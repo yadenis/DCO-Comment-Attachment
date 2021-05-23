@@ -164,6 +164,18 @@ class DCO_CA_Base {
 				}
 
 				$attachment_content = '<p class="dco-attachment dco-image-attachment">' . $img . '</p>';
+
+				/**
+				* Filters the HTML markup for the image attachment.
+				*
+				* @since 2.1.1
+				*
+				* @param string $attachment_content HTML markup for the attachment.
+				* @param int $attachment_id The attachment ID.
+				* @param string $thumbnail_size The thumbnail size of the attachment image.
+				*/
+				$attachment_content = apply_filters( 'dco_ca_get_attachment_preview_image', $attachment_content, $attachment_id, $thumbnail_size );
+
 				break;
 			case 'video':
 				$attachment_content = '<div class="dco-attachment dco-video-attachment">' . do_shortcode( '[video src="' . esc_url( $url ) . '"]' ) . '</div>';
@@ -175,6 +187,18 @@ class DCO_CA_Base {
 				$title              = get_the_title( $attachment_id );
 				$attachment_content = '<p class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></p>';
 		}
+
+		/**
+		* Filters the HTML markup for the attachment.
+		*
+		* @since 2.1.1
+		*
+		* @param string $attachment_content HTML markup for the attachment.
+		* @param int $attachment_id The attachment ID.
+		* @param string $embed_type The embed type (image, video, audio, misc)
+		*                           of the attachment.
+		*/
+		$attachment_content = apply_filters( 'dco_ca_get_attachment_preview', $attachment_content, $attachment_id, $embed_type );
 
 		return $attachment_content;
 	}
