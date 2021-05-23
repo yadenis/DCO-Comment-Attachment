@@ -4,7 +4,7 @@ Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
 Tested up to: 5.6
 Requires PHP: 5.6
-Stable tag: 2.1.0
+Stable tag: 2.1.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.donationalerts.com/r/denisco
@@ -58,6 +58,9 @@ DCO Comment Attachment tested with:
 Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comment-attachment/) on support forum if you need integration with another plugin.
 
 == Changelog ==
+
+= 2.1.1 =
+* Added new filters for the attachment markup customization: `dco_ca_get_attachment_preview` and `dco_ca_get_attachment_preview_image`.
 
 = 2.1.0 =
 * Added links to attached attachments to the new comment notification email.
