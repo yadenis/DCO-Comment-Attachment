@@ -15,6 +15,7 @@ With plugin settings you can:
 - Select an attachment image size for the images gallery.
 - Restrict attachment file types.
 - Decide who will be able to upload attachments: all users or only logged users.
+- Manually moderate comments with attachments.
 
 You can also:
 - Add, replace or delete an attachment from a comment on Edit Comment screen.
