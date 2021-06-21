@@ -159,7 +159,11 @@ class DCO_CA_Base {
 				$img = wp_get_attachment_image( $attachment_id, $thumbnail_size );
 				if ( ! is_admin() && $this->get_option( 'link_thumbnail' ) ) {
 					$full_img_url = wp_get_attachment_image_url( $attachment_id, 'full' );
-					$img          = '<a href="' . esc_url( $full_img_url ) . '">' . $img . '</a>';
+					$tab = '';
+					if ( $this->get_option( 'link_thumbnail_tab' ) ) {
+						$tab = ' target="_blank"';
+					}
+					$img          = '<a href="' . esc_url( $full_img_url ) . '" class="dco-attachment-link dco-image-attachment-link"' . $tab . '>' . $img . '</a>';
 					$img          = $this->activate_lightbox( $img );
 				}
 
