@@ -225,6 +225,13 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 0,
 			),
+			'link_thumbnail_tab'           => array(
+				'label'   => esc_html__( 'Open thumbnail link in a new tab?', 'dco-comment-attachment' ),
+				'desc'    => __( 'If checked, clicking on the thumbnail will open a full-size image in a new tab.', 'dco-comment-attachment' ),
+				'section' => 'images',
+				'type'    => 'checkbox',
+				'default' => 0,
+			),
 			'allowed_file_types'       => array(
 				'label'   => esc_html__( 'Allowed File Types', 'dco-comment-attachment' ),
 				'desc'    => '* — ' . __( 'available for embedding.', 'dco-comment-attachment' ) . '<br>** — ' . __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' ),
