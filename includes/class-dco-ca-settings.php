@@ -183,13 +183,6 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'type'    => 'checkbox',
 				'default' => 1,
 			),
-			'attach_to_post'           => array(
-				'label'   => esc_html__( 'Attach to commented post?', 'dco-comment-attachment' ),
-				'desc'    => __( 'If checked, the attachment will be attach to the commented post and can be filtered with the "Uploaded to this post" option.', 'dco-comment-attachment' ),
-				'section' => 'general',
-				'type'    => 'checkbox',
-				'default' => 1,
-			),
 			'enable_multiple_upload'   => array(
 				'label'   => esc_html__( 'Enable multiple upload?', 'dco-comment-attachment' ),
 				'desc'    => __( 'If checked, users will be able to upload multiple attachments at once.', 'dco-comment-attachment' ),

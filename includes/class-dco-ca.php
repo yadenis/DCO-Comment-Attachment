@@ -409,8 +409,16 @@ class DCO_CA extends DCO_CA_Base {
 			require_once ABSPATH . 'wp-admin/includes/media.php';
 		}
 
-		$post_id        = 0;
-		$attach_to_post = $this->get_option( 'attach_to_post' );
+		$post_id = 0;
+
+		/**
+		 * Filters whether to attach the attachment to the commented post.
+		 *
+		 * @since x.x.x
+		 *
+		 * @param bool $attach_to_post Whether to attach the attachment to the commented post.
+		 */
+		$attach_to_post = apply_filters( 'dco_ca_attach_to_post', true );
 		if ( $attach_to_post ) {
 			$post_id = $comment['comment_post_ID'];
 		}
