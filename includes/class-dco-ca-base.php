@@ -157,14 +157,30 @@ class DCO_CA_Base {
 				}
 
 				$img = wp_get_attachment_image( $attachment_id, $thumbnail_size );
-				if ( ! is_admin() && $this->get_option( 'link_thumbnail' ) ) {
-					$full_img_url = wp_get_attachment_image_url( $attachment_id, 'full' );
+
+				/**
+				 * 0 — No link
+				 * 1 — Link to a full-size image with lightbox plugins support
+				 * 2 — Link to a full-size image in a new tab
+				 * 3 — Link to the attachment page
+				 */
+				$link_thumbnail = (int) $this->get_option( 'link_thumbnail' );
+				if ( ! is_admin() && $link_thumbnail ) {
 					$tab = '';
-					if ( $this->get_option( 'link_thumbnail_tab' ) ) {
+					if ( 2 === $link_thumbnail ) {
 						$tab = ' target="_blank"';
 					}
-					$img          = '<a href="' . esc_url( $full_img_url ) . '" class="dco-attachment-link dco-image-attachment-link"' . $tab . '>' . $img . '</a>';
-					$img          = $this->activate_lightbox( $img );
+
+					if ( in_array( $link_thumbnail, array( 1, 2 ), true ) ) {
+						$link = wp_get_attachment_image_url( $attachment_id, 'full' );
+					} else {
+						$link = get_attachment_link( $attachment_id );
+					}
+
+					$img = '<a href="' . esc_url( $link ) . '" class="dco-attachment-link dco-image-attachment-link"' . $tab . '>' . $img . '</a>';
+					if ( 1 === $link_thumbnail ) {
+						$img = $this->activate_lightbox( $img );
+					}
 				}
 
 				$attachment_content = '<p class="dco-attachment dco-image-attachment">' . $img . '</p>';

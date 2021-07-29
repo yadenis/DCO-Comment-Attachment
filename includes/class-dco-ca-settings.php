@@ -212,18 +212,19 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				'default' => 'medium',
 			),
 			'link_thumbnail'           => array(
-				'label'   => esc_html__( 'Link thumbnail to full-size image?', 'dco-comment-attachment' ),
-				'desc'    => __( 'If checked, clicking on the thumbnail will open a full-size image.', 'dco-comment-attachment' ),
-				'section' => 'images',
-				'type'    => 'checkbox',
-				'default' => 0,
-			),
-			'link_thumbnail_tab'           => array(
-				'label'   => esc_html__( 'Open thumbnail link in a new tab?', 'dco-comment-attachment' ),
-				'desc'    => __( 'If checked, clicking on the thumbnail will open a full-size image in a new tab.', 'dco-comment-attachment' ),
-				'section' => 'images',
-				'type'    => 'checkbox',
-				'default' => 0,
+				'label'     => esc_html__( 'Link thumbnail?', 'dco-comment-attachment' ),
+				'desc'      => '',
+				'section'   => 'images',
+				'type'      => 'radio',
+				'default'   => 0,
+				'choices'   => array(
+					'0' => __( 'Not link', 'dco-comment-attachment' ),
+					/* translators: %s: the link to the plugin FAQ section on WordPress.org */
+					'1' => sprintf( __( 'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)', 'dco-comment-attachment' ), 'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F' ),
+					'2' => __( 'Link to a full-size image in a new tab', 'dco-comment-attachment' ),
+					'3' => __( 'Link to the attachment page', 'dco-comment-attachment' ),
+				),
+				'label_for' => false,
 			),
 			'allowed_file_types'       => array(
 				'label'   => esc_html__( 'Allowed File Types', 'dco-comment-attachment' ),
@@ -371,7 +372,8 @@ class DCO_CA_Settings extends DCO_CA_Base {
 		echo '<fieldset>';
 		$radios = array();
 		foreach ( $args['choices'] as $v => $choice ) {
-			$radios[] = '<label><input type="radio" name="' . esc_attr( $control_name ) . '" value="' . esc_attr( $v ) . '"' . checked( $v, $setting_val, false ) . '> ' . esc_html( $choice ) . '</label>';
+			$allowed_tags = array( 'a' => array( 'href' => true ) );
+			$radios[]     = '<label><input type="radio" name="' . esc_attr( $control_name ) . '" value="' . esc_attr( $v ) . '"' . checked( $v, $setting_val, false ) . '> ' . wp_kses( $choice, $allowed_tags ) . '</label>';
 		}
 		echo implode( '<br>', $radios ); // phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		echo '</fieldset>';
