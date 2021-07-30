@@ -22,6 +22,15 @@ defined( 'ABSPATH' ) || die;
 class DCO_CA extends DCO_CA_Base {
 
 	/**
+	 * Flag showing that attachment checked on upload.
+	 *
+	 * @since x.x.x
+	 *
+	 * @var bool $attachment_checked True if the attachment checked or false otherwise.
+	 */
+	private $attachment_checked = false;
+
+	/**
 	 * Constructor
 	 *
 	 * @since 1.0.0
@@ -41,8 +50,11 @@ class DCO_CA extends DCO_CA_Base {
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
 			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
-			add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
 			add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
+
+			if ( $this->get_option( 'manually_moderation' ) ) {
+				add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
+			}
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -323,6 +335,8 @@ class DCO_CA extends DCO_CA_Base {
 			}
 		}
 
+		$this->attachment_checked = true;
+
 		return $commentdata;
 	}
 
@@ -380,7 +394,7 @@ class DCO_CA extends DCO_CA_Base {
 	public function approve_comment( $approved ) {
 		$field_name = $this->get_upload_field_name();
 
-		if ( isset( $_FILES[ $field_name ] ) && $this->get_option( 'manually_moderation' ) ) {
+		if ( $this->is_attachment_checked() ) {
 			$approved = 0;
 		}
 
@@ -634,6 +648,17 @@ class DCO_CA extends DCO_CA_Base {
 		 *                   Default false.
 		 */
 		return ! apply_filters( 'dco_ca_disable_display_attachment', false );
+	}
+
+	/**
+	 * Checks that attachment checked on upload or not.
+	 *
+	 * @since x.x.x
+	 *
+	 * @return bool True if the attachment checked or false otherwise.
+	 */
+	public function is_attachment_checked() {
+		return $this->attachment_checked;
 	}
 
 	/**
