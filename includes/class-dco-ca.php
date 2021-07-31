@@ -108,6 +108,7 @@ class DCO_CA extends DCO_CA_Base {
 			$this->form_element( 'upload-size' );
 			$this->form_element( 'file-types' );
 			$this->form_element( 'autoembed-links' );
+			$this->form_element( 'drop-area' );
 			?>
 		</p>
 		<?php
@@ -253,6 +254,24 @@ class DCO_CA extends DCO_CA_Base {
 				} else {
 					$markup = apply_filters( 'dco_ca_form_element_autoembed_links', ob_get_clean(), $autoembed_links );
 				}
+				break;
+			case 'drop-area':
+				ob_start();
+				?>
+				<span class="comment-form-attachment__drop-area">
+					<span class="comment-form-attachment__drop-area-inner">
+						<?php echo $this->get_option( 'enable_multiple_upload' ) ? __( 'Drop files here', 'dco-comment-attachment' ) : __( 'Drop file here', 'dco-comment-attachment' ); ?>
+					</span>
+				</span>
+				<?php
+				/**
+				 * Filters the drop area form element markup.
+				 *
+				 * @since x.x.x
+				 *
+				 * @param string $markup HTML markup for the drop area form element.
+				 */
+				$markup = apply_filters( 'dco_ca_form_element_drop_area', ob_get_clean() );
 				break;
 		}
 
