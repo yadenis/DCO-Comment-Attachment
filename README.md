@@ -47,7 +47,7 @@ Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachm
 # Changelog
 ## 2.2.0
 - Added drag and drop support for attachment input field.
-- Improved "Link thumbnail?" option. Link to a new tab and an attachment page is now supported.
+- Improved "Link thumbnail?" option. Link to a new tab (thank you [@graylaurenm](https://github.com/graylaurenm)) and an attachment page is now supported.
 - Fixed bug with "Manually moderate comments with attachments" option.
 - Removed "Attach to commented post?" option from the Settings page. You can use the `dco_ca_attach_to_post` filter instead.
 
@@ -62,8 +62,8 @@ Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachm
 ## 2.0.0
 - Added the feature to upload multiple files.
 - Added support for some lightbox plugins (see FAQ for details).
-- Added additional markup to the form elements (thank you @matthewmcvickar)
-- Added error handling for JavaScript on the frontend (thank you @mrbalkon for the suggestion)
+- Added additional markup to the form elements (thank you [@matthewmcvickar](https://github.com/matthewmcvickar))
+- Added error handling for JavaScript on the frontend
 - Improved Settings page
 - Filter `dco_ca_form_element_autoembed_links_notification` is deprecated. Use `dco_ca_form_element_autoembed_links` instead.
 - Type `autoembed-links-notification` for form_element function is deprecated. Use `autoembed-links` instead.
