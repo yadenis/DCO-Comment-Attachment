@@ -7,9 +7,9 @@ With plugin settings you can:
 - Make an attachment required.
 - Specify whether the attachment will be embedded or displayed as a link.
 - Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
-- Attach an attachment to a commented post.
 - Select an attachment image size from thumbnails available in your WordPress install.
-- Link thumbnail to full-size image with lightbox plugins support (see [FAQ](#faq) for details).
+- Link a thumbnail to a full-size image with lightbox plugins support (see [FAQ](#faq) for details).
+- Open a full-size image in a new tab or link thumbnail to the attachment page.
 - Enable/Disable multiple upload.
 - Combine images to gallery.
 - Select an attachment image size for the images gallery.
@@ -27,7 +27,7 @@ Attachments are uploaded to the WordPress Media Library and deleted along with t
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-2.1.1
+2.2.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
@@ -45,6 +45,12 @@ DCO Comment Attachment tested with:
 Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachment/issues) if you need integration with another plugin.
 
 # Changelog
+## 2.2.0
+- Added drag and drop support for attachment input field.
+- Improved "Link thumbnail?" option. Link to a new tab and an attachment page is now supported.
+- Fixed bug with "Manually moderate comments with attachments" option.
+- Removed "Attach to commented post?" option from the Settings page. You can use the `dco_ca_attach_to_post` filter instead.
+
 ## 2.1.1
 - Added new filters for the attachment markup customization: `dco_ca_get_attachment_preview` and `dco_ca_get_attachment_preview_image`.
 

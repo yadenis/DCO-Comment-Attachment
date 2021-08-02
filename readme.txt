@@ -2,9 +2,9 @@
 Contributors: denisco
 Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
-Tested up to: 5.6
+Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 2.1.1
+Stable tag: 2.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.donationalerts.com/r/denisco
@@ -20,9 +20,9 @@ With plugin settings you can:
 * Make an attachment required.
 * Specify whether the attachment will be embedded or displayed as a link.
 * Enable/Disable autoembed links (like Youtube, Facebook, Twitter, etc.) in the comment text.
-* Attach an attachment to a commented post.
 * Select an attachment image size from thumbnails available in your WordPress install.
-* Link thumbnail to full-size image with lightbox plugins support (see [FAQ](#faq) for details).
+* Link a thumbnail to a full-size image with lightbox plugins support (see [FAQ](#faq) for details).
+* Open a full-size image in a new tab or link thumbnail to the attachment page.
 * Enable/Disable multiple upload.
 * Combine images to gallery.
 * Select an attachment image size for the images gallery.
@@ -58,6 +58,12 @@ DCO Comment Attachment tested with:
 Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comment-attachment/) on support forum if you need integration with another plugin.
 
 == Changelog ==
+
+= 2.2.0 =
+* Added drag and drop support for attachment input field.
+* Improved "Link thumbnail?" option. Link to a new tab and an attachment page is now supported.
+* Fixed bug with "Manually moderate comments with attachments" option.
+* Removed "Attach to commented post?" option from the Settings page. You can use the `dco_ca_attach_to_post` filter instead.
 
 = 2.1.1 =
 * Added new filters for the attachment markup customization: `dco_ca_get_attachment_preview` and `dco_ca_get_attachment_preview_image`.
@@ -116,3 +122,4 @@ Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comme
 4. Screen for editing a comment in the admin panel.
 5. Plugin settings page.
 6. An example of a lightbox with the Simple Lightbox plugin.
+7. An example of a drag and drop support.

@@ -24,7 +24,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Flag showing that attachment checked on upload.
 	 *
-	 * @since x.x.x
+	 * @since 2.2.0
 	 *
 	 * @var bool $attachment_checked True if the attachment checked or false otherwise.
 	 */
@@ -267,7 +267,7 @@ class DCO_CA extends DCO_CA_Base {
 				/**
 				 * Filters the drop area form element markup.
 				 *
-				 * @since x.x.x
+				 * @since 2.2.0
 				 *
 				 * @param string $markup HTML markup for the drop area form element.
 				 */
@@ -447,7 +447,7 @@ class DCO_CA extends DCO_CA_Base {
 		/**
 		 * Filters whether to attach the attachment to the commented post.
 		 *
-		 * @since x.x.x
+		 * @since 2.2.0
 		 *
 		 * @param bool $attach_to_post Whether to attach the attachment to the commented post.
 		 */
@@ -672,7 +672,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Checks that attachment checked on upload or not.
 	 *
-	 * @since x.x.x
+	 * @since 2.2.0
 	 *
 	 * @return bool True if the attachment checked or false otherwise.
 	 */
