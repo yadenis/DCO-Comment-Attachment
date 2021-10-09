@@ -266,7 +266,7 @@ class DCO_CA extends DCO_CA_Base {
 				?>
 				<span class="comment-form-attachment__drop-area">
 					<span class="comment-form-attachment__drop-area-inner">
-						<?php echo $this->get_option( 'enable_multiple_upload' ) ? __( 'Drop files here', 'dco-comment-attachment' ) : __( 'Drop file here', 'dco-comment-attachment' ); ?>
+						<?php echo $this->get_option( 'enable_multiple_upload' ) ? esc_html__( 'Drop files here', 'dco-comment-attachment' ) : esc_html__( 'Drop file here', 'dco-comment-attachment' ); ?>
 					</span>
 				</span>
 				<?php
