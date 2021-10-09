@@ -167,8 +167,13 @@ class DCO_CA extends DCO_CA_Base {
 					$name    .= '[]';
 					$multiple = ' multiple';
 				}
+				$accept = '';
+				$types  = $this->get_allowed_file_types( 'array' );
+				if ( $types ) {
+					$accept = '.' . implode( ',.', $types );
+				}
 				?>
-				<input class="comment-form-attachment__input" id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file"<?php echo esc_attr( $multiple ); ?> />
+				<input class="comment-form-attachment__input" id="attachment" name="<?php echo esc_attr( $name ); ?>" type="file" accept="<?php echo esc_attr( $accept ); ?>"<?php echo esc_attr( $multiple ); ?> />
 				<?php
 				/**
 				 * Filters the input form element markup.
@@ -177,8 +182,9 @@ class DCO_CA extends DCO_CA_Base {
 				 *
 				 * @param string $markup HTML markup for the input form element.
 				 * @param string $name Name of the attachment input.
+				 * @param array $types Allowed upload file types.
 				 */
-				$markup = apply_filters( 'dco_ca_form_element_input', ob_get_clean(), $name );
+				$markup = apply_filters( 'dco_ca_form_element_input', ob_get_clean(), $name, $types );
 				break;
 			case 'upload-size':
 				ob_start();
