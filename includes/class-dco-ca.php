@@ -58,6 +58,7 @@ class DCO_CA extends DCO_CA_Base {
 
             // rest api support
 			add_filter( 'rest_preprocess_comment', array( $this, 'check_attachment' ) );
+			add_action( 'rest_insert_comment', array( $this, 'save_rest_api_attachment' ), 5, 3 );
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -521,6 +522,21 @@ class DCO_CA extends DCO_CA_Base {
 		$this->assign_attachment( $comment_id, $ids );
 
 		$_FILES[ $field_name ] = $attachments;
+	}
+
+	/**
+	 * Saves attachments after comment is posted via API.
+	 *
+	 * @since 2.3.0
+     *
+	 * @param WP_Comment $comment Inserted or updated comment object.
+	 * @param WP_REST_Request $request Request object.
+	 * @param bool $creating True when creating a comment, false when updating.
+	 */
+	public function save_rest_api_attachment( $comment, $request, $creating ) {
+        if ($creating) {
+	        $this->save_attachment( $comment->comment_ID, $comment->comment_approved, $comment->to_array() );
+        }
 	}
 
 	/**
