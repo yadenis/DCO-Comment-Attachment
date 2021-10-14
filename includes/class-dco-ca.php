@@ -59,6 +59,7 @@ class DCO_CA extends DCO_CA_Base {
             // rest api support
 			add_filter( 'rest_preprocess_comment', array( $this, 'check_attachment' ) );
 			add_action( 'rest_insert_comment', array( $this, 'save_rest_api_attachment' ), 5, 3 );
+			add_filter( 'rest_prepare_comment', array( $this, 'add_rest_api_links' ), 5, 2 );
 		}
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
@@ -586,6 +587,30 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		return $comment_content . $attachment_content;
+	}
+
+	/**
+	 * Adds attachment links into comment api response.
+	 *
+	 * @since 2.3.0
+     *
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Comment $comment The original comment object.
+	 * @return WP_REST_Response The response object.
+	 */
+	public function add_rest_api_links( WP_REST_Response $response, WP_Comment $comment ) {
+		$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
+		if ( count( $attachment_id ) > 1 ) {
+			$rel = $this->get_attachment_meta_key();
+
+			foreach ( $attachment_id as $attach_id ) {
+				$response->add_link( $rel, rest_url( 'wp/v2/media/' . $attach_id ), [
+					'embeddable' => true,
+				] );
+			}
+		}
+
+		return $response;
 	}
 
 	/**
