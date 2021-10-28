@@ -600,7 +600,7 @@ class DCO_CA extends DCO_CA_Base {
 	 */
 	public function add_rest_api_links( WP_REST_Response $response, WP_Comment $comment ) {
 		$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
-		if ( count( $attachment_id ) > 1 ) {
+		if ( count( $attachment_id ) > 0 ) {
 			$rel = $this->get_attachment_meta_key();
 
 			foreach ( $attachment_id as $attach_id ) {
