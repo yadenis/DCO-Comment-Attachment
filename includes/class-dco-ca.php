@@ -56,11 +56,13 @@ class DCO_CA extends DCO_CA_Base {
 				add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
 			}
 
-            // rest api support
+			// rest api support
 			add_filter( 'rest_preprocess_comment', array( $this, 'check_attachment' ) );
 			add_action( 'rest_insert_comment', array( $this, 'save_rest_api_attachment' ), 5, 3 );
-			add_filter( 'rest_prepare_comment', array( $this, 'add_rest_api_links' ), 5, 2 );
 		}
+
+		// even if user cannot upload, we still return attachment links
+		add_filter( 'rest_prepare_comment', array( $this, 'add_rest_api_links' ), 5, 2 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
