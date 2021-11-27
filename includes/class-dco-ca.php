@@ -49,13 +49,20 @@ class DCO_CA extends DCO_CA_Base {
 
 		if ( $this->is_attachment_field_enabled() ) {
 			add_action( 'comment_form_submit_field', array( $this, 'add_attachment_field' ) );
-			add_filter( 'preprocess_comment', array( $this, 'check_attachment' ) );
+			add_filter( 'preprocess_comment', array( $this, 'display_attachment_error' ) );
 			add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
 
 			if ( $this->get_option( 'manually_moderation' ) ) {
 				add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
 			}
+
+			// rest api support
+			add_filter( 'rest_preprocess_comment', array( $this, 'check_attachment' ) );
+			add_action( 'rest_insert_comment', array( $this, 'save_rest_api_attachment' ), 5, 3 );
 		}
+
+		// even if user cannot upload, we still return attachment links
+		add_filter( 'rest_prepare_comment', array( $this, 'add_rest_api_links' ), 5, 2 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
@@ -298,7 +305,7 @@ class DCO_CA extends DCO_CA_Base {
 	 * @since 1.0.0
 	 *
 	 * @param array $commentdata Comment data.
-	 * @return array Comment data on success.
+	 * @return array|WP_Error Comment data on success, or error object on failure.
 	 */
 	public function check_attachment( $commentdata ) {
 		$field_name = $this->get_upload_field_name();
@@ -314,7 +321,11 @@ class DCO_CA extends DCO_CA_Base {
 		// If the feature to upload multiple files is disabled,
 		// but the user has uploaded multiple files.
 		if ( ! $this->get_option( 'enable_multiple_upload' ) && is_array( $attachments['name'] ) ) {
-			$this->display_error( __( 'Uploading multiple files is forbidden!', 'dco-comment-attachment' ) );
+			return new WP_Error(
+				'dco-comment-attachment',
+				__( 'Uploading multiple files is forbidden!', 'dco-comment-attachment' ),
+				array( 'status' => 403 )
+			);
 		}
 
 		$names       = (array) $attachments['name'];
@@ -325,14 +336,22 @@ class DCO_CA extends DCO_CA_Base {
 		foreach ( $error_codes as $error_code ) {
 			$upload_error = $this->get_upload_error( $error_code );
 			if ( $upload_error ) {
-				$this->display_error( $upload_error );
+				return new WP_Error(
+					"dco-comment-attachment-$error_code",
+					$upload_error,
+					array( 'status' => 500 )
+				);
 			}
 		}
 
 		// Check that the file has been uploaded.
 		if ( ! isset( $tmp_names[0] ) || ! is_uploaded_file( $tmp_names[0] ) ) {
 			if ( $this->get_option( 'required_attachment' ) ) {
-				$this->display_error( __( 'Attachment is required.', 'dco-comment-attachment' ) );
+				return new WP_Error(
+					'dco-comment-attachment',
+					__( 'Attachment is required.', 'dco-comment-attachment' ),
+					array( 'status' => 400 )
+				);
 			} else {
 				return $commentdata;
 			}
@@ -346,8 +365,13 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		if ( $size > $this->get_max_upload_size() ) {
-			$upload_error = $this->get_upload_error( 1 );
-			$this->display_error( $upload_error );
+            $error_code = 1;
+			$upload_error = $this->get_upload_error( $error_code );
+			return new WP_Error(
+				"dco-comment-attachment-$error_code",
+				$upload_error,
+				array( 'status' => 500 )
+			);
 		}
 
 		foreach ( $names as $name ) {
@@ -356,7 +380,11 @@ class DCO_CA extends DCO_CA_Base {
 			$this->disable_filter_upload();
 
 			if ( ! $filetype['ext'] ) {
-				$this->display_error( __( "WordPress doesn't allow this type of uploads.", 'dco-comment-attachment' ) );
+				return new WP_Error(
+					'dco-comment-attachment',
+					__( "WordPress doesn't allow this type of uploads.", 'dco-comment-attachment' ),
+					array( 'status' => 400 )
+				);
 			}
 		}
 
@@ -366,17 +394,24 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
-	 * Displays the text of the error uploading attachment when sending a comment.
+	 * Checks the attachments and displays error.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @param string $error The text of error uploading attachment.
+	 * @since 2.3.0
+     *
+	 * @param array $commentdata Comment data.
+	 * @return array Comment data on success.
 	 */
-	public function display_error( $error ) {
-		if ( $error ) {
+	public function display_attachment_error( $commentdata ) {
+		$commentdata = $this->check_attachment( $commentdata );
+
+		if ( is_wp_error( $commentdata ) ) {
+            /** @var $commentdata WP_Error */
+			$error = $commentdata->get_error_message();
 			$err_title = __( 'ERROR', 'dco-comment-attachment' );
 			wp_die( '<p><strong>' . esc_html( $err_title ) . '</strong>: ' . esc_html( $error ) . '</p>', esc_html__( 'Comment Submission Failure', 'dco-comment-attachment' ), array( 'back_link' => true ) );
 		}
+
+		return $commentdata;
 	}
 
 	/**
@@ -499,6 +534,21 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
+	 * Saves attachments after comment is posted via API.
+	 *
+	 * @since 2.3.0
+     *
+	 * @param WP_Comment $comment Inserted or updated comment object.
+	 * @param WP_REST_Request $request Request object.
+	 * @param bool $creating True when creating a comment, false when updating.
+	 */
+	public function save_rest_api_attachment( $comment, $request, $creating ) {
+        if ($creating) {
+	        $this->save_attachment( $comment->comment_ID, $comment->comment_approved, $comment->to_array() );
+        }
+	}
+
+	/**
 	 * Displays an assigned attachments.
 	 *
 	 * @since 1.0.0
@@ -545,6 +595,30 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		return $comment_content . $attachment_content;
+	}
+
+	/**
+	 * Adds attachment links into comment api response.
+	 *
+	 * @since 2.3.0
+     *
+	 * @param WP_REST_Response $response The response object.
+	 * @param WP_Comment $comment The original comment object.
+	 * @return WP_REST_Response The response object.
+	 */
+	public function add_rest_api_links( WP_REST_Response $response, WP_Comment $comment ) {
+		$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
+		if ( count( $attachment_id ) > 0 ) {
+			$rel = $this->get_attachment_meta_key();
+
+			foreach ( $attachment_id as $attach_id ) {
+				$response->add_link( $rel, rest_url( 'wp/v2/media/' . $attach_id ), [
+					'embeddable' => true,
+				] );
+			}
+		}
+
+		return $response;
 	}
 
 	/**
