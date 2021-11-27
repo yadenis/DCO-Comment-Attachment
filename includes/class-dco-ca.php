@@ -56,13 +56,11 @@ class DCO_CA extends DCO_CA_Base {
 				add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
 			}
 
-			// rest api support
 			add_filter( 'rest_preprocess_comment', array( $this, 'check_attachment' ) );
-			add_action( 'rest_insert_comment', array( $this, 'save_rest_api_attachment' ), 5, 3 );
+			add_action( 'rest_insert_comment', array( $this, 'save_rest_api_attachment' ), 10, 3 );
 		}
 
-		// even if user cannot upload, we still return attachment links
-		add_filter( 'rest_prepare_comment', array( $this, 'add_rest_api_links' ), 5, 2 );
+		add_filter( 'rest_prepare_comment', array( $this, 'add_rest_api_links' ), 10, 2 );
 
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
@@ -81,20 +79,22 @@ class DCO_CA extends DCO_CA_Base {
 	 * @since 1.0.0
 	 */
 	public function enqueue_scripts() {
-		if ( $this->is_comments_used() ) {
-			if ( $this->is_attachment_field_enabled() ) {
-				wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
-				wp_localize_script(
-					'dco-comment-attachment',
-					'dco_ca',
-					array(
-						'commenting_form_not_found' => __( 'The commenting form not found.', 'dco-comment-attachment' ),
-					)
-				);
-			}
-
-			wp_enqueue_style( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.css', array(), DCO_CA_VERSION );
+		if ( ! $this->is_comments_used() ) {
+			return;
 		}
+
+		if ( $this->is_attachment_field_enabled() ) {
+			wp_enqueue_script( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.js', array( 'jquery' ), DCO_CA_VERSION, true );
+			wp_localize_script(
+				'dco-comment-attachment',
+				'dco_ca',
+				array(
+					'commenting_form_not_found' => __( 'The commenting form not found.', 'dco-comment-attachment' ),
+				)
+			);
+		}
+
+		wp_enqueue_style( 'dco-comment-attachment', DCO_CA_URL . 'assets/dco-comment-attachment.css', array(), DCO_CA_VERSION );
 	}
 
 	/**
@@ -304,14 +304,14 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $commentdata Comment data.
+	 * @param array $prepared_comment The prepared comment data for `wp_insert_comment`.
 	 * @return array|WP_Error Comment data on success, or error object on failure.
 	 */
-	public function check_attachment( $commentdata ) {
+	public function check_attachment( $prepared_comment ) {
 		$field_name = $this->get_upload_field_name();
 
 		if ( ! isset( $_FILES[ $field_name ] ) ) {
-			return $commentdata;
+			return $prepared_comment;
 		}
 
 		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
@@ -353,7 +353,7 @@ class DCO_CA extends DCO_CA_Base {
 					array( 'status' => 400 )
 				);
 			} else {
-				return $commentdata;
+				return $prepared_comment;
 			}
 		}
 
@@ -365,7 +365,7 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		if ( $size > $this->get_max_upload_size() ) {
-            $error_code = 1;
+			$error_code   = 1;
 			$upload_error = $this->get_upload_error( $error_code );
 			return new WP_Error(
 				"dco-comment-attachment-$error_code",
@@ -390,14 +390,14 @@ class DCO_CA extends DCO_CA_Base {
 
 		$this->attachment_checked = true;
 
-		return $commentdata;
+		return $prepared_comment;
 	}
 
 	/**
 	 * Checks the attachments and displays error.
 	 *
 	 * @since 2.3.0
-     *
+	 *
 	 * @param array $commentdata Comment data.
 	 * @return array Comment data on success.
 	 */
@@ -405,8 +405,7 @@ class DCO_CA extends DCO_CA_Base {
 		$commentdata = $this->check_attachment( $commentdata );
 
 		if ( is_wp_error( $commentdata ) ) {
-            /** @var $commentdata WP_Error */
-			$error = $commentdata->get_error_message();
+			$error     = $commentdata->get_error_message();
 			$err_title = __( 'ERROR', 'dco-comment-attachment' );
 			wp_die( '<p><strong>' . esc_html( $err_title ) . '</strong>: ' . esc_html( $error ) . '</p>', esc_html__( 'Comment Submission Failure', 'dco-comment-attachment' ), array( 'back_link' => true ) );
 		}
@@ -534,18 +533,20 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
-	 * Saves attachments after comment is posted via API.
+	 * Saves attachments after comment is posted via REST API.
 	 *
 	 * @since 2.3.0
-     *
-	 * @param WP_Comment $comment Inserted or updated comment object.
+	 *
+	 * @param WP_Comment      $comment Inserted or updated comment object.
 	 * @param WP_REST_Request $request Request object.
-	 * @param bool $creating True when creating a comment, false when updating.
+	 * @param bool            $creating True when creating a comment, false when updating.
 	 */
 	public function save_rest_api_attachment( $comment, $request, $creating ) {
-        if ($creating) {
-	        $this->save_attachment( $comment->comment_ID, $comment->comment_approved, $comment->to_array() );
-        }
+		if ( ! $creating ) {
+			return;
+		}
+
+		$this->save_attachment( $comment->comment_ID, $comment->comment_approved, $comment->to_array() );
 	}
 
 	/**
@@ -598,24 +599,30 @@ class DCO_CA extends DCO_CA_Base {
 	}
 
 	/**
-	 * Adds attachment links into comment api response.
+	 * Adds attachment links into comment REST API response.
 	 *
 	 * @since 2.3.0
-     *
+	 *
 	 * @param WP_REST_Response $response The response object.
-	 * @param WP_Comment $comment The original comment object.
+	 * @param WP_Comment       $comment The original comment object.
 	 * @return WP_REST_Response The response object.
 	 */
-	public function add_rest_api_links( WP_REST_Response $response, WP_Comment $comment ) {
+	public function add_rest_api_links( $response, $comment ) {
 		$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
-		if ( count( $attachment_id ) > 0 ) {
-			$rel = $this->get_attachment_meta_key();
+		if ( ! $attachment_id ) {
+			return $response;
+		}
 
-			foreach ( $attachment_id as $attach_id ) {
-				$response->add_link( $rel, rest_url( 'wp/v2/media/' . $attach_id ), [
+		$rel = $this->get_attachment_meta_key();
+
+		foreach ( $attachment_id as $attach_id ) {
+			$response->add_link(
+				$rel,
+				rest_url( 'wp/v2/media/' . $attach_id ),
+				array(
 					'embeddable' => true,
-				] );
-			}
+				)
+			);
 		}
 
 		return $response;
