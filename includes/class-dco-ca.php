@@ -65,7 +65,7 @@ class DCO_CA extends DCO_CA_Base {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
 
 		if ( $this->is_attachment_displayed() ) {
-			add_filter( 'comment_text', array( $this, 'display_attachment' ) );
+			add_filter( 'comment_text', array( $this, 'display_attachment' ), 10, 2 );
 		}
 
 		if ( $this->get_option( 'autoembed_links' ) && ! is_admin() ) {
@@ -554,15 +554,20 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $comment_content Optional. Text of the comment.
+	 * @param string          $comment_text Text of the current comment.
+	 * @param WP_Comment|null $comment      The comment object. Null if not found.
 	 * @return string Text of the comment with an assigned attachment.
 	 */
-	public function display_attachment( $comment_content = '' ) {
-		if ( ! $this->has_attachment() ) {
-			return $comment_content;
+	public function display_attachment( $comment_text = '', $comment = null ) {
+		if ( is_null( $comment ) ) {
+			$comment = get_comment();
 		}
 
-		$attachment_id = (array) $this->get_attachment_id();
+		if ( ! $comment instanceof WP_Comment || ! $this->has_attachment( $comment->comment_ID ) ) {
+			return $comment_text;
+		}
+
+		$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
 		if ( count( $attachment_id ) > 1 ) {
 			$this->enable_gallery_image_size();
 			$attachments_content = array();
@@ -595,7 +600,7 @@ class DCO_CA extends DCO_CA_Base {
 			$attachment_content = $this->get_attachment_preview( current( $attachment_id ) );
 		}
 
-		return $comment_content . $attachment_content;
+		return $comment_text . $attachment_content;
 	}
 
 	/**
@@ -633,11 +638,11 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since 1.2.0
 	 *
-	 * @param string $comment_content Text of the comment.
+	 * @param string $comment_text Text of the current comment.
 	 * @return string Text of the comment with embedded links.
 	 */
-	public function autoembed_links( $comment_content ) {
-		return $GLOBALS['wp_embed']->autoembed( $comment_content );
+	public function autoembed_links( $comment_text ) {
+		return $GLOBALS['wp_embed']->autoembed( $comment_text );
 	}
 
 	/**
@@ -830,12 +835,12 @@ class DCO_CA extends DCO_CA_Base {
 	public function get_gallery_image_size( $size ) {
 		if ( 'dco_ca_admin_thumbnail_size' === current_filter() ) {
 			/**
-			* Filters the attachment image size in the gallery for the admin panel.
-			*
-			* @since 2.0.0
-			*
-			* @param string $size The thumbnail size of the attachment image.
-			*/
+			 * Filters the attachment image size in the gallery for the admin panel.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param string $size The thumbnail size of the attachment image.
+			 */
 			return apply_filters( 'dco_ca_admin_gallery_size', 'thumbnail' );
 		}
 
