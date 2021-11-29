@@ -204,8 +204,21 @@ class DCO_CA_Base {
 				$attachment_content = '<div class="dco-attachment dco-audio-attachment">' . do_shortcode( '[audio src="' . esc_url( $url ) . '"]' ) . '</div>';
 				break;
 			case 'misc':
+				$download = '';
+
+				/**
+				* Filters whether to force download misc attachments.
+				*
+				* @since 2.3.0
+				*
+				* @param bool $force_download Whether to force download misc attachments.
+				*/
+				if ( apply_filters( 'dco_ca_force_download_misc_attachments', false ) ) {
+					$download = ' download';
+				}
+
 				$title              = get_the_title( $attachment_id );
-				$attachment_content = '<p class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '">' . esc_html( $title ) . '</a></p>';
+				$attachment_content = '<p class="dco-attachment dco-misc-attachment"><a href="' . esc_url( $url ) . '"' . $download . '>' . esc_html( $title ) . '</a></p>';
 		}
 
 		/**
