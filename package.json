@@ -10,7 +10,7 @@
     "fix_js": "wp-scripts lint-js assets/*.js --fix"
   },
   "devDependencies": {
-    "@wordpress/scripts": "^17.1.0"
+    "@wordpress/scripts": "^19.2.2"
   },
   "dependencies": {},
   "repository": {

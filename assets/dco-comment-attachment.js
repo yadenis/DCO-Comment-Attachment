@@ -1,4 +1,3 @@
-// eslint-disable-next-line @wordpress/no-global-event-listener
 document.addEventListener( 'DOMContentLoaded', function () {
 	try {
 		const form = document.querySelector( '#respond form' );
