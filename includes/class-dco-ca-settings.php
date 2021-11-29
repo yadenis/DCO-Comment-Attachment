@@ -438,7 +438,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 		$more  = 6;
 		foreach ( $types as $type ) {
 			echo '<div class="dco-file-type" style="width: ' . (int) $column_width . 'px;">';
-			echo '<label class="dco-file-type-name">' . $this->mb_ucfirst( esc_html( $type['name'] ) ) . '</label>';
+			echo '<label class="dco-file-type-name" title="' . esc_attr__( 'Click to check/uncheck all extensions of this type.', 'dco-comment-attachment' ) . '"><input type="checkbox" class="dco-file-type-name-checkbox"> ' . $this->mb_ucfirst( esc_html( $type['name'] ) ) . '</label>';
 			echo '<div class="dco-file-type-items">';
 			$i = 1;
 			foreach ( $type['exts'] as $ext ) {
@@ -452,7 +452,7 @@ class DCO_CA_Settings extends DCO_CA_Base {
 				if ( in_array( $ext, $special_exts, true ) ) {
 					$mark = ' **';
 				}
-				echo '<div class="dco-file-type-item"><label><input type="checkbox" name="' . esc_attr( $control_name ) . '[]" value="' . esc_attr( $ext ) . '"' . checked( in_array( $ext, $setting_val, true ), true, false ) . '> ' . esc_html( $ext . $mark ) . '</label></div>';
+				echo '<label class="dco-file-type-item"><input type="checkbox" class="dco-file-type-item-checkbox" name="' . esc_attr( $control_name ) . '[]" value="' . esc_attr( $ext ) . '"' . checked( in_array( $ext, $setting_val, true ), true, false ) . '> ' . esc_html( $ext . $mark ) . '</label>';
 				$i++;
 			}
 			echo '</div>';
