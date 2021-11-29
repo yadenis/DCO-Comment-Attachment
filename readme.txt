@@ -4,7 +4,7 @@ Tags: comment, comment attachment, attachment, image, video
 Requires at least: 4.6
 Tested up to: 5.8
 Requires PHP: 5.6
-Stable tag: 2.2.0
+Stable tag: 2.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Donate link: https://www.donationalerts.com/r/denisco
@@ -38,6 +38,8 @@ You can also:
 
 Attachments are uploaded to the WordPress Media Library and deleted along with the comment (if this is set in the settings).
 
+REST API is supported.
+
 DCO Comment Attachment is also available on [GitHub](https://github.com/yadenis/DCO-Comment-Attachment).
 
 == Installation ==
@@ -58,6 +60,13 @@ DCO Comment Attachment tested with:
 Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comment-attachment/) on support forum if you need integration with another plugin.
 
 == Changelog ==
+
+= 2.3.0 =
+* Added allowed file types to the file input dialog box. (thank you [@pranciskus](https://profiles.wordpress.org/pranciskus/))
+* Added REST API support (thank you [@daohoangson](https://profiles.wordpress.org/daohoangson/))
+* Added `dco_ca_force_download_misc_attachments` filter for force download files instead of open.
+* Improved check/uncheck allowed file types on Settings page.
+* Fixed "Trying to get property ‘comment_ID’ of non-object" bug. (thank you [@pranciskus](https://profiles.wordpress.org/pranciskus/))
 
 = 2.2.0 =
 * Added drag and drop support for attachment input field.
@@ -123,3 +132,4 @@ Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comme
 5. Plugin settings page.
 6. An example of a lightbox with the Simple Lightbox plugin.
 7. An example of a drag and drop support.
+8. An example of REST API support.

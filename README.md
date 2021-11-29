@@ -24,10 +24,12 @@ You can also:
 
 Attachments are uploaded to the WordPress Media Library and deleted along with the comment (if this is set in the settings).
 
+REST API is supported.
+
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-2.2.0
+2.3.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
@@ -45,6 +47,13 @@ DCO Comment Attachment tested with:
 Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachment/issues) if you need integration with another plugin.
 
 # Changelog
+## 2.3.0
+- Added allowed file types to the file input dialog box.
+- Added REST API support (thank you [@daohoangson](https://github.com/daohoangson))
+- Added `dco_ca_force_download_misc_attachments` filter for force download files instead of open.
+- Improved check/uncheck allowed file types on Settings page. (thank you [@DuckDivers](https://github.com/DuckDivers))
+- Fixed "Trying to get property ‘comment_ID’ of non-object" bug.
+
 ## 2.2.0
 - Added drag and drop support for attachment input field.
 - Improved "Link thumbnail?" option. Link to a new tab (thank you [@graylaurenm](https://github.com/graylaurenm)) and an attachment page is now supported.
