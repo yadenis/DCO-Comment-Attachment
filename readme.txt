@@ -132,4 +132,5 @@ Feel free to create [a new topic](https://wordpress.org/support/plugin/dco-comme
 5. Plugin settings page.
 6. An example of a lightbox with the Simple Lightbox plugin.
 7. An example of a drag and drop support.
-8. An example of REST API support.
+8. An example of the new comment notification email.
+9. An example of REST API support.
