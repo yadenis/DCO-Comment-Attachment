@@ -175,7 +175,9 @@ class DCO_CA extends DCO_CA_Base {
 					$multiple = ' multiple';
 				}
 				$accept = '';
-				$types  = $this->get_allowed_file_types( 'array' );
+				$this->enable_filter_upload();
+				$types = $this->get_allowed_file_types( 'array' );
+				$this->disable_filter_upload();
 				if ( $types ) {
 					$accept = '.' . implode( ',.', $types );
 				}
