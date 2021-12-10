@@ -44,6 +44,9 @@ class DCO_CA_Base {
 	 */
 	public function init_hooks() {
 		$this->set_options();
+
+		// Compatibility with Loco Translate.
+		load_plugin_textdomain( 'dco-comment-attachment' );
 	}
 
 	/**
