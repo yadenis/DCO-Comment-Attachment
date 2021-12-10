@@ -29,7 +29,7 @@ REST API is supported.
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-2.3.0
+2.3.1
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
@@ -47,6 +47,10 @@ DCO Comment Attachment tested with:
 Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachment/issues) if you need integration with another plugin.
 
 # Changelog
+# 2.3.1
+- Fixed a bug with the accept attribute of the attachment upload field.
+- Added compatibility with Loco Translate plugin.
+
 ## 2.3.0
 - Added allowed file types to the file input dialog box.
 - Added REST API support (thank you [@daohoangson](https://github.com/daohoangson))
