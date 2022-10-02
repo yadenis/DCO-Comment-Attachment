@@ -582,7 +582,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * Generates an attachment markup.
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 *
 	 * @param int|array $attachment_id The attachment ID(s).
 	 * @return string The attachment HTML markup.
@@ -665,7 +665,7 @@ class DCO_CA extends DCO_CA_Base {
 	/**
 	 * The dco_ca shortcode handler.
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 *
 	 * @param array $atts {
 	 *     An array of shortcode attributes.

@@ -18,9 +18,10 @@ With plugin settings you can:
 - Manually moderate comments with attachments.
 
 You can also:
-- Add, replace or delete an attachment from a comment on Edit Comment screen.
+- Add, replace or delete an attachment from a comment on the Edit Comment screen.
 - Attach an unlimited number of attachments to the comment in the admin panel.
-- Delete an attachment on Comments screen.
+- Delete an attachment from a specific comment or bulk delete attachments from comments on the Comments screen.
+- Display attachments attached to comments to the current post (or a specific post) with the `[dco_ca]` shortcode. You can also filter by type. See [FAQ](#faq) for details.
 
 Attachments are uploaded to the WordPress Media Library and deleted along with the comment (if this is set in the settings).
 
@@ -29,7 +30,7 @@ REST API is supported.
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-2.3.1
+2.4.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
@@ -46,8 +47,25 @@ DCO Comment Attachment tested with:
 
 Feel free to create [a new issue](https://github.com/yadenis/DCO-Comment-Attachment/issues) if you need integration with another plugin.
 
+## How to use the [dco_ca] shortcode?
+
+Without attributes specified, the `[dco_ca]` shortcode will display all attachments attached to current post.
+
+You can filter attachments using the `type` attribute. By default it is `all`. Also supported: `image`, `video`, `audio` and `misc`.
+You can specify one value `[dco_ca type="image"]` or multiple values, separated by commas `[dco_ca type="video,audio"]`.
+
+You can also display attachments from the comments of another post using the `post_id` attribute.
+For example, [dco_ca post_id="45"], where `45` is the ID of the specific post.
+
+You can also combine these attributes. For example, `[dco_ca post_id="45" type="image"]` will display all images attached to comments to the post with ID `45`.
+
 # Changelog
-# 2.3.1
+## 2.4.0
+- Added bulk delete attachments action on the Comments screen.
+- Added the `[dco_ca]` shortcode for display attachments attached to comments (see FAQ for details).
+- Fixed bug: now if there is no attachment, the empty array is not saved to the database.
+
+## 2.3.1
 - Fixed a bug with the accept attribute of the attachment upload field.
 - Added compatibility with Loco Translate plugin.
 

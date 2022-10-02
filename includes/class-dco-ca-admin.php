@@ -127,7 +127,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Adds additional bulk actions.
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 *
 	 * @param array $actions An array of the available bulk actions.
 	 * @return array An array with standard bulk actions
@@ -142,7 +142,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Handles a bulk action to delete comment attachments on the comments page.
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 */
 	public function delete_attachment_bulk_action() {
 		check_admin_referer( 'bulk-comments' );
@@ -188,7 +188,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Shows bulk action updated message.
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 *
 	 * @param string $translation Translated text.
 	 * @param string $single      The text to be used if the number is singular.
@@ -220,7 +220,7 @@ class DCO_CA_Admin extends DCO_CA_Base {
 	/**
 	 * Adds single-use URL parameters.
 	 *
-	 * @since x.x.x
+	 * @since 2.4.0
 	 *
 	 * @param array $removable_query_args An array of query variable names to remove from the URL.
 	 * @return array An array of query variable names to remove from the URL.
