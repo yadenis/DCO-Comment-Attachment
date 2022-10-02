@@ -68,9 +68,9 @@ You can filter attachments using the `type` attribute. By default it is `all`. A
 You can specify one value `[dco_ca type="image"]` or multiple values, separated by commas `[dco_ca type="video,audio"]`.
 
 You can also display attachments from the comments of another post using the `post_id` attribute.
-For example, [dco_ca post_id="45"], where `45` is the ID of the specific post.
+For example, `[dco_ca post_id="45"]`, where `45` is the ID of the specific post.
 
-You can also combine these attributes. For example, `[dco_ca post_id="45" type="image"]` will display all images attached to comments to the post with ID `45`.
+You can also combine these attributes. For example, `[dco_ca post_id="45" type="image"]` will display all images attached to comments to the post with ID 45.
 
 == Changelog ==
 
