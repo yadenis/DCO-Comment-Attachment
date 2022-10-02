@@ -582,7 +582,7 @@ class DCO_CA extends DCO_CA_Base {
 	 *
 	 * @since x.x.x
 	 *
-	 * @param int $attachment_id The attachment ID.
+	 * @param int|array $attachment_id The attachment ID(s).
 	 * @return string The attachment HTML markup.
 	 */
 	public function generate_attachment_markup( $attachment_id ) {
@@ -606,7 +606,7 @@ class DCO_CA extends DCO_CA_Base {
 			}
 
 			if ( $this->get_option( 'combine_images' ) || is_admin() ) {
-				// combine only images.
+				// Combine only images.
 				$not_images = array();
 				foreach ( $attachments_content as $key => $content ) {
 					if ( strpos( $key, 'image' ) === false ) {
