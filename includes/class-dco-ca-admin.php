@@ -382,12 +382,13 @@ class DCO_CA_Admin extends DCO_CA_Base {
 		check_admin_referer( 'update-comment_' . $comment_id );
 
 		$attachment_id = isset( $_POST['dco_attachment_id'] ) ? array_map( 'intval', $_POST['dco_attachment_id'] ) : array();
-		if ( $attachment_id ) {
-			// We need to delete the last empty element, because it's used
-			// as a placeholder in the attachments edit form.
-			// @see DCO_CA_Admin::render_attachment_metabox.
-			array_pop( $attachment_id );
 
+		// We need to delete the last empty element, because it's used
+		// as a placeholder in the attachments edit form.
+		// @see DCO_CA_Admin::render_attachment_metabox.
+		array_pop( $attachment_id );
+
+		if ( $attachment_id ) {
 			$this->assign_attachment( $comment_id, $attachment_id );
 		} else {
 			$this->unassign_attachment( $comment_id );

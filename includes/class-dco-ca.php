@@ -531,7 +531,9 @@ class DCO_CA extends DCO_CA_Base {
 			}
 		}
 
-		$this->assign_attachment( $comment_id, $ids );
+		if ( $ids ) {
+			$this->assign_attachment( $comment_id, $ids );
+		}
 
 		$_FILES[ $field_name ] = $attachments;
 	}
