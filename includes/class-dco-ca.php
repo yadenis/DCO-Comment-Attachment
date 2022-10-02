@@ -71,6 +71,8 @@ class DCO_CA extends DCO_CA_Base {
 		if ( $this->get_option( 'autoembed_links' ) && ! is_admin() ) {
 			add_filter( 'comment_text', array( $this, 'autoembed_links' ), 5 );
 		}
+
+		add_shortcode( 'dco_ca', array( $this, 'dco_ca_shortcode' ) );
 	}
 
 	/**
@@ -569,11 +571,34 @@ class DCO_CA extends DCO_CA_Base {
 			return $comment_text;
 		}
 
-		$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
+		$attachment_id      = $this->get_attachment_id( $comment->comment_ID );
+		$attachment_content = $this->generate_attachment_markup( $attachment_id );
+
+		return $comment_text . $attachment_content;
+	}
+
+	/**
+	 * Generates an attachment markup.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param int $attachment_id The attachment ID.
+	 * @return string The attachment HTML markup.
+	 */
+	public function generate_attachment_markup( $attachment_id ) {
+		if ( ! is_array( $attachment_id ) ) {
+			$attachment_id = (array) $attachment_id;
+		}
+
 		if ( count( $attachment_id ) > 1 ) {
 			$this->enable_gallery_image_size();
 			$attachments_content = array();
 			foreach ( $attachment_id as $attach_id ) {
+				// Check that the attachment exists.
+				if ( ! wp_get_attachment_url( $attach_id ) ) {
+					continue;
+				}
+
 				$type = $this->get_embed_type( $attach_id );
 				$key  = "{$type}_{$attach_id}";
 
@@ -602,7 +627,7 @@ class DCO_CA extends DCO_CA_Base {
 			$attachment_content = $this->get_attachment_preview( current( $attachment_id ) );
 		}
 
-		return $comment_text . $attachment_content;
+		return $attachment_content;
 	}
 
 	/**
@@ -633,6 +658,57 @@ class DCO_CA extends DCO_CA_Base {
 		}
 
 		return $response;
+	}
+
+	/**
+	 * The dco_ca shortcode handler.
+	 *
+	 * @since x.x.x
+	 *
+	 * @param array $atts {
+	 *     An array of shortcode attributes.
+	 *
+	 *     @type int $post_id Optional. The post ID. Default current post ID.
+	 *     @type string $type Optional. Attachment types separated by comma.
+	 *                                  Accepts: all, image, video, audio, misc.
+	 *                                  Default: all.
+	 * }
+	 */
+	public function dco_ca_shortcode( $atts ) {
+		$atts = shortcode_atts(
+			array(
+				'post_id' => get_the_ID(),
+				'type'    => 'all',
+			),
+			$atts,
+			'dco_ca'
+		);
+
+		$comments = get_comments(
+			array(
+				'post_id'  => $atts['post_id'],
+				'meta_key' => 'attachment_id',
+				'status'   => 'approve',
+			)
+		);
+
+		$ids = array();
+		foreach ( $comments as $comment ) {
+			$attachment_id = (array) $this->get_attachment_id( $comment->comment_ID );
+			if ( 'all' === $atts['type'] ) {
+				$ids = array_merge( $ids, $attachment_id );
+			} else {
+				$types = array_map( 'trim', explode( ',', $atts['type'] ) );
+				foreach ( $attachment_id as $attach_id ) {
+					$type = $this->get_embed_type( $attach_id );
+					if ( in_array( $type, $types, true ) ) {
+						$ids[] = $attach_id;
+					}
+				}
+			}
+		}
+
+		return '<div class="dco-attachments-list">' . $this->generate_attachment_markup( $ids ) . '</div>';
 	}
 
 	/**
