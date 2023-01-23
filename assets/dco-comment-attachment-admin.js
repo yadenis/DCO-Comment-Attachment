@@ -65,13 +65,13 @@
 			}
 			
 			const refererUrl = referer.substr( 0, refererQueryStringIndex );
-			const refererQueryString = referer.substr( refererQueryStringIndex );
+			let refererQueryString = referer.substr( refererQueryStringIndex );
 			
 			const params = new URLSearchParams( refererQueryString );
 			params.delete( 'deletedattachment' );
 			
-			const filteredParams = params.toString();
-			$referer.val( refererUrl + ( filteredParams.length ? '?' + filteredParams : '' ) );
+			refererQueryString = params.toString();
+			$referer.val( refererUrl + ( refererQueryString.length ? '?' + refererQueryString : '' ) );
 		}
 
 		$( '#dco-comment-attachment' ).on(
