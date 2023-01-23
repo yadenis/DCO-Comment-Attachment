@@ -57,9 +57,21 @@
 		// Only for DCO_CA_Admin::show_bulk_action_message()
 		if ( $( '#the-comment-list' ).length ) {
 			const $referer = $( '[name="_wp_http_referer"]' );
-			const params = new URLSearchParams( $referer.val() );
+			const referer = $referer.val();
+			const refererQueryStringIndex = referer.indexOf( '?' );
+			
+			if ( refererQueryStringIndex === -1 ) {
+				return;
+			}
+			
+			const refererUrl = referer.substr( 0, refererQueryStringIndex );
+			const refererQueryString = referer.substr( refererQueryStringIndex );
+			
+			const params = new URLSearchParams( refererQueryString );
 			params.delete( 'deletedattachment' );
-			$referer.val( decodeURIComponent( params.toString() ) );
+			
+			const filteredParams = params.toString();
+			$referer.val( refererUrl + ( filteredParams.length ? '?' + filteredParams : '' ) );
 		}
 
 		$( '#dco-comment-attachment' ).on(
