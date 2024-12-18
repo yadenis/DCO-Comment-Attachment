@@ -30,7 +30,7 @@ REST API is supported.
 DCO Comment Attachment is also available on [WordPress.org](https://wordpress.org/plugins/dco-comment-attachment/).
 
 # Version
-2.4.0
+3.0.0
 
 [![Build Status](https://travis-ci.org/yadenis/DCO-Comment-Attachment.svg?branch=master)](https://travis-ci.org/yadenis/DCO-Comment-Attachment)
 
@@ -60,6 +60,8 @@ For example, `[dco_ca post_id="45"]`, where `45` is the ID of the specific post.
 You can also combine these attributes. For example, `[dco_ca post_id="45" type="image"]` will display all images attached to comments to the post with ID 45.
 
 # Changelog
+## 3.0.0
+
 ## 2.4.0
 - Added bulk delete attachments action on the Comments screen.
 - Added the `[dco_ca]` shortcode for display attachments attached to comments (see FAQ for details).
