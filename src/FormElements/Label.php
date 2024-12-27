@@ -26,12 +26,11 @@ final class Label implements FormElement {
 
 	public function render(): void {
 
-		ob_start();
-		?>
-		<label class="comment-form-attachment__label" for="attachment">
-			<?php $this->the_label_text(); ?>
-		</label>
-		<?php
+		$markup = sprintf(
+			'<label class="comment-form-attachment__label" for="attachment">%s</label>',
+			$this->get_label_text()
+		);
+
 		/**
 		 * Filters the label form element markup.
 		 *
@@ -40,22 +39,23 @@ final class Label implements FormElement {
 		 * @param string $markup HTML markup for the label form element.
 		 * @param bool $required_attachment Whether to attachment is required.
 		 */
-		echo apply_filters( 'dco_ca_form_element_label', ob_get_clean(), $this->is_required_attachment );
+		echo apply_filters( 'dco_ca_form_element_label', $markup, $this->is_required_attachment );
 	}
 
-	private function the_label_text(): void {
+	private function get_label_text(): string {
 
-		$label = $this->is_enabled_multiple_upload ? __( 'Attachments', 'dco-comment-attachment' ) : __( 'Attachment', 'dco-comment-attachment' );
+		$singular_label = esc_html__( 'Attachment', 'dco-comment-attachment' );
+		$plural_label   = esc_html__( 'Attachments', 'dco-comment-attachment' );
+
+		$label = $this->is_enabled_multiple_upload ? $plural_label : $singular_label;
 
 		$label .= $this->is_required_attachment ? ' <span class="required">*</span>' : '';
 
-		$label = apply_filters(
+		return apply_filters(
 			'dco_ca_form_element_label_text',
 			$label,
 			$this->is_enabled_multiple_upload,
 			$this->is_required_attachment
 		);
-
-		echo $label;
 	}
 }

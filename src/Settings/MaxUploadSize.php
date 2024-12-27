@@ -19,24 +19,28 @@ final class MaxUploadSize implements Setting {
 	) {
 	}
 
-	public function get_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::FROM_SETTINGS_IN_MEGABYTES ): int|string {
+	public function get_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
 		$value = $this->options->get_int_option( self::OPTION_NAME );
 		if ( null === $value ) {
-			return $this->get_default_value();
+			return $this->get_system_value( $format );
 		}
 
 		return match ( $format ) {
-			MaxUploadSizeFormat::FROM_SYSTEM_IN_BYTES => wp_max_upload_size(),
-			MaxUploadSizeFormat::FROM_SYSTEM_IN_MEGABYTES => wp_max_upload_size() / MB_IN_BYTES,
-			MaxUploadSizeFormat::FROM_SETTINGS_IN_BYTES => $value * MB_IN_BYTES,
-			MaxUploadSizeFormat::FROM_SETTINGS_IN_MEGABYTES => $value,
-			MaxUploadSizeFormat::FROM_SETTINGS_FORMATTED => (string) size_format( $value * MB_IN_BYTES )
+			MaxUploadSizeFormat::IN_BYTES => $value * MB_IN_BYTES,
+			MaxUploadSizeFormat::IN_MEGABYTES => $value,
+			MaxUploadSizeFormat::FORMATTED => (string) size_format( $value )
 		};
 	}
 
-	private function get_default_value(): int {
+	public function get_system_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
-		return $this->get_value( MaxUploadSizeFormat::FROM_SYSTEM_IN_MEGABYTES );
+		$value = wp_max_upload_size();
+
+		return match ( $format ) {
+			MaxUploadSizeFormat::IN_BYTES => $value,
+			MaxUploadSizeFormat::IN_MEGABYTES => $value / MB_IN_BYTES,
+			MaxUploadSizeFormat::FORMATTED => (string) size_format( $value ),
+		};
 	}
 }

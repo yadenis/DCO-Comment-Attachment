@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA\Settings;
 
 use DCO_CA\Options;
+use DCO_CA\Settings\Enums\WhoCanUploadType;
 use DCO_CA\Settings\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
@@ -18,8 +19,7 @@ final class WhoCanUpload implements Setting {
 	) {
 	}
 
-	// all_users, logged_users.
-	public function get_value(): string {
+	public function get_value(): WhoCanUploadType {
 
 		$value = $this->options->get_string_option( self::OPTION_NAME );
 		if ( null === $value ) {
@@ -29,8 +29,8 @@ final class WhoCanUpload implements Setting {
 		return $value;
 	}
 
-	private function get_default_value(): string {
+	private function get_default_value(): WhoCanUploadType {
 
-		return 'all_users';
+		return WhoCanUploadType::ALL_USERS;
 	}
 }

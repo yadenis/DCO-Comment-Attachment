@@ -6,9 +6,8 @@ namespace DCO_CA\Settings\Enums;
 
 defined( 'ABSPATH' ) || die;
 
-enum MaxUploadSizeFormat {
+enum AllowedFileTypesFormat {
 
-	case IN_BYTES;
-	case IN_MEGABYTES;
-	case FORMATTED;
+	case ARRAY;
+	case GROUPED_ARRAY;
 }

@@ -9,9 +9,9 @@ use DCO_CA\Settings\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
 
-final class EnableMultipleUpload implements Setting {
+final class ManuallyModeration implements Setting {
 
-	private const OPTION_NAME = 'autoembed_links';
+	private const OPTION_NAME = 'manually_moderation';
 
 	public function __construct(
 		private Options $options,

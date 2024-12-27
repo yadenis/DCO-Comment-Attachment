@@ -1,0 +1,78 @@
+<?php
+
+declare(strict_types=1);
+
+namespace DCO_CA\Services;
+
+defined( 'ABSPATH' ) || die;
+
+final class PluginService {
+
+	private const UPLOAD_FIELD_NAME = 'attachment';
+
+	public function __construct(
+		private UserService $user_service,
+		private PostService $post_service,
+	) {
+	}
+
+	public function enqueue_style( string $style_name ): void {
+
+		wp_enqueue_style(
+			$style_name,
+			$this->get_asset_url( "{$style_name}.css" ),
+			ver: $this->get_version()
+		);
+	}
+
+	public function enqueue_script( string $script_name ): void {
+
+		wp_enqueue_script(
+			$script_name,
+			$this->get_asset_url( "{$script_name}.js" ),
+			ver: DCO_CA_VERSION,
+			args: [ 'in_footer' => true ]
+		);
+	}
+
+	public function is_form_enabled(): bool {
+
+		$disable = false;
+
+		if ( ! $this->post_service->is_current_post_used_comments() ) {
+			$disable = true;
+		}
+
+		if ( ! $this->user_service->is_current_user_can_upload_attachment() ) {
+			$disable = true;
+		}
+
+		/**
+		 * Filters whether to disable the attachment upload field.
+		 *
+		 * Prevents the attachment upload field from being appended to the commenting form.
+		 *
+		 * @since 1.1.0
+		 *
+		 * @param bool $disable Whether to disable the attachment upload field.
+		 *                      Returning true to the filter will disable the attachment field.
+		 *                      Default false.
+		 */
+		return ! apply_filters( 'dco_ca_disable_attachment_field', $disable );
+	}
+
+	public function get_upload_field_name(): string {
+
+		return self::UPLOAD_FIELD_NAME;
+	}
+
+	private function get_asset_url( string $filename ): string {
+
+		return DCO_CA_URL . "assets/{$filename}";
+	}
+
+	private function get_version(): string {
+
+		return DCO_CA_VERSION;
+	}
+}
