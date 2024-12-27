@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\Services;
 
-use DCO_CA\Settings\Enums\WhoCanUploadType;
+use DCO_CA\Enums\WhoCanUploadType;
 use DCO_CA\Settings\WhoCanUpload;
 
 defined( 'ABSPATH' ) || die;
@@ -18,18 +18,16 @@ final class UserService {
 
 	public function is_current_user_can_upload_attachment(): bool {
 
-		$result = false;
-
 		$who_can_upload = $this->who_can_upload->get_value();
 
 		if ( WhoCanUploadType::ALL_USERS === $who_can_upload ) {
-			$result = true;
+			return true;
 		}
 
 		if ( WhoCanUploadType::LOGGED_USERS && is_user_logged_in() ) {
-			$result = true;
+			return true;
 		}
 
-		return $result;
+		return false;
 	}
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA\Settings;
 
 use DCO_CA\Options;
-use DCO_CA\Settings\Interfaces\Setting;
+use DCO_CA\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
 

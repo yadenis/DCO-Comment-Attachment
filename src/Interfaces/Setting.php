@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\Settings\Interfaces;
+namespace DCO_CA\Interfaces;
 
 defined( 'ABSPATH' ) || die;
 

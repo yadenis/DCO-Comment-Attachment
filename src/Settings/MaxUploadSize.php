@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace DCO_CA\Settings;
 
 use DCO_CA\Options;
-use DCO_CA\Settings\Enums\MaxUploadSizeFormat;
-use DCO_CA\Settings\Interfaces\Setting;
+use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\Enums\MaxUploadSizeFormat;
+use DCO_CA\Enums\SettingsSection;
+use DCO_CA\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -33,7 +35,39 @@ final class MaxUploadSize implements Setting {
 		};
 	}
 
-	public function get_system_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
+	public function get_setting_field_dto(): SettingFieldDTO {
+
+		return new SettingFieldDTO(
+			id: self::OPTION_NAME,
+			title: esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
+			callback: $this->render_setting_field( ... ),
+			section: SettingsSection::GENERAL
+		);
+	}
+
+	public function render_setting_field( array $args ): void {
+
+		printf(
+			'<input type="number" name="%s" class="regular-text" id="%s" value="%d" min="1" max="%d">',
+			esc_attr( $args['name'] ),
+			esc_attr( $args['id'] ),
+			intval( $this->get_value( MaxUploadSizeFormat::IN_MEGABYTES ) ),
+			intval( $this->get_system_value( MaxUploadSizeFormat::IN_MEGABYTES ) )
+		);
+
+		$description = sprintf(
+			/* translators: %s: the maximum allowed upload file size */
+			esc_html__( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ),
+			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
+		);
+
+		printf(
+			'<p class="description">%s</p>',
+			wp_kses( $description, [ 'br' => [] ] )
+		);
+	}
+
+	private function get_system_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
 		$value = wp_max_upload_size();
 

@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace DCO_CA\FormElements;
 
-use DCO_CA\FormElements\Interfaces\FormElement;
-use DCO_CA\Settings\Enums\MaxUploadSizeFormat;
+use DCO_CA\Interfaces\FormElement;
+use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Settings\MaxUploadSize;
 
 defined( 'ABSPATH' ) || die;

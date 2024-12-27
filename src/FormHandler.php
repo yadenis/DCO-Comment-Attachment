@@ -21,12 +21,12 @@ final class FormHandler {
 
 		$this->is_manually_moderation = $this->manually_moderation->get_value();
 
-		add_filter( 'preprocess_comment', array( $this, 'display_attachment_error' ) );
-		add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
-		add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
+		add_filter( 'preprocess_comment', $this->check_attachment( ... ) );
+		//add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
+		//add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
 	}
 
-	public function display_attachment_error( array $commentdata ): array {
+	public function check_attachment( array $commentdata ): array {
 
 		$validated = $this->attachment_upload_validator->validate();
 

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\Settings\Enums;
+namespace DCO_CA\Enums;
 
 defined( 'ABSPATH' ) || die;
 

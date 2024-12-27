@@ -36,6 +36,8 @@ function dco_ca() {
 
 	$injector->make( DCO_CA\Form::class );
 
+	$injector->make( DCO_CA\Settings::class );
+
 	$injector->make( DCO_CA\BackwardCompatibility::class );
 }
 

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace DCO_CA\FormElements;
 
-use DCO_CA\FormElements\Interfaces\FormElement;
+use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Settings\AllowedFileTypes;
-use DCO_CA\Settings\Enums\AllowedFileTypesFormat;
+use DCO_CA\Enums\AllowedFileTypesFormat;
 
 defined( 'ABSPATH' ) || die;
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\FormElements;
 
-use DCO_CA\FormElements\Interfaces\FormElement;
+use DCO_CA\Interfaces\FormElement;
 
 defined( 'ABSPATH' ) || die;
 

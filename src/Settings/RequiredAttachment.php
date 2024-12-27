@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace DCO_CA\Settings;
 
 use DCO_CA\Options;
-use DCO_CA\Settings\Interfaces\Setting;
+use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\Enums\SettingsSection;
+use DCO_CA\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -26,6 +28,21 @@ final class RequiredAttachment implements Setting {
 		}
 
 		return $value;
+	}
+
+	public function get_setting_field_dto(): SettingFieldDTO {
+
+		return new SettingFieldDTO(
+			id: self::OPTION_NAME,
+			title: esc_html__( 'Is attachment required?', 'dco-comment-attachment' ),
+			callback: $this->render_setting_field( ... ),
+			section: SettingsSection::GENERAL
+		);
+	}
+
+	public function render_setting_field( array $args ): void {
+
+		
 	}
 
 	private function get_default_value(): bool {

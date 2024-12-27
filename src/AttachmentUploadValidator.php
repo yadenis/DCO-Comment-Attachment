@@ -7,7 +7,7 @@ namespace DCO_CA;
 use DCO_CA\Services\PluginService;
 use DCO_CA\Settings\AllowedFileTypes;
 use DCO_CA\Settings\EnableMultipleUpload;
-use DCO_CA\Settings\Enums\MaxUploadSizeFormat;
+use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Settings\MaxUploadSize;
 use DCO_CA\Settings\RequiredAttachment;
 use WP_Error;
