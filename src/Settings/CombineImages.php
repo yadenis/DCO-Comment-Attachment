@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || die;
 final class CombineImages implements Setting {
 
 	private const OPTION_NAME = 'combine_images';
+	private const DEFAULT_VALUE = true;
 
 	public function __construct(
 		private Options $options,
@@ -30,6 +31,6 @@ final class CombineImages implements Setting {
 
 	private function get_default_value(): bool {
 
-		return true;
+		return self::DEFAULT_VALUE;
 	}
 }

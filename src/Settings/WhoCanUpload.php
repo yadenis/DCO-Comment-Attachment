@@ -12,7 +12,8 @@ defined( 'ABSPATH' ) || die;
 
 final class WhoCanUpload implements Setting {
 
-	private const OPTION_NAME = 'who_can_upload';
+	private const OPTION_NAME   = 'who_can_upload';
+	private const DEFAULT_VALUE = WhoCanUploadType::ALL_USERS;
 
 	public function __construct(
 		private Options $options,
@@ -31,6 +32,6 @@ final class WhoCanUpload implements Setting {
 
 	private function get_default_value(): WhoCanUploadType {
 
-		return WhoCanUploadType::ALL_USERS;
+		return self::DEFAULT_VALUE;
 	}
 }

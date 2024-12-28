@@ -11,7 +11,8 @@ defined( 'ABSPATH' ) || die;
 
 final class ManuallyModeration implements Setting {
 
-	private const OPTION_NAME = 'manually_moderation';
+	private const OPTION_NAME   = 'manually_moderation';
+	private const DEFAULT_VALUE = false;
 
 	public function __construct(
 		private Options $options,
@@ -30,6 +31,6 @@ final class ManuallyModeration implements Setting {
 
 	private function get_default_value(): bool {
 
-		return false;
+		return self::DEFAULT_VALUE;
 	}
 }

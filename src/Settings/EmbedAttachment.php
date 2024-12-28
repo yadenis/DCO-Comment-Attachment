@@ -8,7 +8,6 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControl;
 use DCO_CA\SettingControls\Checkbox;
 use DCO_CA\SettingControls\Description;
 
@@ -16,7 +15,8 @@ defined( 'ABSPATH' ) || die;
 
 final class EmbedAttachment implements Setting {
 
-	private const OPTION_NAME = 'embed_attachment';
+	private const OPTION_NAME   = 'embed_attachment';
+	private const DEFAULT_VALUE = true;
 
 	public function __construct(
 		private Options $options,
@@ -62,6 +62,6 @@ final class EmbedAttachment implements Setting {
 
 	private function get_default_value(): bool {
 
-		return true;
+		return self::DEFAULT_VALUE;
 	}
 }

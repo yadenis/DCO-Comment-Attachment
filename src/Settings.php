@@ -7,6 +7,7 @@ namespace DCO_CA;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Settings\AutoembedLinks;
 use DCO_CA\Settings\EmbedAttachment;
+use DCO_CA\Settings\LinkThumbnail;
 use DCO_CA\Settings\MaxUploadSize;
 use DCO_CA\Settings\RequiredAttachment;
 use DCO_CA\Settings\ThumbnailSize;
@@ -23,6 +24,7 @@ final class Settings {
 		private EmbedAttachment $embed_attachment,
 		private AutoembedLinks $autoembed_links,
 		private ThumbnailSize $thumbnail_size,
+		private LinkThumbnail $link_thumbnail,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
@@ -107,6 +109,7 @@ final class Settings {
 			$this->embed_attachment->get_setting_field_dto(),
 			$this->autoembed_links->get_setting_field_dto(),
 			$this->thumbnail_size->get_setting_field_dto(),
+			$this->link_thumbnail->get_setting_field_dto(),
 		];
 	}
 }

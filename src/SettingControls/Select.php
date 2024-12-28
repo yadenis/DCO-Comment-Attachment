@@ -13,7 +13,7 @@ final class Select implements SettingControl {
 	public function __construct(
 		private string $name,
 		private string $id,
-		private array $choices,
+		private array $options,
 	) {
 	}
 
@@ -25,13 +25,13 @@ final class Select implements SettingControl {
 			esc_attr( $this->id ),
 		);
 
-		foreach ( $this->choices as $choice ) {
+		foreach ( $this->options as $option ) {
 
-			if ( ! $choice instanceof Option ) {
+			if ( ! $option instanceof SelectOption ) {
 				continue;
 			}
 
-			$choice->render();
+			$option->render();
 		}
 
 		echo '</select>';

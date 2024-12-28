@@ -8,11 +8,9 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControl;
-use DCO_CA\SettingControlOption;
 use DCO_CA\SettingControls\Description;
-use DCO_CA\SettingControls\Option;
 use DCO_CA\SettingControls\Select;
+use DCO_CA\SettingControls\SelectOption;
 
 defined( 'ABSPATH' ) || die;
 
@@ -52,7 +50,7 @@ final class ThumbnailSize implements Setting {
 			new Select(
 				name: $args['name'],
 				id: $args['id'],
-				choices: $this->build_choices(),
+				options: $this->build_options(),
 			)
 		)->render();
 
@@ -68,33 +66,33 @@ final class ThumbnailSize implements Setting {
 		return self::DEFAULT_VALUE;
 	}
 
-	private function build_choices(): array {
+	private function build_options(): array {
 
-		$choices = [];
+		$options = [];
 
 		$sizes = wp_get_registered_image_subsizes();
 
 		foreach ( $sizes as $name => $attributes ) {
 
-			$text = $this->build_choice_text( $name, $attributes );
+			$text = $this->build_option_text( $name, $attributes );
 
-			$choices[] = new Option(
+			$options[] = new SelectOption(
 				value: $name,
 				text: $text,
 				selected: $name === $this->get_value(),
 			);
 		}
 
-		$choices[] = new Option(
+		$options[] = new SelectOption(
 			value: 'full',
 			text: __( 'Full (original image)', 'dco-comment-attachment' ),
 			selected: 'full' === $this->get_value(),
 		);
 
-		return $choices;
+		return $options;
 	}
 
-	private function build_choice_text( string $name, array $attributes ): string {
+	private function build_option_text( string $name, array $attributes ): string {
 
 		$width  = $attributes['width'];
 		$height = $attributes['height'];

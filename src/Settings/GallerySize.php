@@ -11,7 +11,8 @@ defined( 'ABSPATH' ) || die;
 
 final class GallerySize implements Setting {
 
-	private const OPTION_NAME = 'gallery_size';
+	private const OPTION_NAME   = 'gallery_size';
+	private const DEFAULT_VALUE = 'thumbnail';
 
 	public function __construct(
 		private Options $options,
@@ -30,6 +31,6 @@ final class GallerySize implements Setting {
 
 	private function get_default_value(): string {
 
-		return 'thumbnail';
+		return self::DEFAULT_VALUE;
 	}
 }

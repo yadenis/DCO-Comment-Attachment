@@ -8,26 +8,28 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class Option implements SettingControl {
+final class RadioChoice implements SettingControl {
 
 	public function __construct(
+		private string $name,
 		private string $value,
 		private string $text,
-		private bool $selected = false,
+		private bool $checked = false,
 	) {
 	}
 
 	public function render(): void {
 
 		printf(
-			'<option value="%s"%s>%s</option>',
+			'<label><input type="radio" name="%s" value="%s"%s> %s</label>',
+			esc_attr( $this->name ),
 			esc_attr( $this->value ),
-			selected(
-				selected: true,
-				current: $this->selected,
+			checked(
+				checked: true,
+				current: $this->checked,
 				display: false
 			),
-			esc_html( $this->text )
+			wp_kses( $this->text, [ 'a' => [ 'href' => true ] ] ),
 		);
 	}
 }

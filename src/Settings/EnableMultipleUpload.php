@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || die;
 final class EnableMultipleUpload implements Setting {
 
 	private const OPTION_NAME = 'autoembed_links';
+	private const DEFAULT_VALUE = false;
 
 	public function __construct(
 		private Options $options,
@@ -30,6 +31,6 @@ final class EnableMultipleUpload implements Setting {
 
 	private function get_default_value(): bool {
 
-		return false;
+		return self::DEFAULT_VALUE;
 	}
 }
