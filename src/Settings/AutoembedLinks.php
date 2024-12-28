@@ -4,8 +4,11 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
+use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
+use DCO_CA\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -26,6 +29,28 @@ final class AutoembedLinks implements Setting {
 		}
 
 		return $value;
+	}
+
+	public function get_setting_field_dto(): SettingFieldDTO {
+
+		return new SettingFieldDTO(
+			id: self::OPTION_NAME,
+			title: esc_html__( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
+			callback: $this->render_setting_field( ... ),
+			section: SettingsSection::GENERAL
+		);
+	}
+
+	public function render_setting_field( array $args ): void {
+
+		(
+			new SettingControl(
+				name: $args['name'],
+				id: $args['id'],
+				value: $this->get_value(),
+				description:  __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' )
+			)
+		)->render_checkbox();
 	}
 
 	private function get_default_value(): bool {

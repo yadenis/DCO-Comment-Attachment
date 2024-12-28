@@ -8,6 +8,7 @@ use DCO_CA\Options;
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
+use DCO_CA\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -42,11 +43,18 @@ final class RequiredAttachment implements Setting {
 
 	public function render_setting_field( array $args ): void {
 
-		
+		(
+			new SettingControl(
+				name: $args['name'],
+				id: $args['id'],
+				value: $this->get_value(),
+				description:  __( 'If checked, the user will not be able to post a comment without attaching an attachment.', 'dco-comment-attachment' )
+			)
+		)->render_checkbox();
 	}
 
 	private function get_default_value(): bool {
 
-		return true;
+		return false;
 	}
 }
