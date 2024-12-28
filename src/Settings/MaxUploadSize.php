@@ -9,6 +9,7 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
+use DCO_CA\SettingControls\Description;
 
 defined( 'ABSPATH' ) || die;
 
@@ -61,10 +62,11 @@ final class MaxUploadSize implements Setting {
 			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
 		);
 
-		printf(
-			'<p class="description">%s</p>',
-			wp_kses( $description, [ 'br' => [] ] )
-		);
+		(
+			new Description(
+				text: $description,
+			)
+		)->render();
 	}
 
 	private function get_system_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {

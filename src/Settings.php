@@ -9,6 +9,7 @@ use DCO_CA\Settings\AutoembedLinks;
 use DCO_CA\Settings\EmbedAttachment;
 use DCO_CA\Settings\MaxUploadSize;
 use DCO_CA\Settings\RequiredAttachment;
+use DCO_CA\Settings\ThumbnailSize;
 
 defined( 'ABSPATH' ) || die;
 
@@ -21,6 +22,7 @@ final class Settings {
 		private RequiredAttachment $required_attachment,
 		private EmbedAttachment $embed_attachment,
 		private AutoembedLinks $autoembed_links,
+		private ThumbnailSize $thumbnail_size,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
@@ -104,6 +106,7 @@ final class Settings {
 			$this->required_attachment->get_setting_field_dto(),
 			$this->embed_attachment->get_setting_field_dto(),
 			$this->autoembed_links->get_setting_field_dto(),
+			$this->thumbnail_size->get_setting_field_dto(),
 		];
 	}
 }
