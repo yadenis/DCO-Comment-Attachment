@@ -25,12 +25,7 @@ final class EmbedAttachment implements Setting {
 
 	public function get_value(): bool {
 
-		$value = $this->options->get_bool_option( self::OPTION_NAME );
-		if ( null === $value ) {
-			return $this->get_default_value();
-		}
-
-		return $value;
+		return $this->options->get_bool_option( self::OPTION_NAME ) ?? $this->get_default_value();
 	}
 
 	public function get_setting_field_dto(): SettingFieldDTO {

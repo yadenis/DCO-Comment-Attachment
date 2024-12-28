@@ -10,6 +10,7 @@ use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\SettingControls\Description;
+use DCO_CA\SettingControls\Number;
 
 defined( 'ABSPATH' ) || die;
 
@@ -48,13 +49,14 @@ final class MaxUploadSize implements Setting {
 
 	public function render_setting_field( array $args ): void {
 
-		printf(
-			'<input type="number" name="%s" class="regular-text" id="%s" value="%d" min="1" max="%d">',
-			esc_attr( $args['name'] ),
-			esc_attr( $args['id'] ),
-			intval( $this->get_value( MaxUploadSizeFormat::IN_MEGABYTES ) ),
-			intval( $this->get_system_value( MaxUploadSizeFormat::IN_MEGABYTES ) )
-		);
+		(
+			new Number(
+				name: $args['name'],
+				id: $args['id'],
+				value:  $this->get_value( MaxUploadSizeFormat::IN_MEGABYTES ),
+				max: $this->get_system_value( MaxUploadSizeFormat::IN_MEGABYTES ),
+			)
+		)->render();
 
 		$description = sprintf(
 			/* translators: %s: the maximum allowed upload file size */

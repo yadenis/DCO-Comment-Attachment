@@ -21,12 +21,7 @@ final class ManuallyModeration implements Setting {
 
 	public function get_value(): bool {
 
-		$value = $this->options->get_bool_option( self::OPTION_NAME );
-		if ( null === $value ) {
-			return $this->get_default_value();
-		}
-
-		return $value;
+		return $this->options->get_bool_option( self::OPTION_NAME ) ?? $this->get_default_value();
 	}
 
 	private function get_default_value(): bool {

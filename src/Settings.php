@@ -81,8 +81,9 @@ final class Settings {
 				page: self::ID,
 				section: $field->section->value,
 				args: [
-					'name' => $field->id,
-					'id'   => self::ID . "[{$field->id}]",
+					'name'      => self::ID . "[{$field->id}]",
+					'id'        => $field->id,
+					'label_for' => $field->id,
 				]
 			);
 		}
