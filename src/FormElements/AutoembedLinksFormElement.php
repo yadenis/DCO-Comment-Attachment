@@ -31,7 +31,13 @@ final class AutoembedLinksFormElement implements FormElement {
 		 *                       notification list form element.
 		 * @param bool $is_autoembed_links Whether the links is automatically embedded.
 		 */
-		echo wp_kses_post( apply_filters( 'dco_ca_form_element_autoembed_links', $this->get_markup(), $this->is_autoembed_links ) );
+		echo wp_kses_post(
+			apply_filters(
+				'dco_ca_form_element_autoembed_links',
+				$this->get_markup(),
+				$this->is_autoembed_links
+			)
+		);
 	}
 
 	private function get_markup(): string {

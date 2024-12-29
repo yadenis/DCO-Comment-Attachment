@@ -28,7 +28,7 @@ final class DropAreaFormElement implements FormElement {
 		?>
 		<span class="comment-form-attachment__drop-area">
 			<span class="comment-form-attachment__drop-area-inner">
-				<?= wp_kses_post( $text ); ?>
+				<?php echo wp_kses_post( $text ); ?>
 			</span>
 		</span>
 		<?php
