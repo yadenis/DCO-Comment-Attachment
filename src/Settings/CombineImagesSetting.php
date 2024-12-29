@@ -50,7 +50,7 @@ final class CombineImagesSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text:  __( 'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.', 'dco-comment-attachment' ),
+				text: __( 'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.', 'dco-comment-attachment' ),
 			)
 		)->render();
 	}

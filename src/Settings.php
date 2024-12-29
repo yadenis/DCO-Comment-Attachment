@@ -12,9 +12,11 @@ use DCO_CA\Settings\EmbedAttachmentSetting;
 use DCO_CA\Settings\EnableMultipleUploadSetting;
 use DCO_CA\Settings\GallerySizeSetting;
 use DCO_CA\Settings\LinkThumbnailSetting;
+use DCO_CA\Settings\ManuallyModerationSetting;
 use DCO_CA\Settings\MaxUploadSizeSetting;
 use DCO_CA\Settings\RequiredAttachmentSetting;
 use DCO_CA\Settings\ThumbnailSizeSetting;
+use DCO_CA\Settings\WhoCanUploadSetting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -33,6 +35,8 @@ final class Settings {
 		private CombineImagesSetting $combine_images,
 		private GallerySizeSetting $gallery_size,
 		private AllowedFileTypesSetting $allowed_file_types,
+		private WhoCanUploadSetting $who_can_upload,
+		private ManuallyModerationSetting $manually_moderation,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
@@ -123,6 +127,8 @@ final class Settings {
 			$this->combine_images->get_setting_field_dto(),
 			$this->gallery_size->get_setting_field_dto(),
 			$this->allowed_file_types->get_setting_field_dto(),
+			$this->who_can_upload->get_setting_field_dto(),
+			$this->manually_moderation->get_setting_field_dto(),
 		];
 	}
 }

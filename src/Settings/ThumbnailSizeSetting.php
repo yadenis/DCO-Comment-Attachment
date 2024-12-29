@@ -53,7 +53,7 @@ final class ThumbnailSizeSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text:  __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
+				text: __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
 			)
 		)->render();
 	}
