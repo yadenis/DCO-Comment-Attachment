@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA;
 
-use DCO_CA\FormElements\AttachmentArea;
+use DCO_CA\FormElements\AttachmentAreaFormElement;
 use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
@@ -13,7 +13,7 @@ final class Form {
 
 	public function __construct(
 		private FormHandler $form_handler,
-		private AttachmentArea $attachment_area,
+		private AttachmentAreaFormElement $attachment_area,
 		private PluginService $plugin_service,
 	) {
 

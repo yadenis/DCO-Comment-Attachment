@@ -10,7 +10,7 @@ use DCO_CA\Settings\RequiredAttachment;
 
 defined( 'ABSPATH' ) || die;
 
-final class Label implements FormElement {
+final class LabelFormElement implements FormElement {
 
 	private bool $is_required_attachment;
 	private bool $is_enabled_multiple_upload;
@@ -44,8 +44,8 @@ final class Label implements FormElement {
 
 	private function get_label_text(): string {
 
-		$singular_label = esc_html__( 'Attachment', 'dco-comment-attachment' );
-		$plural_label   = esc_html__( 'Attachments', 'dco-comment-attachment' );
+		$singular_label = __( 'Attachment', 'dco-comment-attachment' );
+		$plural_label   = __( 'Attachments', 'dco-comment-attachment' );
 
 		$label = $this->is_enabled_multiple_upload ? $plural_label : $singular_label;
 
@@ -53,7 +53,7 @@ final class Label implements FormElement {
 
 		return apply_filters(
 			'dco_ca_form_element_label_text',
-			$label,
+			esc_html( $label ),
 			$this->is_enabled_multiple_upload,
 			$this->is_required_attachment
 		);

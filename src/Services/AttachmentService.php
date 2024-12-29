@@ -27,6 +27,11 @@ final class AttachmentService {
 		return $sizes;
 	}
 
+	public function get_image_extensions() {
+
+		return [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+	}
+
 	private function build_image_size_title( string $name, array $attributes ): string {
 
 		$width  = $attributes['width'];

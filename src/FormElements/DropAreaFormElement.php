@@ -9,7 +9,7 @@ use DCO_CA\Settings\EnableMultipleUpload;
 
 defined( 'ABSPATH' ) || die;
 
-final class DropArea implements FormElement {
+final class DropAreaFormElement implements FormElement {
 
 	private bool $is_enabled_multiple_upload;
 
@@ -46,14 +46,14 @@ final class DropArea implements FormElement {
 
 	private function get_drop_area_text(): string {
 
-		$singular_text = esc_html__( 'Drop file here', 'dco-comment-attachment' );
-		$plural_text   = esc_html__( 'Drop files here', 'dco-comment-attachment' );
+		$singular_text = __( 'Drop file here', 'dco-comment-attachment' );
+		$plural_text   = __( 'Drop files here', 'dco-comment-attachment' );
 
 		$text = $this->is_enabled_multiple_upload ? $plural_text : $singular_text;
 
 		return apply_filters(
 			'dco_ca_form_element_drop_area_text',
-			$text,
+			esc_html( $text ),
 			$this->is_enabled_multiple_upload,
 		);
 	}

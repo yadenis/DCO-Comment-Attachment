@@ -9,7 +9,7 @@ use DCO_CA\Settings\AutoembedLinks as AutoembedLinksSetting;
 
 defined( 'ABSPATH' ) || die;
 
-final class AutoembedLinks implements FormElement {
+final class AutoembedLinksFormElement implements FormElement {
 
 	private bool $is_autoembed_links;
 

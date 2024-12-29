@@ -11,7 +11,7 @@ use DCO_CA\Settings\EnableMultipleUpload;
 
 defined( 'ABSPATH' ) || die;
 
-final class Input implements FormElement {
+final class InputFormElement implements FormElement {
 
 	private bool $is_enabled_multiple_upload;
 	private array $allowed_file_types_list;

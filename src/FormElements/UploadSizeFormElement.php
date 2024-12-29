@@ -10,7 +10,7 @@ use DCO_CA\Settings\MaxUploadSize;
 
 defined( 'ABSPATH' ) || die;
 
-final class UploadSize implements FormElement {
+final class UploadSizeFormElement implements FormElement {
 
 	private string $max_upload_size_value;
 

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
+use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Options;
 use DCO_CA\Enums\AllowedFileTypesFormat;
+use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
+use DCO_CA\SettingControls\Description;
 
 defined( 'ABSPATH' ) || die;
 
@@ -31,6 +34,33 @@ final class AllowedFileTypes implements Setting {
 			AllowedFileTypesFormat::ARRAY => $value,
 			AllowedFileTypesFormat::GROUPED_ARRAY => $this->format_grouped_value( $value ),
 		};
+	}
+
+	public function get_setting_field_dto(): SettingFieldDTO {
+
+		return new SettingFieldDTO(
+			id: self::OPTION_NAME,
+			title: __( 'Allowed File Types', 'dco-comment-attachment' ),
+			callback: $this->render_setting_field( ... ),
+			section: SettingsSection::PERMISSIONS
+		);
+	}
+
+	public function render_setting_field( array $args ): void {
+
+		(
+			new Checkbox(
+				name: $args['name'],
+				id: $args['id'],
+				checked: true === $this->get_value(),
+			)
+		)->render();
+
+		(
+			new Description(
+				text:  '* — ' . __( 'available for embedding.', 'dco-comment-attachment' ) . '<br>** — ' . __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' ),
+			)
+		)->render();
 	}
 
 	public function apply_file_types_filter_to_function( callable $callback, array $arguments ): mixed {
@@ -82,16 +112,16 @@ final class AllowedFileTypes implements Setting {
 	private function get_plugin_groups(): array {
 
 		$groups_list = [
-			'image'       => esc_html__( 'image', 'dco-comment-attachment' ),
-			'audio'       => esc_html__( 'audio', 'dco-comment-attachment' ),
-			'video'       => esc_html__( 'video', 'dco-comment-attachment' ),
-			'document'    => esc_html__( 'document', 'dco-comment-attachment' ),
-			'spreadsheet' => esc_html__( 'spreadsheet', 'dco-comment-attachment' ),
-			'interactive' => esc_html__( 'interactive', 'dco-comment-attachment' ),
-			'text'        => esc_html__( 'text', 'dco-comment-attachment' ),
-			'archive'     => esc_html__( 'archive', 'dco-comment-attachment' ),
-			'code'        => esc_html__( 'code', 'dco-comment-attachment' ),
-			'other'       => esc_html__( 'other', 'dco-comment-attachment' ),
+			'image'       => __( 'image', 'dco-comment-attachment' ),
+			'audio'       => __( 'audio', 'dco-comment-attachment' ),
+			'video'       => __( 'video', 'dco-comment-attachment' ),
+			'document'    => __( 'document', 'dco-comment-attachment' ),
+			'spreadsheet' => __( 'spreadsheet', 'dco-comment-attachment' ),
+			'interactive' => __( 'interactive', 'dco-comment-attachment' ),
+			'text'        => __( 'text', 'dco-comment-attachment' ),
+			'archive'     => __( 'archive', 'dco-comment-attachment' ),
+			'code'        => __( 'code', 'dco-comment-attachment' ),
+			'other'       => __( 'other', 'dco-comment-attachment' ),
 		];
 
 		$groups = [];

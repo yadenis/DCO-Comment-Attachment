@@ -8,15 +8,15 @@ use DCO_CA\Interfaces\FormElement;
 
 defined( 'ABSPATH' ) || die;
 
-final class AttachmentArea implements FormElement {
+final class AttachmentAreaFormElement implements FormElement {
 
 	public function __construct(
-		private Label $label,
-		private Input $input,
-		private UploadSize $upload_size,
-		private FileTypes $file_types,
-		private AutoembedLinks $autoembed_links,
-		private DropArea $drop_area,
+		private LabelFormElement $label,
+		private InputFormElement $input,
+		private UploadSizeFormElement $upload_size,
+		private FileTypesFormElement $file_types,
+		private AutoembedLinksFormElement $autoembed_links,
+		private DropAreaFormElement $drop_area,
 	) {
 	}
 

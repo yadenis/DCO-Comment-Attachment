@@ -10,7 +10,7 @@ use DCO_CA\Enums\AllowedFileTypesFormat;
 
 defined( 'ABSPATH' ) || die;
 
-final class FileTypes implements FormElement {
+final class FileTypesFormElement implements FormElement {
 
 	private array $types;
 

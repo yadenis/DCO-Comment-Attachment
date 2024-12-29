@@ -139,7 +139,7 @@ final class AttachmentUploadValidator {
 
 				return new WP_Error(
 					"dco-comment-attachment-$error_code",
-					$upload_error,
+					esc_html( $upload_error ),
 					[ 'status' => 500 ]
 				);
 			}
@@ -160,7 +160,7 @@ final class AttachmentUploadValidator {
 
 			return new WP_Error(
 				"dco-comment-attachment-$error_code",
-				$upload_error,
+				esc_html( $upload_error ),
 				[ 'status' => 500 ]
 			);
 		}
@@ -197,17 +197,17 @@ final class AttachmentUploadValidator {
 		$upload_errors = [
 			1 => sprintf(
 				/* translators: %s: the maximum allowed upload file size */
-				esc_html__( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ),
+				__( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ),
 				$this->max_upload_size_formatted_value
 			),
-			2 => esc_html__(
+			2 => __(
 				'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
 				'dco-comment-attachment'
 			),
-			3 => esc_html__( 'The uploaded file was only partially uploaded.', 'dco-comment-attachment' ),
-			6 => esc_html__( 'Missing a temporary folder.', 'dco-comment-attachment' ),
-			7 => esc_html__( 'Failed to write file to disk.', 'dco-comment-attachment' ),
-			8 => esc_html__( 'A PHP extension stopped the file upload.', 'dco-comment-attachment' ),
+			3 => __( 'The uploaded file was only partially uploaded.', 'dco-comment-attachment' ),
+			6 => __( 'Missing a temporary folder.', 'dco-comment-attachment' ),
+			7 => __( 'Failed to write file to disk.', 'dco-comment-attachment' ),
+			8 => __( 'A PHP extension stopped the file upload.', 'dco-comment-attachment' ),
 		];
 
 		return $upload_errors[ $error_code ] ?? null;
