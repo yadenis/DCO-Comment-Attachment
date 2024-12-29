@@ -49,7 +49,14 @@ final class InputFormElement implements FormElement {
 		 * @param string $field_name Name of the attachment input.
 		 * @param array $allowed_file_types Allowed upload file types.
 		 */
-		echo apply_filters( 'dco_ca_form_element_input', $markup, $field_name, $this->allowed_file_types );
+		echo wp_kses_post(
+			apply_filters(
+				'dco_ca_form_element_input',
+				$markup,
+				$field_name,
+				$this->allowed_file_types
+			)
+		);
 	}
 
 	private function get_field_name(): string {

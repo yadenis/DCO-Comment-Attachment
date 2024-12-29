@@ -39,7 +39,13 @@ final class LabelFormElement implements FormElement {
 		 * @param string $markup HTML markup for the label form element.
 		 * @param bool $required_attachment Whether to attachment is required.
 		 */
-		echo apply_filters( 'dco_ca_form_element_label', $markup, $this->is_required_attachment );
+		echo wp_kses_post(
+			apply_filters(
+				'dco_ca_form_element_label',
+				$markup,
+				$this->is_required_attachment
+			)
+		);
 	}
 
 	private function get_label_text(): string {
@@ -53,7 +59,7 @@ final class LabelFormElement implements FormElement {
 
 		return apply_filters(
 			'dco_ca_form_element_label_text',
-			esc_html( $label ),
+			$label,
 			$this->is_enabled_multiple_upload,
 			$this->is_required_attachment
 		);

@@ -23,7 +23,13 @@ final class FileTypesFormElement implements FormElement {
 
 	public function render(): void {
 
-		echo apply_filters( 'dco_ca_form_element_file_types', $this->get_markup(), $this->types );
+		echo wp_kses_post(
+			apply_filters(
+				'dco_ca_form_element_file_types',
+				$this->get_markup(),
+				$this->types
+			)
+		);
 	}
 
 	private function get_markup(): string {
@@ -36,8 +42,8 @@ final class FileTypesFormElement implements FormElement {
 			'<span class="comment-form-attachment__file-types-notice">%s</span>',
 			sprintf(
 			/* translators: %s: the allowed file types list */
-				esc_html__( 'You can upload: %s.', 'dco-comment-attachment' ),
-				wp_kses_data( $this->build_html_types() )
+				__( 'You can upload: %s.', 'dco-comment-attachment' ),
+				$this->build_html_types()
 			)
 		);
 	}

@@ -35,6 +35,6 @@ final class AttachmentAreaFormElement implements FormElement {
 			?>
 		</p>
 		<?php
-		echo apply_filters( 'dco_ca_attachment_area', ob_get_clean() );
+		echo wp_kses_post( apply_filters( 'dco_ca_attachment_area', ob_get_clean() ) );
 	}
 }

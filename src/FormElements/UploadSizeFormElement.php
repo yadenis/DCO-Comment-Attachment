@@ -27,8 +27,8 @@ final class UploadSizeFormElement implements FormElement {
 			'<span class="comment-form-attachment__file-size-notice">%s</span>',
 			sprintf(
 				/* translators: %s: the maximum allowed upload file size */
-				esc_html__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ),
-				esc_html( $this->max_upload_size_value )
+				__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ),
+				$this->max_upload_size_value
 			)
 		);
 
@@ -41,6 +41,12 @@ final class UploadSizeFormElement implements FormElement {
 		 *                       file size form element.
 		 * @param string $max_upload_size The max upload file size with format.
 		 */
-		echo apply_filters( 'dco_ca_form_element_upload_size', $markup, $this->max_upload_size_value );
+		echo wp_kses_post(
+			apply_filters(
+				'dco_ca_form_element_upload_size',
+				$markup,
+				$this->max_upload_size_value
+			)
+		);
 	}
 }

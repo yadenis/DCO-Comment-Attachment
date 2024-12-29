@@ -31,7 +31,7 @@ final class AutoembedLinksFormElement implements FormElement {
 		 *                       notification list form element.
 		 * @param bool $is_autoembed_links Whether the links is automatically embedded.
 		 */
-		echo apply_filters( 'dco_ca_form_element_autoembed_links', $this->get_markup(), $this->is_autoembed_links );
+		echo wp_kses_post( apply_filters( 'dco_ca_form_element_autoembed_links', $this->get_markup(), $this->is_autoembed_links ) );
 	}
 
 	private function get_markup(): string {
@@ -43,7 +43,7 @@ final class AutoembedLinksFormElement implements FormElement {
 		return sprintf(
 			'<span class="comment-form-attachment__autoembed-links-notice">%s</span>',
 			sprintf(
-				esc_html__( 'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.', 'dco-comment-attachment' )
+				__( 'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.', 'dco-comment-attachment' )
 			)
 		);
 	}

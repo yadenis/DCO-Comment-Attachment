@@ -28,7 +28,7 @@ final class DropAreaFormElement implements FormElement {
 		?>
 		<span class="comment-form-attachment__drop-area">
 			<span class="comment-form-attachment__drop-area-inner">
-				<?= $text; ?>
+				<?= wp_kses_post( $text ); ?>
 			</span>
 		</span>
 		<?php
@@ -41,7 +41,14 @@ final class DropAreaFormElement implements FormElement {
 		 * @param string $markup HTML markup for the drop area form element.
 		 * @param bool $is_enabled_multiple_upload
 		 */
-		echo apply_filters( 'dco_ca_form_element_drop_area', ob_get_clean(), $text, $this->is_enabled_multiple_upload );
+		echo wp_kses_post(
+			apply_filters(
+				'dco_ca_form_element_drop_area',
+				ob_get_clean(),
+				$text,
+				$this->is_enabled_multiple_upload
+			)
+		);
 	}
 
 	private function get_drop_area_text(): string {
@@ -53,7 +60,7 @@ final class DropAreaFormElement implements FormElement {
 
 		return apply_filters(
 			'dco_ca_form_element_drop_area_text',
-			esc_html( $text ),
+			$text,
 			$this->is_enabled_multiple_upload,
 		);
 	}
