@@ -9,7 +9,7 @@ use DCO_CA\Options;
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\Description;
+use DCO_CA\SettingControls\DescriptionSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -49,7 +49,7 @@ final class AllowedFileTypesSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new Checkbox(
+			new CheckboxSettingControl(
 				name: $args['name'],
 				id: $args['id'],
 				checked: true === $this->get_value(),
@@ -57,7 +57,7 @@ final class AllowedFileTypesSetting implements Setting {
 		)->render();
 
 		(
-			new Description(
+			new DescriptionSettingControl(
 				text:  '* — ' . __( 'available for embedding.', 'dco-comment-attachment' ) . '<br>** — ' . __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' ),
 			)
 		)->render();

@@ -9,9 +9,9 @@ use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\Services\AttachmentService;
-use DCO_CA\SettingControls\Description;
-use DCO_CA\SettingControls\Select;
-use DCO_CA\SettingControls\SelectOption;
+use DCO_CA\SettingControls\DescriptionSettingControl;
+use DCO_CA\SettingControls\SelectSettingControl;
+use DCO_CA\SettingControls\SelectOptionSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -44,7 +44,7 @@ final class ThumbnailSizeSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new Select(
+			new SelectSettingControl(
 				name: $args['name'],
 				id: $args['id'],
 				options: $this->build_options(),
@@ -52,7 +52,7 @@ final class ThumbnailSizeSetting implements Setting {
 		)->render();
 
 		(
-			new Description(
+			new DescriptionSettingControl(
 				text:  __( 'The size of the thumbnail for attached images.', 'dco-comment-attachment' ),
 			)
 		)->render();
@@ -71,7 +71,7 @@ final class ThumbnailSizeSetting implements Setting {
 
 		foreach ( $sizes as $name => $title ) {
 
-			$options[] = new SelectOption(
+			$options[] = new SelectOptionSettingControl(
 				value: $name,
 				text: $title,
 				selected: $name === $this->get_value(),

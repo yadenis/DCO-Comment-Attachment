@@ -8,7 +8,7 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class Checkbox implements SettingControl {
+final class CheckboxSettingControl implements SettingControl {
 
 	public function __construct(
 		private string $name,

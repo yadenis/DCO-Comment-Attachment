@@ -8,7 +8,7 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class RadioChoice implements SettingControl {
+final class RadioChoiceSettingControl implements SettingControl {
 
 	public function __construct(
 		private string $name,

@@ -8,7 +8,7 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class Number implements SettingControl {
+final class NumberSettingControl implements SettingControl {
 
 	public function __construct(
 		private string $name,

@@ -9,8 +9,8 @@ use DCO_CA\Enums\LinkThumbnailType;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\Radio;
-use DCO_CA\SettingControls\RadioChoice;
+use DCO_CA\SettingControls\RadioSettingControl;
+use DCO_CA\SettingControls\RadioChoiceSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -42,7 +42,7 @@ final class LinkThumbnailSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new Radio(
+			new RadioSettingControl(
 				choices: $this->build_choices( $args ),
 			)
 		)->render();
@@ -70,7 +70,7 @@ final class LinkThumbnailSetting implements Setting {
 
 		foreach ( $types as $value => $text ) {
 
-			$choices[] = new RadioChoice(
+			$choices[] = new RadioChoiceSettingControl(
 				name: $args['name'],
 				value: $value,
 				text: $text,

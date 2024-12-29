@@ -9,8 +9,8 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\Description;
-use DCO_CA\SettingControls\Number;
+use DCO_CA\SettingControls\DescriptionSettingControl;
+use DCO_CA\SettingControls\NumberSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -50,7 +50,7 @@ final class MaxUploadSizeSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new Number(
+			new NumberSettingControl(
 				name: $args['name'],
 				id: $args['id'],
 				value:  $this->get_value( MaxUploadSizeFormat::IN_MEGABYTES ),
@@ -65,7 +65,7 @@ final class MaxUploadSizeSetting implements Setting {
 		);
 
 		(
-			new Description(
+			new DescriptionSettingControl(
 				text: $description,
 			)
 		)->render();

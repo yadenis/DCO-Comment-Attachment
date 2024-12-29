@@ -8,8 +8,8 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\Checkbox;
-use DCO_CA\SettingControls\Description;
+use DCO_CA\SettingControls\CheckboxSettingControl;
+use DCO_CA\SettingControls\DescriptionSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -41,7 +41,7 @@ final class AutoembedLinksSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new Checkbox(
+			new CheckboxSettingControl(
 				name: $args['name'],
 				id: $args['id'],
 				checked: true === $this->get_value(),
@@ -49,7 +49,7 @@ final class AutoembedLinksSetting implements Setting {
 		)->render();
 
 		(
-			new Description(
+			new DescriptionSettingControl(
 				text:  __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' )
 			)
 		)->render();

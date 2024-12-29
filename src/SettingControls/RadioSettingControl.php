@@ -8,7 +8,7 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class Radio implements SettingControl {
+final class RadioSettingControl implements SettingControl {
 
 	public function __construct(
 		private array $choices,
@@ -23,7 +23,7 @@ final class Radio implements SettingControl {
 
 		foreach ( $this->choices as $choice ) {
 
-			if ( ! $choice instanceof RadioChoice ) {
+			if ( ! $choice instanceof RadioChoiceSettingControl ) {
 				continue;
 			}
 

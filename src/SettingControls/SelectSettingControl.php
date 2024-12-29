@@ -8,7 +8,7 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class Select implements SettingControl {
+final class SelectSettingControl implements SettingControl {
 
 	public function __construct(
 		private string $name,
@@ -27,7 +27,7 @@ final class Select implements SettingControl {
 
 		foreach ( $this->options as $option ) {
 
-			if ( ! $option instanceof SelectOption ) {
+			if ( ! $option instanceof SelectOptionSettingControl ) {
 				continue;
 			}
 
