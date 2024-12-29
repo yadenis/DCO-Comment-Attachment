@@ -13,9 +13,9 @@ use DCO_CA\SettingControls\Description;
 
 defined( 'ABSPATH' ) || die;
 
-final class AutoembedLinks implements Setting {
+final class EmbedAttachmentSetting implements Setting {
 
-	private const OPTION_NAME   = 'autoembed_links';
+	private const OPTION_NAME   = 'embed_attachment';
 	private const DEFAULT_VALUE = true;
 
 	public function __construct(
@@ -32,7 +32,7 @@ final class AutoembedLinks implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
+			title: __( 'Embed attachment?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -50,7 +50,7 @@ final class AutoembedLinks implements Setting {
 
 		(
 			new Description(
-				text:  __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' )
+				text:  __( 'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.', 'dco-comment-attachment' ),
 			)
 		)->render();
 	}

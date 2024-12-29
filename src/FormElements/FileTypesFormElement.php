@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
-use DCO_CA\Settings\AllowedFileTypes;
+use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Enums\AllowedFileTypesFormat;
 
 defined( 'ABSPATH' ) || die;
@@ -15,7 +15,7 @@ final class FileTypesFormElement implements FormElement {
 	private array $types;
 
 	public function __construct(
-		private AllowedFileTypes $allowed_file_types,
+		private AllowedFileTypesSetting $allowed_file_types,
 	) {
 
 		$this->types = $this->allowed_file_types->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );

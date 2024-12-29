@@ -14,7 +14,7 @@ use DCO_CA\SettingControls\RadioChoice;
 
 defined( 'ABSPATH' ) || die;
 
-final class LinkThumbnail implements Setting {
+final class LinkThumbnailSetting implements Setting {
 
 	private const OPTION_NAME   = 'link_thumbnail';
 	private const DEFAULT_VALUE = LinkThumbnailType::NO_LINK;

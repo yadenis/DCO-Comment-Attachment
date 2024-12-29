@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace DCO_CA\Services;
 
 use DCO_CA\Enums\WhoCanUploadType;
-use DCO_CA\Settings\WhoCanUpload;
+use DCO_CA\Settings\WhoCanUploadSetting;
 
 defined( 'ABSPATH' ) || die;
 
 final class UserService {
 
 	public function __construct(
-		private WhoCanUpload $who_can_upload
+		private WhoCanUploadSetting $who_can_upload
 	) {
 	}
 

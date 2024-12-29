@@ -6,7 +6,7 @@ namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Enums\MaxUploadSizeFormat;
-use DCO_CA\Settings\MaxUploadSize;
+use DCO_CA\Settings\MaxUploadSizeSetting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -15,7 +15,7 @@ final class UploadSizeFormElement implements FormElement {
 	private string $max_upload_size_value;
 
 	public function __construct(
-		private MaxUploadSize $max_upload_size,
+		private MaxUploadSizeSetting $max_upload_size,
 	) {
 
 		$this->max_upload_size_value = $this->max_upload_size->get_value( MaxUploadSizeFormat::FORMATTED );

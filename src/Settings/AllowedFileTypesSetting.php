@@ -13,7 +13,7 @@ use DCO_CA\SettingControls\Description;
 
 defined( 'ABSPATH' ) || die;
 
-final class AllowedFileTypes implements Setting {
+final class AllowedFileTypesSetting implements Setting {
 
 	private const OPTION_NAME = 'allowed_file_types';
 

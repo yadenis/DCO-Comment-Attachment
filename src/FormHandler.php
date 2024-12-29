@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\ManuallyModeration;
+use DCO_CA\Settings\ManuallyModerationSetting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -16,7 +16,7 @@ final class FormHandler {
 	public function __construct(
 		private PluginService $plugin_service,
 		private AttachmentUploadValidator $attachment_upload_validator,
-		private ManuallyModeration $manually_moderation,
+		private ManuallyModerationSetting $manually_moderation,
 	) {
 
 		$this->is_manually_moderation = $this->manually_moderation->get_value();

@@ -9,7 +9,7 @@ use DCO_CA\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
 
-final class ManuallyModeration implements Setting {
+final class ManuallyModerationSetting implements Setting {
 
 	private const OPTION_NAME   = 'manually_moderation';
 	private const DEFAULT_VALUE = false;

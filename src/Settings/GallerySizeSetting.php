@@ -15,10 +15,10 @@ use DCO_CA\SettingControls\SelectOption;
 
 defined( 'ABSPATH' ) || die;
 
-final class ThumbnailSize implements Setting {
+final class GallerySizeSetting implements Setting {
 
-	private const OPTION_NAME   = 'thumbnail_size';
-	private const DEFAULT_VALUE = 'medium';
+	private const OPTION_NAME   = 'gallery_size';
+	private const DEFAULT_VALUE = 'thumbnail';
 
 	public function __construct(
 		private Options $options,
@@ -35,9 +35,9 @@ final class ThumbnailSize implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Attachment image size', 'dco-comment-attachment' ),
+			title: __( 'Gallery image size', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
-			section: SettingsSection::IMAGES
+			section: SettingsSection::MULTIPLE_UPLOAD,
 		);
 	}
 

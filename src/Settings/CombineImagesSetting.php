@@ -13,10 +13,10 @@ use DCO_CA\SettingControls\Description;
 
 defined( 'ABSPATH' ) || die;
 
-final class EnableMultipleUpload implements Setting {
+final class CombineImagesSetting implements Setting {
 
-	private const OPTION_NAME   = 'autoembed_links';
-	private const DEFAULT_VALUE = false;
+	private const OPTION_NAME   = 'combine_images';
+	private const DEFAULT_VALUE = true;
 
 	public function __construct(
 		private Options $options,
@@ -32,7 +32,7 @@ final class EnableMultipleUpload implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Enable multiple upload?', 'dco-comment-attachment' ),
+			title: __( 'Combine images to gallery?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::MULTIPLE_UPLOAD
 		);
@@ -50,7 +50,7 @@ final class EnableMultipleUpload implements Setting {
 
 		(
 			new Description(
-				text:  __( 'If checked, users will be able to upload multiple attachments at once.', 'dco-comment-attachment' ),
+				text:  __( 'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.', 'dco-comment-attachment' ),
 			)
 		)->render();
 	}

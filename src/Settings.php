@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Enums\SettingsSection;
-use DCO_CA\Settings\AutoembedLinks;
-use DCO_CA\Settings\CombineImages;
-use DCO_CA\Settings\EmbedAttachment;
-use DCO_CA\Settings\EnableMultipleUpload;
-use DCO_CA\Settings\GallerySize;
-use DCO_CA\Settings\LinkThumbnail;
-use DCO_CA\Settings\MaxUploadSize;
-use DCO_CA\Settings\RequiredAttachment;
-use DCO_CA\Settings\ThumbnailSize;
+use DCO_CA\Settings\AutoembedLinksSetting;
+use DCO_CA\Settings\CombineImagesSetting;
+use DCO_CA\Settings\EmbedAttachmentSetting;
+use DCO_CA\Settings\EnableMultipleUploadSetting;
+use DCO_CA\Settings\GallerySizeSetting;
+use DCO_CA\Settings\LinkThumbnailSetting;
+use DCO_CA\Settings\MaxUploadSizeSetting;
+use DCO_CA\Settings\RequiredAttachmentSetting;
+use DCO_CA\Settings\ThumbnailSizeSetting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -22,15 +22,15 @@ final class Settings {
 	public const ID = 'dco_ca';
 
 	public function __construct(
-		private MaxUploadSize $max_upload_size,
-		private RequiredAttachment $required_attachment,
-		private EmbedAttachment $embed_attachment,
-		private AutoembedLinks $autoembed_links,
-		private ThumbnailSize $thumbnail_size,
-		private LinkThumbnail $link_thumbnail,
-		private EnableMultipleUpload $enable_multiple_upload,
-		private CombineImages $combine_images,
-		private GallerySize $gallery_size,
+		private MaxUploadSizeSetting $max_upload_size,
+		private RequiredAttachmentSetting $required_attachment,
+		private EmbedAttachmentSetting $embed_attachment,
+		private AutoembedLinksSetting $autoembed_links,
+		private ThumbnailSizeSetting $thumbnail_size,
+		private LinkThumbnailSetting $link_thumbnail,
+		private EnableMultipleUploadSetting $enable_multiple_upload,
+		private CombineImagesSetting $combine_images,
+		private GallerySizeSetting $gallery_size,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );

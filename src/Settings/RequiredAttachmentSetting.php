@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
+use DCO_CA\Options;
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
-use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\SettingControls\Checkbox;
 use DCO_CA\SettingControls\Description;
 
 defined( 'ABSPATH' ) || die;
 
-final class EmbedAttachment implements Setting {
+final class RequiredAttachmentSetting implements Setting {
 
-	private const OPTION_NAME   = 'embed_attachment';
-	private const DEFAULT_VALUE = true;
+	private const OPTION_NAME   = 'required_attachment';
+	private const DEFAULT_VALUE = false;
 
 	public function __construct(
 		private Options $options,
@@ -32,7 +32,7 @@ final class EmbedAttachment implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Embed attachment?', 'dco-comment-attachment' ),
+			title: __( 'Is attachment required?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -50,7 +50,7 @@ final class EmbedAttachment implements Setting {
 
 		(
 			new Description(
-				text:  __( 'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.', 'dco-comment-attachment' ),
+				text: __( 'If checked, the user will not be able to post a comment without attaching an attachment.', 'dco-comment-attachment' ),
 			)
 		)->render();
 	}

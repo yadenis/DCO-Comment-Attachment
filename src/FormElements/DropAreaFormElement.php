@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
-use DCO_CA\Settings\EnableMultipleUpload;
+use DCO_CA\Settings\EnableMultipleUploadSetting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -14,7 +14,7 @@ final class DropAreaFormElement implements FormElement {
 	private bool $is_enabled_multiple_upload;
 
 	public function __construct(
-		private EnableMultipleUpload $enable_multiple_upload,
+		private EnableMultipleUploadSetting $enable_multiple_upload,
 	) {
 
 		$this->is_enabled_multiple_upload = $this->enable_multiple_upload->get_value();

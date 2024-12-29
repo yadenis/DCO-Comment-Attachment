@@ -10,7 +10,7 @@ use DCO_CA\Interfaces\Setting;
 
 defined( 'ABSPATH' ) || die;
 
-final class WhoCanUpload implements Setting {
+final class WhoCanUploadSetting implements Setting {
 
 	private const OPTION_NAME   = 'who_can_upload';
 	private const DEFAULT_VALUE = WhoCanUploadType::ALL_USERS;

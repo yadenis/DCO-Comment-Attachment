@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\AllowedFileTypes;
-use DCO_CA\Settings\EnableMultipleUpload;
+use DCO_CA\Settings\AllowedFileTypesSetting;
+use DCO_CA\Settings\EnableMultipleUploadSetting;
 use DCO_CA\Enums\MaxUploadSizeFormat;
-use DCO_CA\Settings\MaxUploadSize;
-use DCO_CA\Settings\RequiredAttachment;
+use DCO_CA\Settings\MaxUploadSizeSetting;
+use DCO_CA\Settings\RequiredAttachmentSetting;
 use WP_Error;
 
 defined( 'ABSPATH' ) || die;
@@ -24,10 +24,10 @@ final class AttachmentUploadValidator {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private EnableMultipleUpload $enable_multiple_upload,
-		private RequiredAttachment $required_attachment,
-		private MaxUploadSize $max_upload_size,
-		private AllowedFileTypes $allowed_file_types,
+		private EnableMultipleUploadSetting $enable_multiple_upload,
+		private RequiredAttachmentSetting $required_attachment,
+		private MaxUploadSizeSetting $max_upload_size,
+		private AllowedFileTypesSetting $allowed_file_types,
 	) {
 
 		$this->attachments = $this->get_attachments();

@@ -14,7 +14,7 @@ use DCO_CA\SettingControls\Number;
 
 defined( 'ABSPATH' ) || die;
 
-final class MaxUploadSize implements Setting {
+final class MaxUploadSizeSetting implements Setting {
 
 	private const OPTION_NAME = 'max_upload_size';
 

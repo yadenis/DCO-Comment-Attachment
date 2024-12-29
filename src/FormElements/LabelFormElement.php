@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
-use DCO_CA\Settings\EnableMultipleUpload;
-use DCO_CA\Settings\RequiredAttachment;
+use DCO_CA\Settings\EnableMultipleUploadSetting;
+use DCO_CA\Settings\RequiredAttachmentSetting;
 
 defined( 'ABSPATH' ) || die;
 
@@ -16,8 +16,8 @@ final class LabelFormElement implements FormElement {
 	private bool $is_enabled_multiple_upload;
 
 	public function __construct(
-		private RequiredAttachment $required_attachment,
-		private EnableMultipleUpload $enable_multiple_upload,
+		private RequiredAttachmentSetting $required_attachment,
+		private EnableMultipleUploadSetting $enable_multiple_upload,
 	) {
 
 		$this->is_required_attachment     = $this->required_attachment->get_value();
