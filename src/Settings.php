@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Enums\SettingsSection;
+use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\AutoembedLinksSetting;
 use DCO_CA\Settings\CombineImagesSetting;
 use DCO_CA\Settings\EmbedAttachmentSetting;
@@ -31,6 +32,7 @@ final class Settings {
 		private EnableMultipleUploadSetting $enable_multiple_upload,
 		private CombineImagesSetting $combine_images,
 		private GallerySizeSetting $gallery_size,
+		private AllowedFileTypesSetting $allowed_file_types,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
@@ -120,6 +122,7 @@ final class Settings {
 			$this->enable_multiple_upload->get_setting_field_dto(),
 			$this->combine_images->get_setting_field_dto(),
 			$this->gallery_size->get_setting_field_dto(),
+			$this->allowed_file_types->get_setting_field_dto(),
 		];
 	}
 }

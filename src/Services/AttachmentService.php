@@ -8,6 +8,9 @@ defined( 'ABSPATH' ) || die;
 
 final class AttachmentService {
 
+	private const IMAGE_EXTENSIONS         = [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+	private const ADMINISTRATOR_EXTENSIONS = [ 'htm', 'html', 'js' ];
+
 	public function __construct() {
 	}
 
@@ -27,9 +30,14 @@ final class AttachmentService {
 		return $sizes;
 	}
 
-	public function get_image_extensions() {
+	public function is_administrator_extension( string $extension ): bool {
 
-		return [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+		return in_array( $extension, self::ADMINISTRATOR_EXTENSIONS, true );
+	}
+
+	public function is_embedded_extension( string $extension ): bool {
+
+		return in_array( $extension, $this->get_embedded_extensions(), true );
 	}
 
 	private function build_image_size_title( string $name, array $attributes ): string {
@@ -44,5 +52,14 @@ final class AttachmentService {
 		$name = ucfirst( $name );
 
 		return "{$name}, {$size}, {$crop}";
+	}
+
+	private function get_embedded_extensions(): array {
+
+		return array_merge(
+			wp_get_video_extensions(),
+			wp_get_audio_extensions(),
+			self::IMAGE_EXTENSIONS,
+		);
 	}
 }

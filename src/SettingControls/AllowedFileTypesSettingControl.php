@@ -4,81 +4,111 @@ declare(strict_types=1);
 
 namespace DCO_CA\SettingControls;
 
+use DCO_CA\DTO\AllowedFileTypesExtensionDTO;
+use DCO_CA\DTO\AllowedFileTypesGroupDTO;
 use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class AllowedFileTypes implements SettingControl {
+final class AllowedFileTypesSettingControl implements SettingControl {
 
-	private const SPECIAL_EXTENSIONS = [ 'htm', 'html', 'js' ];
+	private int $group_column_width;
 
 	public function __construct(
 		private string $name,
-		private string $id,
-		private array $options,
+		private array $groups,
 	) {
+
+		$this->group_column_width = intval(
+			/* translators: If the type names in your language are wider or narrower than in English - you can change the width of the column here. */
+			_x(
+				'100',
+				'Allowed File Types Setting: column width in px',
+				'dco-comment-attachment'
+			)
+		);
 	}
 
 	public function render(): void {
 
-		printf(
-			'<select name="%s" id="%s">',
-			esc_attr( $this->name ),
-			esc_attr( $this->id ),
-		);
+		echo '<div id="dco-file-types">';
 
-		foreach ( $this->options as $option ) {
+		foreach ( $this->groups as $group ) {
 
-			if ( ! $option instanceof SelectOption ) {
-				continue;
-			}
-
-			$option->render();
+			$this->render_group( $group );
 		}
 
-		echo '</select>';
+		echo '</div>';
 	}
 
+	private function render_group( AllowedFileTypesGroupDTO $group ): void {
 
+		printf(
+			'<div class="dco-file-type" style="width: %dpx;">',
+			intval( $this->group_column_width )
+		);
 
+		$this->render_group_header( $group );
 
-	public function field_allowed_file_types_render( $setting_val, $control_name, $control_id, $args ) {
-		
-		$embed_exts = array_merge( wp_get_video_extensions(), wp_get_audio_extensions(), $this->get_image_exts() );
+		$this->render_group_extensions( $group );
 
-		/*
-		* Translators: If the type names in your language are wider or narrower than in English - you can change the width of the column here.
-		*/
-		$column_width = _x( '100', 'Allowed File Types Setting: column width in px', 'dco-comment-attachment' );
-
-		echo '<div id="dco-file-types">';
-		$types = $this->get_allowed_file_types();
-		$more  = 6;
-		foreach ( $types as $type ) {
-			echo '<div class="dco-file-type" style="width: ' . (int) $column_width . 'px;">';
-			echo '<label class="dco-file-type-name" title="' . esc_attr__( 'Click to check/uncheck all extensions of this type.', 'dco-comment-attachment' ) . '"><input type="checkbox" class="dco-file-type-name-checkbox"> ' . $this->mb_ucfirst( esc_html( $type['name'] ) ) . '</label>';
-			echo '<div class="dco-file-type-items">';
-			$i = 1;
-			foreach ( $type['exts'] as $ext ) {
-				if ( $i === $more ) {
-					echo '</div><div class="dco-file-type-items-more">';
-				}
-				$mark = '';
-				if ( in_array( $ext, $embed_exts, true ) ) {
-					$mark = ' *';
-				}
-				if ( in_array( $ext, $special_exts, true ) ) {
-					$mark = ' **';
-				}
-				echo '<label class="dco-file-type-item"><input type="checkbox" class="dco-file-type-item-checkbox" name="' . esc_attr( $control_name ) . '[]" value="' . esc_attr( $ext ) . '"' . checked( in_array( $ext, $setting_val, true ), true, false ) . '> ' . esc_html( $ext . $mark ) . '</label>';
-				++$i;
-			}
-			echo '</div>';
-			if ( $i > $more ) {
-				echo '<a href="#" class="dco-show-all">' . esc_html__( 'Show all', 'dco-comment-attachment' ) . '</a>';
-			}
-			echo '</div>';
-		}
 		echo '</div>';
+	}
+
+	private function render_group_header( AllowedFileTypesGroupDTO $group ): void {
+
+		printf(
+			'<label class="dco-file-type-name" title="%s">%s %s</label>',
+			esc_attr__( 'Click to check/uncheck all extensions of this type.', 'dco-comment-attachment' ),
+			'<input type="checkbox" class="dco-file-type-name-checkbox">',
+			esc_html( $group->title ),
+		);
+	}
+
+	private function render_group_extensions( AllowedFileTypesGroupDTO $group ): void {
+
+		echo '<div class="dco-file-type-items">';
+
+		foreach ( $group->extensions as $extension ) {
+
+			$this->render_extension( $extension );
+		}
+
+		echo '</div>';
+	}
+
+	private function render_extension( AllowedFileTypesExtensionDTO $extension ): void {
+
+		echo '<label class="dco-file-type-item">';
+
+		$ext  = $extension->extension;
+		$mark = $this->get_extension_mark( $extension );
+
+		printf(
+			'<input type="checkbox" class="dco-file-type-item-checkbox" name="%s[]" value="%s"%s> %s',
+			esc_attr( $this->name ),
+			esc_attr( $ext ),
+			checked(
+				checked: $extension->is_allowed,
+				current: true,
+				display: false
+			),
+			esc_html( $ext . $mark )
+		);
+
+		echo '</label>';
+	}
+
+	private function get_extension_mark( AllowedFileTypesExtensionDTO $extension ): string {
+
+		if ( $extension->is_embedded ) {
+			return ' *';
+		}
+
+		if ( $extension->is_for_administrators ) {
+			return ' **';
+		}
+
+		return '';
 	}
 }

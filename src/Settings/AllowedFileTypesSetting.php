@@ -4,11 +4,15 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
+use DCO_CA\DTO\AllowedFileTypesExtensionDTO;
+use DCO_CA\DTO\AllowedFileTypesGroupDTO;
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Options;
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
+use DCO_CA\Services\AttachmentService;
+use DCO_CA\SettingControls\AllowedFileTypesSettingControl;
 use DCO_CA\SettingControls\DescriptionSettingControl;
 
 defined( 'ABSPATH' ) || die;
@@ -17,17 +21,24 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private const OPTION_NAME = 'allowed_file_types';
 
+	private array $setting_value;
+	private array $system_value;
+
 	public function __construct(
 		private Options $options,
+		private AttachmentService $attachment_service,
 	) {
+
+		$value = $this->options->get_array_option( self::OPTION_NAME );
+
+		$this->setting_value = $value ?? $this->get_system_value();
 	}
 
 	public function get_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
 
-		$value = $this->options->get_array_option( self::OPTION_NAME );
-		if ( null === $value ) {
-			$value = $this->get_system_value();
-		}
+		$system_value = $this->get_system_value();
+
+		$value = array_map( $this->get_extension_dto( ... ), $system_value );
 
 		return match ( $format ) {
 
@@ -49,10 +60,9 @@ final class AllowedFileTypesSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new CheckboxSettingControl(
+			new AllowedFileTypesSettingControl(
 				name: $args['name'],
-				id: $args['id'],
-				checked: true === $this->get_value(),
+				groups: $this->get_value( AllowedFileTypesFormat::GROUPED_ARRAY ),
 			)
 		)->render();
 
@@ -76,19 +86,22 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private function get_system_value(): array {
 
+		if ( isset( $this->system_value ) ) {
+			return $this->system_value;
+		}
+
 		$raw_extensions = array_keys( get_allowed_mime_types() );
-		$extensions     = [];
 
 		foreach ( $raw_extensions as $extension ) {
 
 			$exts = explode( '|', $extension );
 
 			foreach ( $exts as $ext ) {
-				$extensions[] = $ext;
+				$this->system_value[] = $ext;
 			}
 		}
 
-		return $extensions;
+		return $this->system_value;
 	}
 
 	private function format_grouped_value( array $value ): array {
@@ -97,14 +110,20 @@ final class AllowedFileTypesSetting implements Setting {
 
 		foreach ( $value as $extension ) {
 
-			$group = wp_ext2type( $extension );
+			$group = $extension->group;
 
-			if ( ! isset( $groups[ $group ]['extensions'] ) ) {
-				$group = 'other';
+			if ( ! is_array( $groups[ $group ] ) ) {
+				$groups[ $group ] = [];
 			}
 
-			$groups[ $group ]['extensions'][] = $extension;
+			$groups[ $group ][] = $extension;
 		}
+
+		array_walk(
+			$groups,
+			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
+			fn( &$value, $key ) => $value = $this->get_group_dto( $key, $value )
+		);
 
 		return $groups;
 	}
@@ -126,12 +145,9 @@ final class AllowedFileTypesSetting implements Setting {
 
 		$groups = [];
 
-		foreach ( $groups_list as $key => $name ) {
+		foreach ( $groups_list as $name => $title ) {
 
-			$groups[ $key ] = [
-				'name'       => $name,
-				'extensions' => [],
-			];
+			$groups[ $name ] = $title;
 		}
 
 		return $groups;
@@ -146,10 +162,7 @@ final class AllowedFileTypesSetting implements Setting {
 
 		foreach ( $system_groups_list as $group ) {
 
-			$groups[ $group ] = [
-				'name'       => $group,
-				'extensions' => [],
-			];
+			$groups[ $group ] = $group;
 		}
 
 		return $groups;
@@ -163,9 +176,55 @@ final class AllowedFileTypesSetting implements Setting {
 		);
 	}
 
+	private function get_extension_dto( string $extension ): AllowedFileTypesExtensionDTO {
+
+		$is_allowed = in_array( $extension, $this->setting_value, true );
+
+		return new AllowedFileTypesExtensionDTO(
+			extension: $extension,
+			group: $this->get_extension_group( $extension ),
+			is_allowed: $is_allowed,
+			is_embedded: $this->attachment_service->is_embedded_extension( $extension ),
+			is_for_administrators: $this->attachment_service->is_administrator_extension( $extension ),
+		);
+	}
+
+	private function get_group_dto( string $group, array $extensions ): AllowedFileTypesGroupDTO {
+
+		return new AllowedFileTypesGroupDTO(
+			name: $group,
+			title: $this->get_group_title_by_name( $group ),
+			extensions: $extensions,
+		);
+	}
+
+	private function get_extension_group( string $extension ): string {
+
+		$groups = $this->get_groups();
+
+		$group = wp_ext2type( $extension );
+
+		if ( ! isset( $groups[ $group ] ) ) {
+			$group = 'other';
+		}
+
+		return $group;
+	}
+
+	private function get_group_title_by_name( string $name ): string {
+
+		$groups = $this->get_groups();
+
+		if ( ! isset( $groups[ $name ] ) ) {
+			return '';
+		}
+
+		return $groups[ $name ];
+	}
+
 	public function filter_upload_mimes( array $mimes ): array {
 
-		$allowed_extensions = $this->get_value();
+		$allowed_extensions = wp_list_pluck( $this->get_value(), 'extension' );
 
 		$filtered_mimes = [];
 
