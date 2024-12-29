@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || die;
 
 final class AutoembedLinks implements Setting {
 
-	private const OPTION_NAME = 'autoembed_links';
+	private const OPTION_NAME   = 'autoembed_links';
 	private const DEFAULT_VALUE = true;
 
 	public function __construct(
@@ -32,7 +32,7 @@ final class AutoembedLinks implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: esc_html__( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
+			title: __( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);

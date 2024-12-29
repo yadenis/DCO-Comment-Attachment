@@ -32,7 +32,7 @@ final class EmbedAttachment implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: esc_html__( 'Embed attachment?', 'dco-comment-attachment' ),
+			title: __( 'Embed attachment?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);

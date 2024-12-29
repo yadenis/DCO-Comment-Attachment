@@ -41,7 +41,7 @@ final class MaxUploadSize implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: esc_html__( 'Maximum upload file size', 'dco-comment-attachment' ),
+			title: __( 'Maximum upload file size', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -60,7 +60,7 @@ final class MaxUploadSize implements Setting {
 
 		$description = sprintf(
 			/* translators: %s: the maximum allowed upload file size */
-			esc_html__( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ),
+			__( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ),
 			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
 		);
 

@@ -8,6 +8,7 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
+use DCO_CA\Services\AttachmentService;
 use DCO_CA\SettingControls\Description;
 use DCO_CA\SettingControls\Select;
 use DCO_CA\SettingControls\SelectOption;
@@ -21,6 +22,7 @@ final class ThumbnailSize implements Setting {
 
 	public function __construct(
 		private Options $options,
+		private AttachmentService $attachment_service,
 	) {
 	}
 
@@ -33,7 +35,7 @@ final class ThumbnailSize implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: esc_html__( 'Attachment image size', 'dco-comment-attachment' ),
+			title: __( 'Attachment image size', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::IMAGES
 		);
@@ -65,39 +67,17 @@ final class ThumbnailSize implements Setting {
 
 		$options = [];
 
-		$sizes = wp_get_registered_image_subsizes();
+		$sizes = $this->attachment_service->get_image_sizes();
 
-		foreach ( $sizes as $name => $attributes ) {
-
-			$text = $this->build_option_text( $name, $attributes );
+		foreach ( $sizes as $name => $title ) {
 
 			$options[] = new SelectOption(
 				value: $name,
-				text: $text,
+				text: $title,
 				selected: $name === $this->get_value(),
 			);
 		}
 
-		$options[] = new SelectOption(
-			value: 'full',
-			text: __( 'Full (original image)', 'dco-comment-attachment' ),
-			selected: 'full' === $this->get_value(),
-		);
-
 		return $options;
-	}
-
-	private function build_option_text( string $name, array $attributes ): string {
-
-		$width  = $attributes['width'];
-		$height = $attributes['height'];
-		$size   = __( 'Size', 'dco-comment-attachment' ) . ": {$width}x{$height}";
-
-		$crop = $attributes['crop'] ? __( 'Yes', 'dco-comment-attachment' ) : __( 'No', 'dco-comment-attachment' );
-		$crop = __( 'Crop', 'dco-comment-attachment' ) . ": $crop";
-
-		$name = ucfirst( $name );
-
-		return "$name, $size, $crop";
 	}
 }

@@ -33,7 +33,7 @@ final class LinkThumbnail implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: esc_html__( 'Link thumbnail?', 'dco-comment-attachment' ),
+			title: __( 'Link thumbnail?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::IMAGES
 		);
@@ -57,8 +57,11 @@ final class LinkThumbnail implements Setting {
 
 		$types = [
 			LinkThumbnailType::NO_LINK->value         => __( 'Not link', 'dco-comment-attachment' ),
-			/* translators: %s: the link to the plugin FAQ section on WordPress.org */
-			LinkThumbnailType::IMAGE_LIGHTBOX->value  => sprintf( __( 'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)', 'dco-comment-attachment' ), 'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F' ),
+			LinkThumbnailType::IMAGE_LIGHTBOX->value  => sprintf(
+				/* translators: %s: the link to the plugin FAQ section on WordPress.org */
+				__( 'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)', 'dco-comment-attachment' ),
+				'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F'
+			),
 			LinkThumbnailType::IMAGE_NEW_TAB->value   => __( 'Link to a full-size image in a new tab', 'dco-comment-attachment' ),
 			LinkThumbnailType::ATTACHMENT_PAGE->value => __( 'Link to the attachment page', 'dco-comment-attachment' ),
 		];

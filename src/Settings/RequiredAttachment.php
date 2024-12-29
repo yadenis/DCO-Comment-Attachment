@@ -32,7 +32,7 @@ final class RequiredAttachment implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: esc_html__( 'Is attachment required?', 'dco-comment-attachment' ),
+			title: __( 'Is attachment required?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);

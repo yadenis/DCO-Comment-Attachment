@@ -6,7 +6,10 @@ namespace DCO_CA;
 
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Settings\AutoembedLinks;
+use DCO_CA\Settings\CombineImages;
 use DCO_CA\Settings\EmbedAttachment;
+use DCO_CA\Settings\EnableMultipleUpload;
+use DCO_CA\Settings\GallerySize;
 use DCO_CA\Settings\LinkThumbnail;
 use DCO_CA\Settings\MaxUploadSize;
 use DCO_CA\Settings\RequiredAttachment;
@@ -25,6 +28,9 @@ final class Settings {
 		private AutoembedLinks $autoembed_links,
 		private ThumbnailSize $thumbnail_size,
 		private LinkThumbnail $link_thumbnail,
+		private EnableMultipleUpload $enable_multiple_upload,
+		private CombineImages $combine_images,
+		private GallerySize $gallery_size,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
@@ -76,10 +82,10 @@ final class Settings {
 
 			add_settings_field(
 				id: $field->id,
-				title: $field->title,
+				title: esc_html( $field->title ),
 				callback: $field->callback,
 				page: self::ID,
-				section: $field->section->value,
+				section: esc_html( $field->section->value ),
 				args: [
 					'name'      => self::ID . "[{$field->id}]",
 					'id'        => $field->id,
@@ -94,11 +100,11 @@ final class Settings {
 	private function get_sections(): array {
 
 		return [
-			SettingsSection::GENERAL->value         => esc_html__( 'General', 'dco-comment-attachment' ),
-			SettingsSection::IMAGES->value          => esc_html__( 'Images', 'dco-comment-attachment' ),
-			SettingsSection::MULTIPLE_UPLOAD->value => esc_html__( 'Multiple upload', 'dco-comment-attachment' ),
-			SettingsSection::PERMISSIONS->value     => esc_html__( 'Permissions', 'dco-comment-attachment' ),
-			SettingsSection::IN_ADMIN->value        => esc_html__( 'Admin Panel', 'dco-comment-attachment' ),
+			SettingsSection::GENERAL->value         => __( 'General', 'dco-comment-attachment' ),
+			SettingsSection::IMAGES->value          => __( 'Images', 'dco-comment-attachment' ),
+			SettingsSection::MULTIPLE_UPLOAD->value => __( 'Multiple upload', 'dco-comment-attachment' ),
+			SettingsSection::PERMISSIONS->value     => __( 'Permissions', 'dco-comment-attachment' ),
+			SettingsSection::IN_ADMIN->value        => __( 'Admin Panel', 'dco-comment-attachment' ),
 		];
 	}
 
@@ -111,6 +117,9 @@ final class Settings {
 			$this->autoembed_links->get_setting_field_dto(),
 			$this->thumbnail_size->get_setting_field_dto(),
 			$this->link_thumbnail->get_setting_field_dto(),
+			$this->enable_multiple_upload->get_setting_field_dto(),
+			$this->combine_images->get_setting_field_dto(),
+			$this->gallery_size->get_setting_field_dto(),
 		];
 	}
 }
