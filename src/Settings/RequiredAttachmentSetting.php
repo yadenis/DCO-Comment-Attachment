@@ -50,7 +50,10 @@ final class RequiredAttachmentSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __( 'If checked, the user will not be able to post a comment without attaching an attachment.', 'dco-comment-attachment' ),
+				text: __(
+					'If checked, the user will not be able to post a comment without attaching an attachment.',
+					'dco-comment-attachment'
+				),
 			)
 		)->render();
 	}

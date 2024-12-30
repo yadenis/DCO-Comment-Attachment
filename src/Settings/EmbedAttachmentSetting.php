@@ -50,7 +50,10 @@ final class EmbedAttachmentSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __( 'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.', 'dco-comment-attachment' ),
+				text: __(
+					'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.',
+					'dco-comment-attachment'
+				),
 			)
 		)->render();
 	}

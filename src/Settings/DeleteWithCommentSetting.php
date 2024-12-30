@@ -13,9 +13,9 @@ use DCO_CA\SettingControls\DescriptionSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class CombineImagesSetting implements Setting {
+final class DeleteWithCommentSetting implements Setting {
 
-	private const OPTION_NAME   = 'combine_images';
+	private const OPTION_NAME   = 'delete_with_comment';
 	private const DEFAULT_VALUE = true;
 
 	public function __construct(
@@ -32,9 +32,9 @@ final class CombineImagesSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Combine images to gallery?', 'dco-comment-attachment' ),
+			title: __( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
-			section: SettingsSection::MULTIPLE_UPLOAD
+			section: SettingsSection::IN_ADMIN
 		);
 	}
 
@@ -51,7 +51,7 @@ final class CombineImagesSetting implements Setting {
 		(
 			new DescriptionSettingControl(
 				text: __(
-					'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.',
+					'If unchecked, the attachment will be available in Media Library after the comment has been deleted.',
 					'dco-comment-attachment'
 				),
 			)

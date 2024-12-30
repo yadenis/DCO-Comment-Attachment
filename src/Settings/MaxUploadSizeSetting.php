@@ -60,7 +60,10 @@ final class MaxUploadSizeSetting implements Setting {
 
 		$description = sprintf(
 			/* translators: %s: the maximum allowed upload file size */
-			__( 'Set the value in megabytes. Currently your server allows you to upload files up to %s.', 'dco-comment-attachment' ),
+			__(
+				'Set the value in megabytes. Currently your server allows you to upload files up to %s.',
+				'dco-comment-attachment'
+			),
 			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
 		);
 

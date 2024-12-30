@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace DCO_CA\Settings;
 
 use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\Enums\DeleteAttachmentActionType;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
-use DCO_CA\Enums\WhoCanUploadType;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\SettingControls\RadioChoiceSettingControl;
 use DCO_CA\SettingControls\RadioSettingControl;
 
 defined( 'ABSPATH' ) || die;
 
-final class WhoCanUploadSetting implements Setting {
+final class DeleteAttachmentActionSetting implements Setting {
 
-	private const OPTION_NAME   = 'who_can_upload';
-	private const DEFAULT_VALUE = WhoCanUploadType::ALL_USERS;
+	private const OPTION_NAME   = 'delete_attachment_action';
+	private const DEFAULT_VALUE = DeleteAttachmentActionType::DELETE;
 
 	public function __construct(
 		private Options $options,
@@ -33,9 +33,9 @@ final class WhoCanUploadSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title:  __( 'Who can upload attachment?', 'dco-comment-attachment' ),
+			title:  __( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
-			section: SettingsSection::PERMISSIONS
+			section: SettingsSection::IN_ADMIN
 		);
 	}
 
@@ -73,8 +73,14 @@ final class WhoCanUploadSetting implements Setting {
 	private function get_types(): array {
 
 		return [
-			WhoCanUploadType::ALL_USERS->value    => __( 'All users', 'dco-comment-attachment' ),
-			WhoCanUploadType::LOGGED_USERS->value => __( 'Only logged users', 'dco-comment-attachment' ),
+			DeleteAttachmentActionType::DELETE->value   => __(
+				'Delete attachment from Media Library',
+				'dco-comment-attachment'
+			),
+			DeleteAttachmentActionType::UNATTACH->value => __(
+				'Unattach attachment from comment',
+				'dco-comment-attachment'
+			),
 		];
 	}
 }

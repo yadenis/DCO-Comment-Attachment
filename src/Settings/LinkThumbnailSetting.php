@@ -55,20 +55,9 @@ final class LinkThumbnailSetting implements Setting {
 
 	private function build_choices( array $args ): array {
 
-		$types = [
-			LinkThumbnailType::NO_LINK->value         => __( 'Not link', 'dco-comment-attachment' ),
-			LinkThumbnailType::IMAGE_LIGHTBOX->value  => sprintf(
-				/* translators: %s: the link to the plugin FAQ section on WordPress.org */
-				__( 'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)', 'dco-comment-attachment' ),
-				'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F'
-			),
-			LinkThumbnailType::IMAGE_NEW_TAB->value   => __( 'Link to a full-size image in a new tab', 'dco-comment-attachment' ),
-			LinkThumbnailType::ATTACHMENT_PAGE->value => __( 'Link to the attachment page', 'dco-comment-attachment' ),
-		];
-
 		$choices = [];
 
-		foreach ( $types as $value => $text ) {
+		foreach ( $this->get_types() as $value => $text ) {
 
 			$choices[] = new RadioChoiceSettingControl(
 				name: $args['name'],
@@ -79,5 +68,36 @@ final class LinkThumbnailSetting implements Setting {
 		}
 
 		return $choices;
+	}
+
+	private function get_types(): array {
+
+		$types = [];
+
+		$types[ LinkThumbnailType::NO_LINK->value ] = __(
+			'Not link',
+			'dco-comment-attachment'
+		);
+
+		$types[ LinkThumbnailType::IMAGE_LIGHTBOX->value ] = sprintf(
+			/* translators: %s: the link to the plugin FAQ section on WordPress.org */
+			__(
+				'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)',
+				'dco-comment-attachment'
+			),
+			'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F'
+		);
+
+		$types[ LinkThumbnailType::IMAGE_NEW_TAB->value ] = __(
+			'Link to a full-size image in a new tab',
+			'dco-comment-attachment'
+		);
+
+		$types[ LinkThumbnailType::ATTACHMENT_PAGE->value ] = __(
+			'Link to the attachment page',
+			'dco-comment-attachment'
+		);
+
+		return $types;
 	}
 }

@@ -32,7 +32,7 @@ final class ManuallyModerationSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Embed attachment?', 'dco-comment-attachment' ),
+			title: __( 'Manually moderate comments with attachments', 'dco-comment-attachment' ),
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::PERMISSIONS
 		);
@@ -50,7 +50,10 @@ final class ManuallyModerationSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __( 'If checked, all comments with attachments must be manually approved before they appear on the site.', 'dco-comment-attachment' ),
+				text: __(
+					'If checked, all comments with attachments must be manually approved before they appear on the site.',
+					'dco-comment-attachment'
+				),
 			)
 		)->render();
 	}

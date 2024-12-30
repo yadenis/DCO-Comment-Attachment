@@ -8,6 +8,8 @@ use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\AutoembedLinksSetting;
 use DCO_CA\Settings\CombineImagesSetting;
+use DCO_CA\Settings\DeleteAttachmentActionSetting;
+use DCO_CA\Settings\DeleteWithCommentSetting;
 use DCO_CA\Settings\EmbedAttachmentSetting;
 use DCO_CA\Settings\EnableMultipleUploadSetting;
 use DCO_CA\Settings\GallerySizeSetting;
@@ -37,6 +39,8 @@ final class Settings {
 		private AllowedFileTypesSetting $allowed_file_types,
 		private WhoCanUploadSetting $who_can_upload,
 		private ManuallyModerationSetting $manually_moderation,
+		private DeleteWithCommentSetting $delete_with_comment,
+		private DeleteAttachmentActionSetting $delete_attachment_action,
 	) {
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
@@ -129,6 +133,8 @@ final class Settings {
 			$this->allowed_file_types->get_setting_field_dto(),
 			$this->who_can_upload->get_setting_field_dto(),
 			$this->manually_moderation->get_setting_field_dto(),
+			$this->delete_with_comment->get_setting_field_dto(),
+			$this->delete_attachment_action->get_setting_field_dto(),
 		];
 	}
 }

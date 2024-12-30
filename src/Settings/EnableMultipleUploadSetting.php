@@ -50,7 +50,10 @@ final class EnableMultipleUploadSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __( 'If checked, users will be able to upload multiple attachments at once.', 'dco-comment-attachment' ),
+				text: __(
+					'If checked, users will be able to upload multiple attachments at once.',
+					'dco-comment-attachment'
+				),
 			)
 		)->render();
 	}

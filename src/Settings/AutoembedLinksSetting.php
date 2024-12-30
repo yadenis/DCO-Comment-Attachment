@@ -50,7 +50,10 @@ final class AutoembedLinksSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __( 'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.', 'dco-comment-attachment' )
+				text: __(
+					'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.',
+					'dco-comment-attachment'
+				)
 			)
 		)->render();
 	}

@@ -66,9 +66,12 @@ final class AllowedFileTypesSetting implements Setting {
 			)
 		)->render();
 
+		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
+		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
+
 		(
 			new DescriptionSettingControl(
-				text:  '* — ' . __( 'available for embedding.', 'dco-comment-attachment' ) . '<br>** — ' . __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' ),
+				text:  "* — {$mark1}<br>** — {$mark2}",
 			)
 		)->render();
 	}
