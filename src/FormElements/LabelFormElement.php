@@ -16,12 +16,12 @@ final class LabelFormElement implements FormElement {
 	private bool $is_enabled_multiple_upload;
 
 	public function __construct(
-		private RequiredAttachmentSetting $required_attachment,
-		private EnableMultipleUploadSetting $enable_multiple_upload,
+		private RequiredAttachmentSetting $required_attachment_setting,
+		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
 	) {
 
-		$this->is_required_attachment     = $this->required_attachment->get_value();
-		$this->is_enabled_multiple_upload = $this->enable_multiple_upload->get_value();
+		$this->is_required_attachment     = $this->required_attachment_setting->get_value();
+		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
 	}
 
 	public function render(): void {
@@ -43,7 +43,8 @@ final class LabelFormElement implements FormElement {
 			apply_filters(
 				'dco_ca_form_element_label',
 				$markup,
-				$this->is_required_attachment
+				$this->is_required_attachment,
+				$this->is_enabled_multiple_upload
 			)
 		);
 	}
@@ -60,8 +61,8 @@ final class LabelFormElement implements FormElement {
 		return apply_filters(
 			'dco_ca_form_element_label_text',
 			$label,
-			$this->is_enabled_multiple_upload,
-			$this->is_required_attachment
+			$this->is_required_attachment,
+			$this->is_enabled_multiple_upload
 		);
 	}
 }

@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || die;
 
 final class UploadSizeFormElement implements FormElement {
 
-	private string $max_upload_size_value;
+	private string $max_upload_size;
 
 	public function __construct(
-		private MaxUploadSizeSetting $max_upload_size,
+		private MaxUploadSizeSetting $max_upload_size_setting,
 	) {
 
-		$this->max_upload_size_value = $this->max_upload_size->get_value( MaxUploadSizeFormat::FORMATTED );
+		$this->max_upload_size = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
 	}
 
 	public function render(): void {
@@ -28,7 +28,7 @@ final class UploadSizeFormElement implements FormElement {
 			sprintf(
 				/* translators: %s: the maximum allowed upload file size */
 				__( 'The maximum upload file size: %s.', 'dco-comment-attachment' ),
-				$this->max_upload_size_value
+				$this->max_upload_size
 			)
 		);
 
@@ -45,7 +45,7 @@ final class UploadSizeFormElement implements FormElement {
 			apply_filters(
 				'dco_ca_form_element_upload_size',
 				$markup,
-				$this->max_upload_size_value
+				$this->max_upload_size
 			)
 		);
 	}

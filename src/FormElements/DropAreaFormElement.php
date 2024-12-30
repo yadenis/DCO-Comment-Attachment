@@ -14,10 +14,10 @@ final class DropAreaFormElement implements FormElement {
 	private bool $is_enabled_multiple_upload;
 
 	public function __construct(
-		private EnableMultipleUploadSetting $enable_multiple_upload,
+		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
 	) {
 
-		$this->is_enabled_multiple_upload = $this->enable_multiple_upload->get_value();
+		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
 	}
 
 	public function render(): void {
@@ -45,7 +45,6 @@ final class DropAreaFormElement implements FormElement {
 			apply_filters(
 				'dco_ca_form_element_drop_area',
 				ob_get_clean(),
-				$text,
 				$this->is_enabled_multiple_upload
 			)
 		);

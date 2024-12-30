@@ -14,16 +14,16 @@ defined( 'ABSPATH' ) || die;
 final class InputFormElement implements FormElement {
 
 	private bool $is_enabled_multiple_upload;
-	private array $allowed_file_types_list;
+	private array $allowed_file_types;
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private EnableMultipleUploadSetting $enabled_multiple_upload,
-		private AllowedFileTypesSetting $allowed_file_types,
+		private EnableMultipleUploadSetting $enabled_multiple_upload_setting,
+		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 
-		$this->is_enabled_multiple_upload = $this->enabled_multiple_upload->get_value();
-		$this->allowed_file_types_list    = $this->allowed_file_types->get_value();
+		$this->is_enabled_multiple_upload = $this->enabled_multiple_upload_setting->get_value();
+		$this->allowed_file_types         = $this->allowed_file_types_setting->get_value();
 	}
 
 	public function render(): void {
@@ -73,10 +73,10 @@ final class InputFormElement implements FormElement {
 
 	private function get_accept_attribute(): string {
 
-		if ( ! $this->allowed_file_types_list ) {
+		if ( ! $this->allowed_file_types ) {
 			return '';
 		}
 
-		return '.' . implode( ',.', $this->allowed_file_types_list );
+		return '.' . implode( ',.', wp_list_pluck( $this->allowed_file_types, 'extension' ) );
 	}
 }

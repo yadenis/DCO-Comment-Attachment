@@ -14,10 +14,10 @@ final class AutoembedLinksFormElement implements FormElement {
 	private bool $is_autoembed_links;
 
 	public function __construct(
-		private AutoembedLinksSetting $autoembed_links,
+		private AutoembedLinksSetting $autoembed_links_setting,
 	) {
 
-		$this->is_autoembed_links = $this->autoembed_links->get_value();
+		$this->is_autoembed_links = $this->autoembed_links_setting->get_value();
 	}
 
 	public function render(): void {
@@ -49,7 +49,10 @@ final class AutoembedLinksFormElement implements FormElement {
 		return sprintf(
 			'<span class="comment-form-attachment__autoembed-links-notice">%s</span>',
 			sprintf(
-				__( 'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.', 'dco-comment-attachment' )
+				__(
+					'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.',
+					'dco-comment-attachment'
+				)
 			)
 		);
 	}

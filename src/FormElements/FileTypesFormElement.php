@@ -12,13 +12,13 @@ defined( 'ABSPATH' ) || die;
 
 final class FileTypesFormElement implements FormElement {
 
-	private array $types;
+	private array $file_types_groups;
 
 	public function __construct(
-		private AllowedFileTypesSetting $allowed_file_types,
+		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 
-		$this->types = $this->allowed_file_types->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
+		$this->file_types_groups = $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
 	}
 
 	public function render(): void {
@@ -27,14 +27,14 @@ final class FileTypesFormElement implements FormElement {
 			apply_filters(
 				'dco_ca_form_element_file_types',
 				$this->get_markup(),
-				$this->types
+				$this->file_types_groups
 			)
 		);
 	}
 
 	private function get_markup(): string {
 
-		if ( ! $this->types ) {
+		if ( ! $this->file_types_groups ) {
 			return '';
 		}
 
@@ -52,18 +52,18 @@ final class FileTypesFormElement implements FormElement {
 
 		$html = [];
 
-		foreach ( $this->types as $type ) {
+		foreach ( $this->file_types_groups as $group ) {
 
-			if ( ! $type['extensions'] ) {
+			if ( ! $group->extensions ) {
 				continue;
 			}
 
-			$title = implode( ', ', $type['extensions'] );
+			$title = implode( ', ', wp_list_pluck( $group->extensions, 'extension' ) );
 
 			$html[] = sprintf(
 				'<abbr title="%s">%s</abbr>',
 				esc_attr( $title ),
-				esc_html( $type['name'] ),
+				esc_html( $group->title ),
 			);
 		}
 
