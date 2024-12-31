@@ -18,9 +18,19 @@ final class EmbedAttachmentSetting implements Setting {
 	private const OPTION_NAME   = 'embed_attachment';
 	private const DEFAULT_VALUE = true;
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Embed attachment?', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): bool {
@@ -32,7 +42,7 @@ final class EmbedAttachmentSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Embed attachment?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -50,10 +60,7 @@ final class EmbedAttachmentSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'If checked, the attachment is displayed as an image, video, audio, or file link. Otherwise, all attachments will be displayed as links to files.',
-					'dco-comment-attachment'
-				),
+				text: $this->description,
 			)
 		)->render();
 	}

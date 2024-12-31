@@ -20,10 +20,20 @@ final class GallerySizeSetting implements Setting {
 	private const OPTION_NAME   = 'gallery_size';
 	private const DEFAULT_VALUE = 'thumbnail';
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 		private AttachmentService $attachment_service,
 	) {
+
+		$this->title = __( 'Gallery image size', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'The size of the thumbnail for attached images.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): string {
@@ -35,7 +45,7 @@ final class GallerySizeSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Gallery image size', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::MULTIPLE_UPLOAD,
 		);
@@ -53,10 +63,7 @@ final class GallerySizeSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'The size of the thumbnail for attached images.',
-					'dco-comment-attachment'
-				),
+				text: $this->description,
 			)
 		)->render();
 	}

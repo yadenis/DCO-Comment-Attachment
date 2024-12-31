@@ -44,7 +44,7 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 	private function render_group( AllowedFileTypesGroupDTO $group ): void {
 
 		printf(
-			'<div class="dco-file-type" style="width: %dpx;">',
+			'<div class="dco-file-types-group" style="width: %dpx;">',
 			intval( $this->group_column_width )
 		);
 
@@ -58,16 +58,16 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 	private function render_group_header( AllowedFileTypesGroupDTO $group ): void {
 
 		printf(
-			'<label class="dco-file-type-name" title="%s">%s %s</label>',
+			'<label class="dco-file-types-group__name" title="%s">%s %s</label>',
 			esc_attr__( 'Click to check/uncheck all extensions of this type.', 'dco-comment-attachment' ),
-			'<input type="checkbox" class="dco-file-type-name-checkbox">',
+			'<input type="checkbox" class="dco-file-types-group__checkbox">',
 			esc_html( $group->title ),
 		);
 	}
 
 	private function render_group_extensions( AllowedFileTypesGroupDTO $group ): void {
 
-		echo '<div class="dco-file-type-items">';
+		echo '<div class="dco-file-types-group__extensions">';
 
 		foreach ( $group->extensions as $extension ) {
 
@@ -79,13 +79,13 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 
 	private function render_extension( AllowedFileTypesExtensionDTO $extension ): void {
 
-		echo '<label class="dco-file-type-item">';
+		echo '<label class="dco-file-type-extension">';
 
 		$ext  = $extension->extension;
 		$mark = $this->get_extension_mark( $extension );
 
 		printf(
-			'<input type="checkbox" class="dco-file-type-item-checkbox" name="%s[]" value="%s"%s> %s',
+			'<input type="checkbox" class="dco-file-type-extension__checkbox" name="%s[]" value="%s"%s> %s',
 			esc_attr( $this->name ),
 			esc_attr( $ext ),
 			checked(

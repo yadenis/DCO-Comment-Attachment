@@ -18,9 +18,19 @@ final class DeleteWithCommentSetting implements Setting {
 	private const OPTION_NAME   = 'delete_with_comment';
 	private const DEFAULT_VALUE = true;
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'If unchecked, the attachment will be available in Media Library after the comment has been deleted.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): bool {
@@ -32,7 +42,7 @@ final class DeleteWithCommentSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Delete attachment when comment is deleted?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::IN_ADMIN
 		);
@@ -50,10 +60,7 @@ final class DeleteWithCommentSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'If unchecked, the attachment will be available in Media Library after the comment has been deleted.',
-					'dco-comment-attachment'
-				),
+				text: $this->description,
 			)
 		)->render();
 	}

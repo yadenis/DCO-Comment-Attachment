@@ -17,10 +17,24 @@ defined( 'ABSPATH' ) || die;
 final class MaxUploadSizeSetting implements Setting {
 
 	private const OPTION_NAME = 'max_upload_size';
+	
+	private string $title;
+	private string $description;
 
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Maximum upload file size', 'dco-comment-attachment' );
+
+		$this->description = sprintf(
+			/* translators: %s: the maximum allowed upload file size */
+			__(
+				'Set the value in megabytes. Currently your server allows you to upload files up to %s.',
+				'dco-comment-attachment'
+			),
+			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
+		);
 	}
 
 	public function get_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
@@ -41,7 +55,7 @@ final class MaxUploadSizeSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Maximum upload file size', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -58,18 +72,9 @@ final class MaxUploadSizeSetting implements Setting {
 			)
 		)->render();
 
-		$description = sprintf(
-			/* translators: %s: the maximum allowed upload file size */
-			__(
-				'Set the value in megabytes. Currently your server allows you to upload files up to %s.',
-				'dco-comment-attachment'
-			),
-			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
-		);
-
 		(
 			new DescriptionSettingControl(
-				text: $description,
+				text: $this->description,
 			)
 		)->render();
 	}

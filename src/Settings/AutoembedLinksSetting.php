@@ -18,9 +18,19 @@ final class AutoembedLinksSetting implements Setting {
 	private const OPTION_NAME   = 'autoembed_links';
 	private const DEFAULT_VALUE = true;
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Autoembed links in comment text?', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): bool {
@@ -32,7 +42,7 @@ final class AutoembedLinksSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Autoembed links in comment text?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -50,10 +60,7 @@ final class AutoembedLinksSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'If checked, links (like YouTube, Facebook, Twitter, etc.) in the comment text will be automatically turned into embedded content.',
-					'dco-comment-attachment'
-				)
+				text: $this->description
 			)
 		)->render();
 	}

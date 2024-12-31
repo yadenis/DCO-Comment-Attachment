@@ -18,9 +18,19 @@ final class ManuallyModerationSetting implements Setting {
 	private const OPTION_NAME   = 'manually_moderation';
 	private const DEFAULT_VALUE = false;
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Manually moderate comments with attachments', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'If checked, all comments with attachments must be manually approved before they appear on the site.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): bool {
@@ -32,7 +42,7 @@ final class ManuallyModerationSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Manually moderate comments with attachments', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::PERMISSIONS
 		);
@@ -50,10 +60,7 @@ final class ManuallyModerationSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'If checked, all comments with attachments must be manually approved before they appear on the site.',
-					'dco-comment-attachment'
-				),
+				text: $this->description,
 			)
 		)->render();
 	}

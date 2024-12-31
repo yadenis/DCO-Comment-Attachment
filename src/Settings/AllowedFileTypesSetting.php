@@ -21,6 +21,9 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private const OPTION_NAME = 'allowed_file_types';
 
+	private string $title;
+	private string $description;
+
 	private array $setting_value;
 	private array $system_value;
 
@@ -29,6 +32,13 @@ final class AllowedFileTypesSetting implements Setting {
 		private AttachmentService $attachment_service,
 	) {
 
+		$this->title = __( 'Allowed File Types', 'dco-comment-attachment' );
+
+		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
+		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
+
+		$this->description = "* — {$mark1}<br>** — {$mark2}";
+
 		$value = $this->options->get_array_option( self::OPTION_NAME );
 
 		$this->setting_value = $value ?? $this->get_system_value();
@@ -36,22 +46,25 @@ final class AllowedFileTypesSetting implements Setting {
 
 	public function get_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
 
+		$value = array_map( $this->get_extension_dto( ... ), $this->setting_value );
+
+		return $this->format_value( $value, $format );
+	}
+
+	public function get_all_extensions( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
+
 		$system_value = $this->get_system_value();
 
 		$value = array_map( $this->get_extension_dto( ... ), $system_value );
 
-		return match ( $format ) {
-
-			AllowedFileTypesFormat::ARRAY => $value,
-			AllowedFileTypesFormat::GROUPED_ARRAY => $this->format_grouped_value( $value ),
-		};
+		return $this->format_value( $value, $format );
 	}
 
 	public function get_setting_field_dto(): SettingFieldDTO {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Allowed File Types', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::PERMISSIONS
 		);
@@ -62,16 +75,13 @@ final class AllowedFileTypesSetting implements Setting {
 		(
 			new AllowedFileTypesSettingControl(
 				name: $args['name'],
-				groups: $this->get_value( AllowedFileTypesFormat::GROUPED_ARRAY ),
+				groups: $this->get_all_extensions( AllowedFileTypesFormat::GROUPED_ARRAY ),
 			)
 		)->render();
 
-		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
-		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
-
 		(
 			new DescriptionSettingControl(
-				text:  "* — {$mark1}<br>** — {$mark2}",
+				text: $this->description,
 			)
 		)->render();
 	}
@@ -87,21 +97,31 @@ final class AllowedFileTypesSetting implements Setting {
 		return $result;
 	}
 
+	private function format_value( array $value, AllowedFileTypesFormat $format ) {
+
+		return match ( $format ) {
+
+			AllowedFileTypesFormat::ARRAY => $value,
+			AllowedFileTypesFormat::GROUPED_ARRAY => $this->format_grouped_value( $value ),
+		};
+	}
+
 	private function get_system_value(): array {
 
 		if ( isset( $this->system_value ) ) {
 			return $this->system_value;
 		}
 
+		$this->system_value = [];
+
 		$raw_extensions = array_keys( get_allowed_mime_types() );
 
 		foreach ( $raw_extensions as $extension ) {
 
-			$exts = explode( '|', $extension );
-
-			foreach ( $exts as $ext ) {
-				$this->system_value[] = $ext;
-			}
+			$this->system_value = array_merge(
+				$this->system_value,
+				explode( '|', $extension )
+			);
 		}
 
 		return $this->system_value;
@@ -133,7 +153,7 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private function get_plugin_groups(): array {
 
-		$groups_list = [
+		return [
 			'image'       => __( 'image', 'dco-comment-attachment' ),
 			'audio'       => __( 'audio', 'dco-comment-attachment' ),
 			'video'       => __( 'video', 'dco-comment-attachment' ),
@@ -145,15 +165,6 @@ final class AllowedFileTypesSetting implements Setting {
 			'code'        => __( 'code', 'dco-comment-attachment' ),
 			'other'       => __( 'other', 'dco-comment-attachment' ),
 		];
-
-		$groups = [];
-
-		foreach ( $groups_list as $name => $title ) {
-
-			$groups[ $name ] = $title;
-		}
-
-		return $groups;
 	}
 
 	private function get_system_groups(): array {
@@ -161,14 +172,10 @@ final class AllowedFileTypesSetting implements Setting {
 		$system_groups      = wp_get_ext_types();
 		$system_groups_list = array_keys( $system_groups );
 
-		$groups = [];
-
-		foreach ( $system_groups_list as $group ) {
-
-			$groups[ $group ] = $group;
-		}
-
-		return $groups;
+		return array_combine(
+			$system_groups_list,
+			$system_groups_list
+		);
 	}
 
 	private function get_groups(): array {
@@ -235,16 +242,7 @@ final class AllowedFileTypesSetting implements Setting {
 
 			$extensions = explode( '|', $mime );
 
-			$filtered_extensions = [];
-
-			foreach ( $extensions as $extension ) {
-
-				if ( ! in_array( $extension, $allowed_extensions, true ) ) {
-					continue;
-				}
-
-				$filtered_extensions[] = $extension;
-			}
+			$filtered_extensions = array_intersect( $extensions, $allowed_extensions );
 
 			if ( ! $filtered_extensions ) {
 				continue;

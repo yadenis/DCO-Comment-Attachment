@@ -40,16 +40,16 @@ final class InputFormElement implements FormElement {
 			esc_attr( $multiple )
 		);
 
-		/**
-		 * Filters the input form element markup.
-		 *
-		 * @since 1.1.1
-		 *
-		 * @param string $markup HTML markup for the input form element.
-		 * @param string $field_name Name of the attachment input.
-		 * @param array $allowed_file_types Allowed upload file types.
-		 */
-		echo wp_kses_post(
+		$this->plugin_service->the_kses_post(
+			/**
+			 * Filters the input form element markup.
+			 *
+			 * @since 1.1.1
+			 *
+			 * @param string $markup HTML markup for the input form element.
+			 * @param string $field_name Name of the attachment input.
+			 * @param array $allowed_file_types Allowed upload file types.
+			 */
 			apply_filters(
 				'dco_ca_form_element_input',
 				$markup,

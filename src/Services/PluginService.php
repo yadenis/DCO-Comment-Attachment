@@ -19,17 +19,18 @@ final class PluginService {
 	public function enqueue_style( string $style_name ): void {
 
 		wp_enqueue_style(
-			$style_name,
-			$this->get_asset_url( "{$style_name}.css" ),
+			handle: $style_name,
+			src: $this->get_asset_url( "{$style_name}.css" ),
 			ver: $this->get_version()
 		);
 	}
 
 	public function enqueue_script( string $script_name ): void {
 
+		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 		wp_enqueue_script(
-			$script_name,
-			$this->get_asset_url( "{$script_name}.js" ),
+			handle: $script_name,
+			src: $this->get_asset_url( "{$script_name}.js" ),
 			ver: DCO_CA_VERSION,
 			args: [ 'in_footer' => true ]
 		);
@@ -66,6 +67,15 @@ final class PluginService {
 		return self::UPLOAD_FIELD_NAME;
 	}
 
+	public function the_kses_post( string $html ): void {
+
+		add_filter( 'wp_kses_allowed_html', $this->extend_wp_kses_post( ... ), 10, 2 );
+
+		echo wp_kses_post( $html );
+
+		remove_filter( 'wp_kses_allowed_html', $this->extend_wp_kses_post( ... ), 10, 2 );
+	}
+
 	private function get_asset_url( string $filename ): string {
 
 		return DCO_CA_URL . "assets/{$filename}";
@@ -74,5 +84,26 @@ final class PluginService {
 	private function get_version(): string {
 
 		return DCO_CA_VERSION;
+	}
+
+	public function extend_wp_kses_post( array $allowedposttags, string $context ): array {
+
+		if ( 'post' !== $context ) {
+			return $allowedposttags;
+		}
+
+		return array_merge(
+			$allowedposttags,
+			[
+				'input' => [
+					'class'    => true,
+					'id'       => true,
+					'name'     => true,
+					'type'     => true,
+					'accept'   => true,
+					'multiple' => true,
+				],
+			]
+		);
 	}
 }

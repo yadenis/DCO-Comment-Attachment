@@ -34,7 +34,18 @@ final class RadioSettingControl implements SettingControl {
 			$choices[] = ob_get_clean();
 		}
 
-		echo implode( '<br>', $choices );
+		$allowed_tags = [
+			'br'    => [],
+			'label' => [],
+			'input' => [
+				'type'    => true,
+				'name'    => true,
+				'value'   => true,
+				'checked' => true,
+			],
+		];
+
+		echo wp_kses( implode( '<br>', $choices, ), $allowed_tags );
 
 		echo '</fieldset>';
 	}

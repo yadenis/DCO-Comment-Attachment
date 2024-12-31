@@ -19,9 +19,38 @@ final class LinkThumbnailSetting implements Setting {
 	private const OPTION_NAME   = 'link_thumbnail';
 	private const DEFAULT_VALUE = LinkThumbnailType::NO_LINK;
 
+	private string $title;
+	private array $types;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Link thumbnail?', 'dco-comment-attachment' );
+
+		$this->types[ LinkThumbnailType::NO_LINK->value ] = __(
+			'Not link',
+			'dco-comment-attachment'
+		);
+
+		$this->types[ LinkThumbnailType::IMAGE_LIGHTBOX->value ] = sprintf(
+			/* translators: %s: the link to the plugin FAQ section on WordPress.org */
+			__(
+				'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)',
+				'dco-comment-attachment'
+			),
+			'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F'
+		);
+
+		$this->types[ LinkThumbnailType::IMAGE_NEW_TAB->value ] = __(
+			'Link to a full-size image in a new tab',
+			'dco-comment-attachment'
+		);
+
+		$this->types[ LinkThumbnailType::ATTACHMENT_PAGE->value ] = __(
+			'Link to the attachment page',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): string {
@@ -33,7 +62,7 @@ final class LinkThumbnailSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Link thumbnail?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::IMAGES
 		);
@@ -57,7 +86,7 @@ final class LinkThumbnailSetting implements Setting {
 
 		$choices = [];
 
-		foreach ( $this->get_types() as $value => $text ) {
+		foreach ( $this->types as $value => $text ) {
 
 			$choices[] = new RadioChoiceSettingControl(
 				name: $args['name'],
@@ -68,36 +97,5 @@ final class LinkThumbnailSetting implements Setting {
 		}
 
 		return $choices;
-	}
-
-	private function get_types(): array {
-
-		$types = [];
-
-		$types[ LinkThumbnailType::NO_LINK->value ] = __(
-			'Not link',
-			'dco-comment-attachment'
-		);
-
-		$types[ LinkThumbnailType::IMAGE_LIGHTBOX->value ] = sprintf(
-			/* translators: %s: the link to the plugin FAQ section on WordPress.org */
-			__(
-				'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)',
-				'dco-comment-attachment'
-			),
-			'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F'
-		);
-
-		$types[ LinkThumbnailType::IMAGE_NEW_TAB->value ] = __(
-			'Link to a full-size image in a new tab',
-			'dco-comment-attachment'
-		);
-
-		$types[ LinkThumbnailType::ATTACHMENT_PAGE->value ] = __(
-			'Link to the attachment page',
-			'dco-comment-attachment'
-		);
-
-		return $types;
 	}
 }

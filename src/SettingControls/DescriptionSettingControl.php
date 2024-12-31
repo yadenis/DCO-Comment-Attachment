@@ -18,7 +18,7 @@ final class DescriptionSettingControl implements SettingControl {
 	public function render(): void {
 
 		printf(
-			'<p class="description">%s</p>',
+			'<p class="dco-description">%s</p>',
 			wp_kses( $this->text, [ 'br' => [] ] )
 		);
 	}

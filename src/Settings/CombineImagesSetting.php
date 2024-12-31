@@ -18,9 +18,19 @@ final class CombineImagesSetting implements Setting {
 	private const OPTION_NAME   = 'combine_images';
 	private const DEFAULT_VALUE = true;
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Combine images to gallery?', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): bool {
@@ -32,7 +42,7 @@ final class CombineImagesSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Combine images to gallery?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::MULTIPLE_UPLOAD
 		);
@@ -50,10 +60,7 @@ final class CombineImagesSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'If checked, attached images will be combined to a gallery. Otherwise, the images will be displayed as a list.',
-					'dco-comment-attachment'
-				),
+				text: $this->description
 			)
 		)->render();
 	}

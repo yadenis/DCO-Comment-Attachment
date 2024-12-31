@@ -5,12 +5,14 @@ declare(strict_types=1);
 namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
+use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
 
 final class AttachmentAreaFormElement implements FormElement {
 
 	public function __construct(
+		private PluginService $plugin_service,
 		private LabelFormElement $label,
 		private InputFormElement $input,
 		private UploadSizeFormElement $upload_size,
@@ -35,6 +37,8 @@ final class AttachmentAreaFormElement implements FormElement {
 			?>
 		</p>
 		<?php
-		echo wp_kses_post( apply_filters( 'dco_ca_attachment_area', ob_get_clean() ) );
+		$this->plugin_service->the_kses_post(
+			apply_filters( 'dco_ca_attachment_area', ob_get_clean() )
+		);
 	}
 }

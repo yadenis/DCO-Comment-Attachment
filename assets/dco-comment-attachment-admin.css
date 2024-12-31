@@ -52,7 +52,7 @@
 	display: none !important;
 }
 
-.dco-file-type {
+.dco-file-types-group {
 	display: inline-block;
 	vertical-align: top;
 	margin-bottom: 15px;
@@ -60,12 +60,12 @@
 
 @media (max-width: 782px) {
 
-	.dco-file-type {
+	.dco-file-types-group {
 		margin-bottom: 20px;
 	}
 }
 
-.dco-file-type-name {
+.dco-file-types-group__name {
 	display: block;
 	margin-right: 5px;
 	padding-bottom: 5px;
@@ -78,7 +78,7 @@
 
 @media (max-width: 782px) {
 
-	.dco-file-type-name {
+	.dco-file-types-group__name {
 		margin-bottom: 10px;
 		margin-left: -0.1rem;
 		padding-top: 0.3rem;
@@ -88,20 +88,20 @@
 
 @media (min-width: 783px) {
 
-	.dco-file-type-name {
+	.dco-file-types-group__name {
 		margin: -1px 0 5px -1px;
 		padding: 1px 5px 0 1px;
 	}
 }
 
-.dco-file-type-item {
+.dco-file-type-extension {
 	display: block;
 	margin-bottom: 3px;
 }
 
 @media (max-width: 782px) {
 
-	.dco-file-type-item {
+	.dco-file-type-extension {
 		margin-bottom: 8px;
 	}
 }

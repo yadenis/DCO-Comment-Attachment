@@ -19,9 +19,19 @@ final class WhoCanUploadSetting implements Setting {
 	private const OPTION_NAME   = 'who_can_upload';
 	private const DEFAULT_VALUE = WhoCanUploadType::ALL_USERS;
 
+	private string $title;
+	private array $types;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Who can upload attachment?', 'dco-comment-attachment' );
+
+		$this->types = [
+			WhoCanUploadType::ALL_USERS->value    => __( 'All users', 'dco-comment-attachment' ),
+			WhoCanUploadType::LOGGED_USERS->value => __( 'Only logged users', 'dco-comment-attachment' ),
+		];
 	}
 
 	public function get_value(): string {
@@ -33,7 +43,7 @@ final class WhoCanUploadSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title:  __( 'Who can upload attachment?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::PERMISSIONS
 		);
@@ -57,7 +67,7 @@ final class WhoCanUploadSetting implements Setting {
 
 		$choices = [];
 
-		foreach ( $this->get_types() as $value => $text ) {
+		foreach ( $this->types as $value => $text ) {
 
 			$choices[] = new RadioChoiceSettingControl(
 				name: $args['name'],
@@ -68,13 +78,5 @@ final class WhoCanUploadSetting implements Setting {
 		}
 
 		return $choices;
-	}
-
-	private function get_types(): array {
-
-		return [
-			WhoCanUploadType::ALL_USERS->value    => __( 'All users', 'dco-comment-attachment' ),
-			WhoCanUploadType::LOGGED_USERS->value => __( 'Only logged users', 'dco-comment-attachment' ),
-		];
 	}
 }

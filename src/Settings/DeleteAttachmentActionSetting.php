@@ -19,9 +19,25 @@ final class DeleteAttachmentActionSetting implements Setting {
 	private const OPTION_NAME   = 'delete_attachment_action';
 	private const DEFAULT_VALUE = DeleteAttachmentActionType::DELETE;
 
+	private string $title;
+	private array $types;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' );
+
+		$this->types = [
+			DeleteAttachmentActionType::DELETE->value   => __(
+				'Delete attachment from Media Library',
+				'dco-comment-attachment'
+			),
+			DeleteAttachmentActionType::UNATTACH->value => __(
+				'Unattach attachment from comment',
+				'dco-comment-attachment'
+			),
+		];
 	}
 
 	public function get_value(): string {
@@ -33,7 +49,7 @@ final class DeleteAttachmentActionSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title:  __( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::IN_ADMIN
 		);
@@ -57,7 +73,7 @@ final class DeleteAttachmentActionSetting implements Setting {
 
 		$choices = [];
 
-		foreach ( $this->get_types() as $value => $text ) {
+		foreach ( $this->types as $value => $text ) {
 
 			$choices[] = new RadioChoiceSettingControl(
 				name: $args['name'],
@@ -68,19 +84,5 @@ final class DeleteAttachmentActionSetting implements Setting {
 		}
 
 		return $choices;
-	}
-
-	private function get_types(): array {
-
-		return [
-			DeleteAttachmentActionType::DELETE->value   => __(
-				'Delete attachment from Media Library',
-				'dco-comment-attachment'
-			),
-			DeleteAttachmentActionType::UNATTACH->value => __(
-				'Unattach attachment from comment',
-				'dco-comment-attachment'
-			),
-		];
 	}
 }

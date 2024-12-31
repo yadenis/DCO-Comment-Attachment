@@ -18,9 +18,19 @@ final class RequiredAttachmentSetting implements Setting {
 	private const OPTION_NAME   = 'required_attachment';
 	private const DEFAULT_VALUE = false;
 
+	private string $title;
+	private string $description;
+
 	public function __construct(
 		private Options $options,
 	) {
+
+		$this->title = __( 'Is attachment required?', 'dco-comment-attachment' );
+
+		$this->description = __(
+			'If checked, the user will not be able to post a comment without attaching an attachment.',
+			'dco-comment-attachment'
+		);
 	}
 
 	public function get_value(): bool {
@@ -32,7 +42,7 @@ final class RequiredAttachmentSetting implements Setting {
 
 		return new SettingFieldDTO(
 			id: self::OPTION_NAME,
-			title: __( 'Is attachment required?', 'dco-comment-attachment' ),
+			title: $this->title,
 			callback: $this->render_setting_field( ... ),
 			section: SettingsSection::GENERAL
 		);
@@ -50,10 +60,7 @@ final class RequiredAttachmentSetting implements Setting {
 
 		(
 			new DescriptionSettingControl(
-				text: __(
-					'If checked, the user will not be able to post a comment without attaching an attachment.',
-					'dco-comment-attachment'
-				),
+				text: $this->description,
 			)
 		)->render();
 	}
