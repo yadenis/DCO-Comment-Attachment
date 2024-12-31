@@ -9,6 +9,7 @@ defined( 'ABSPATH' ) || die;
 final class PluginService {
 
 	private const UPLOAD_FIELD_NAME = 'attachment';
+	private const SETTINGS_ID       = 'dco_ca';
 
 	public function __construct(
 		private UserService $user_service,
@@ -65,6 +66,11 @@ final class PluginService {
 	public function get_upload_field_name(): string {
 
 		return self::UPLOAD_FIELD_NAME;
+	}
+
+	public function get_settings_id(): string {
+
+		return self::SETTINGS_ID;
 	}
 
 	public function the_kses_post( string $html ): void {

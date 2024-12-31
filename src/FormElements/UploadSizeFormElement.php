@@ -41,8 +41,7 @@ final class UploadSizeFormElement implements FormElement {
 			 *
 			 * @since 1.1.1
 			 *
-			 * @param string $markup HTML markup for the maximum upload
-			 *                       file size form element.
+			 * @param string $markup HTML markup for the maximum upload file size form element.
 			 * @param string $max_upload_size The max upload file size with format.
 			 */
 			apply_filters(

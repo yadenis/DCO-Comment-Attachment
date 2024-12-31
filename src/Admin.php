@@ -20,7 +20,7 @@ final class Admin {
 
 	public function enqueue_scripts( string $hook_suffix ): void {
 
-		if ( in_array( $hook_suffix, array( 'edit-comments.php', 'comment.php', 'settings_page_dco-comment-attachment' ), true ) ) {
+		if ( in_array( $hook_suffix, [ 'edit-comments.php', 'comment.php', 'settings_page_dco-comment-attachment' ], true ) ) {
 
 			$this->plugin_service->enqueue_style( 'dco-comment-attachment-admin' );
 		}

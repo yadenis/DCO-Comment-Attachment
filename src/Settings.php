@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Enums\SettingsSection;
+use DCO_CA\Services\PluginService;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\AutoembedLinksSetting;
 use DCO_CA\Settings\CombineImagesSetting;
@@ -24,9 +25,10 @@ defined( 'ABSPATH' ) || die;
 
 final class Settings {
 
-	public const ID = 'dco_ca';
+	private string $settings_id;
 
 	public function __construct(
+		private PluginService $plugin_service,
 		private MaxUploadSizeSetting $max_upload_size,
 		private RequiredAttachmentSetting $required_attachment,
 		private EmbedAttachmentSetting $embed_attachment,
@@ -42,6 +44,8 @@ final class Settings {
 		private DeleteWithCommentSetting $delete_with_comment,
 		private DeleteAttachmentActionSetting $delete_attachment_action,
 	) {
+
+		$this->settings_id = $this->plugin_service->get_settings_id();
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
 		add_action( 'admin_init', $this->add_settings_fields( ... ) );
@@ -65,8 +69,8 @@ final class Settings {
 			<h1><?php esc_html_e( 'DCO Comment Attachment Settings', 'dco-comment-attachment' ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( self::ID );
-				do_settings_sections( self::ID );
+				settings_fields( $this->settings_id );
+				do_settings_sections( $this->settings_id );
 				submit_button();
 				?>
 			</form>
@@ -76,7 +80,7 @@ final class Settings {
 
 	public function add_settings_fields(): void {
 
-		register_setting( self::ID, self::ID );
+		register_setting( $this->settings_id, $this->settings_id );
 
 		foreach ( $this->get_sections() as $key => $title ) {
 
@@ -84,7 +88,7 @@ final class Settings {
 				id: $key,
 				title: $title,
 				callback: $this->render_section( ... ),
-				page: self::ID
+				page: $this->settings_id
 			);
 		}
 
@@ -94,10 +98,10 @@ final class Settings {
 				id: $field->id,
 				title: esc_html( $field->title ),
 				callback: $field->callback,
-				page: self::ID,
+				page: $this->settings_id,
 				section: esc_html( $field->section->value ),
 				args: [
-					'name'      => self::ID . "[{$field->id}]",
+					'name'      => $this->settings_id . "[{$field->id}]",
 					'id'        => $field->id,
 					'label_for' => $field->id,
 				]

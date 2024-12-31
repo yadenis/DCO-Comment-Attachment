@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || die;
 final class MaxUploadSizeSetting implements Setting {
 
 	private const OPTION_NAME = 'max_upload_size';
-	
+
 	private string $title;
 	private string $description;
 

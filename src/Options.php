@@ -5,16 +5,17 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Enums\OptionType;
+use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
 
 final class Options {
 
-	private const OPTIONS_KEY = 'dco_ca';
-
 	private array $options;
 
-	public function __construct() {
+	public function __construct(
+		private PluginService $plugin_service,
+	) {
 
 		$this->options = $this->get_options();
 	}
@@ -41,12 +42,9 @@ final class Options {
 
 	private function get_options(): array {
 
-		$options = get_option( self::OPTIONS_KEY );
-		if ( ! is_array( $options ) ) {
-			return [];
-		}
+		$options = get_option( $this->plugin_service->get_settings_id() );
 
-		return $options;
+		return is_array( $options ) ? $options : [];
 	}
 
 	private function get_option( string $name, OptionType $type ): mixed {
@@ -76,24 +74,3 @@ final class Options {
 		};
 	}
 }
-
-/*
-private function get_default_options(): array {
-
-	return array(
-		'max_upload_size'          => $this->max_upload_size->get_settings_value_in_megabytes(),
-		'required_attachment'      => false,
-		'embed_attachment'         => true,
-		'autoembed_links'          => true,
-		'enable_multiple_upload'   => false,
-		'combine_images'           => true,
-		'gallery_size'             => 'thumbnail',
-		'thumbnail_size'           => 'medium',
-		'link_thumbnail'           => false,
-		'allowed_file_types'       => $this->get_allowed_file_types( 'array' ),
-		'who_can_upload'           => 1,
-		'manually_moderation'      => 0,
-		'delete_with_comment'      => 1,
-		'delete_attachment_action' => 1,
-	);
-}*/
