@@ -7,6 +7,7 @@ namespace DCO_CA\FormElements;
 use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Enums\AllowedFileTypesFormat;
+use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -14,16 +15,22 @@ final class FileTypesFormElement implements FormElement {
 
 	private array $file_types_groups;
 
+	private string $text;
+
 	public function __construct(
+		private PluginService $plugin_service,
 		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 
 		$this->file_types_groups = $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
+
+		/* translators: %s: the allowed file types list */
+		$this->text = __( 'You can upload: %s.', 'dco-comment-attachment' );
 	}
 
 	public function render(): void {
 
-		echo wp_kses_post(
+		$this->plugin_service->the_kses_post(
 			apply_filters(
 				'dco_ca_form_element_file_types',
 				$this->get_markup(),
@@ -40,10 +47,9 @@ final class FileTypesFormElement implements FormElement {
 
 		return sprintf(
 			'<span class="comment-form-attachment__file-types-notice">%s</span>',
-			sprintf(
-			/* translators: %s: the allowed file types list */
-				__( 'You can upload: %s.', 'dco-comment-attachment' ),
-				$this->build_html_types()
+			wp_kses(
+				sprintf( $this->text, $this->build_html_types() ),
+				[ 'abbr' => [ 'title' => true ] ]
 			)
 		);
 	}
