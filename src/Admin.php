@@ -11,8 +11,8 @@ defined( 'ABSPATH' ) || die;
 final class Admin {
 
 	public function __construct(
-		private Settings $settings,
 		private PluginService $plugin_service,
+		private Settings $settings,
 	) {
 
 		add_action( 'admin_enqueue_scripts', $this->enqueue_scripts( ... ) );

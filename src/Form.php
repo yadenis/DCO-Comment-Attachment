@@ -12,9 +12,9 @@ defined( 'ABSPATH' ) || die;
 final class Form {
 
 	public function __construct(
+		private PluginService $plugin_service,
 		private FormHandler $form_handler,
 		private AttachmentAreaFormElement $attachment_area,
-		private PluginService $plugin_service,
 	) {
 
 		add_action( 'comment_form_submit_field', $this->add_attachment_area( ... ) );
