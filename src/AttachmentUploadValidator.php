@@ -19,35 +19,33 @@ final class AttachmentUploadValidator {
 	private array $attachments;
 	private bool $is_enabled_multiple_upload;
 	private bool $is_required_attachment;
-	private int $max_upload_size_value;
-	private string $max_upload_size_formatted_value;
+	private int $max_upload_size;
+	private string $max_upload_size_formatted;
 
 	public function __construct(
-		private PluginService $plugin_service,
-		private EnableMultipleUploadSetting $enable_multiple_upload,
-		private RequiredAttachmentSetting $required_attachment,
-		private MaxUploadSizeSetting $max_upload_size,
-		private AllowedFileTypesSetting $allowed_file_types,
+		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
+		private RequiredAttachmentSetting $required_attachment_setting,
+		private MaxUploadSizeSetting $max_upload_size_setting,
+		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 
 		$this->attachments = $this->get_attachments();
 
-		$this->is_enabled_multiple_upload      = $this->enable_multiple_upload->get_value();
-		$this->is_required_attachment          = $this->required_attachment->get_value();
-		$this->max_upload_size_value           = $this->max_upload_size->get_value();
-		$this->max_upload_size_formatted_value = $this->max_upload_size->get_value( MaxUploadSizeFormat::FORMATTED );
+		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
+		$this->is_required_attachment     = $this->required_attachment_setting->get_value();
+		$this->max_upload_size            = $this->max_upload_size_setting->get_value();
+		$this->max_upload_size_formatted  = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
 	}
 
 	public function validate(): bool|WP_Error {
 
+		if ( ! $this->is_need_validate_attachment() ) {
+			return false;
+		}
+
 		$check_required_attachment = $this->check_required_attachment();
 		if ( is_wp_error( $check_required_attachment ) ) {
 			return $check_required_attachment;
-		}
-
-		$check_attachment_uploaded = $this->check_attachment_uploaded();
-		if ( ! $check_attachment_uploaded ) {
-			return false;
 		}
 
 		$check_error_codes = $this->check_error_codes();
@@ -77,28 +75,15 @@ final class AttachmentUploadValidator {
 
 	private function get_attachments(): array {
 
-		$field_name = $this->plugin_service->get_upload_field_name();
-
-		return $_FILES[ $field_name ] ?? [];
+		return $_FILES[ PluginService::UPLOAD_FIELD_NAME ] ?? [];
 	}
 
-	private function check_required_attachment(): bool|WP_Error {
+	private function is_need_validate_attachment(): bool {
 
-		$uploaded = $this->check_attachment_uploaded();
-
-		if ( ! $uploaded && $this->is_required_attachment ) {
-
-			return new WP_Error(
-				'dco-comment-attachment',
-				esc_html__( 'Attachment is required.', 'dco-comment-attachment' ),
-				[ 'status' => 400 ]
-			);
-		}
-
-		return true;
+		return $this->is_attachment_uploaded() || $this->is_required_attachment;
 	}
 
-	private function check_attachment_uploaded(): bool {
+	private function is_attachment_uploaded(): bool {
 
 		if ( ! $this->attachments ) {
 			return false;
@@ -108,6 +93,20 @@ final class AttachmentUploadValidator {
 
 		if ( ! isset( $tmp_names[0] ) || ! is_uploaded_file( $tmp_names[0] ) ) {
 			return false;
+		}
+
+		return true;
+	}
+
+	private function check_required_attachment(): bool|WP_Error {
+
+		if ( ! $this->is_attachment_uploaded() && $this->is_required_attachment ) {
+
+			return new WP_Error(
+				'dco-comment-attachment',
+				esc_html__( 'Attachment is required.', 'dco-comment-attachment' ),
+				[ 'status' => 400 ]
+			);
 		}
 
 		return true;
@@ -153,7 +152,7 @@ final class AttachmentUploadValidator {
 		$sizes = (array) $this->attachments['size'];
 		$size  = array_sum( $sizes );
 
-		if ( $size > $this->max_upload_size_value ) {
+		if ( $size > $this->max_upload_size ) {
 
 			$error_code   = 1;
 			$upload_error = $this->get_upload_error( $error_code );
@@ -174,7 +173,7 @@ final class AttachmentUploadValidator {
 
 		foreach ( $names as $name ) {
 
-			$filetype = $this->allowed_file_types->apply_file_types_filter_to_function(
+			$filetype = $this->allowed_file_types_setting->apply_file_types_filter_to_function(
 				wp_check_filetype( ... ),
 				[ $name ]
 			);
@@ -198,7 +197,7 @@ final class AttachmentUploadValidator {
 			1 => sprintf(
 				/* translators: %s: the maximum allowed upload file size */
 				__( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ),
-				$this->max_upload_size_formatted_value
+				$this->max_upload_size_formatted
 			),
 			2 => __(
 				'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',

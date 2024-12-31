@@ -10,6 +10,12 @@ defined( 'ABSPATH' ) || die;
 
 final class Admin {
 
+	protected const ADMIN_PAGES = [
+		'edit-comments.php',
+		'comment.php',
+		'settings_page_dco-comment-attachment',
+	];
+
 	public function __construct(
 		private PluginService $plugin_service,
 		private Settings $settings,
@@ -20,9 +26,18 @@ final class Admin {
 
 	public function enqueue_scripts( string $hook_suffix ): void {
 
-		if ( in_array( $hook_suffix, [ 'edit-comments.php', 'comment.php', 'settings_page_dco-comment-attachment' ], true ) ) {
+		if ( $this->is_admin_page( $hook_suffix ) ) {
 
 			$this->plugin_service->enqueue_style( 'dco-comment-attachment-admin' );
 		}
+	}
+
+	private function is_admin_page( string $page ): bool {
+
+		return in_array(
+			$page,
+			self::ADMIN_PAGES,
+			true
+		);
 	}
 }

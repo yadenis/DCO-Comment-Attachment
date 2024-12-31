@@ -13,9 +13,7 @@ final class Options {
 
 	private array $options;
 
-	public function __construct(
-		private PluginService $plugin_service,
-	) {
+	public function __construct() {
 
 		$this->options = $this->get_options();
 	}
@@ -42,7 +40,7 @@ final class Options {
 
 	private function get_options(): array {
 
-		$options = get_option( $this->plugin_service->get_settings_id() );
+		$options = get_option( PluginService::SETTINGS_ID );
 
 		return is_array( $options ) ? $options : [];
 	}

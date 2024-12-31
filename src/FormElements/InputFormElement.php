@@ -17,7 +17,6 @@ final class InputFormElement implements FormElement {
 	private array $allowed_file_types;
 
 	public function __construct(
-		private PluginService $plugin_service,
 		private EnableMultipleUploadSetting $enabled_multiple_upload_setting,
 		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
@@ -61,9 +60,7 @@ final class InputFormElement implements FormElement {
 
 	private function get_field_name(): string {
 
-		$field_name = $this->plugin_service->get_upload_field_name();
-
-		return $field_name . ( $this->is_enabled_multiple_upload ? '[]' : '' );
+		return PluginService::UPLOAD_FIELD_NAME . ( $this->is_enabled_multiple_upload ? '[]' : '' );
 	}
 
 	private function get_multiple_attribute(): string {

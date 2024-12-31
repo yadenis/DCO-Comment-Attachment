@@ -28,7 +28,6 @@ final class Settings {
 	private string $settings_id;
 
 	public function __construct(
-		private PluginService $plugin_service,
 		private MaxUploadSizeSetting $max_upload_size,
 		private RequiredAttachmentSetting $required_attachment,
 		private EmbedAttachmentSetting $embed_attachment,
@@ -45,7 +44,7 @@ final class Settings {
 		private DeleteAttachmentActionSetting $delete_attachment_action,
 	) {
 
-		$this->settings_id = $this->plugin_service->get_settings_id();
+		$this->settings_id = PluginService::SETTINGS_ID;
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
 		add_action( 'admin_init', $this->add_settings_fields( ... ) );

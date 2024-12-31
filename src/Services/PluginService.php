@@ -8,8 +8,9 @@ defined( 'ABSPATH' ) || die;
 
 final class PluginService {
 
-	private const UPLOAD_FIELD_NAME = 'attachment';
-	private const SETTINGS_ID       = 'dco_ca';
+	public const VERSION           = DCO_CA_VERSION;
+	public const UPLOAD_FIELD_NAME = 'attachment';
+	public const SETTINGS_ID       = 'dco_ca';
 
 	public function __construct(
 		private UserService $user_service,
@@ -22,7 +23,7 @@ final class PluginService {
 		wp_enqueue_style(
 			handle: $style_name,
 			src: $this->get_asset_url( "{$style_name}.css" ),
-			ver: $this->get_version()
+			ver: self::VERSION
 		);
 	}
 
@@ -63,16 +64,6 @@ final class PluginService {
 		return ! apply_filters( 'dco_ca_disable_attachment_field', $disable );
 	}
 
-	public function get_upload_field_name(): string {
-
-		return self::UPLOAD_FIELD_NAME;
-	}
-
-	public function get_settings_id(): string {
-
-		return self::SETTINGS_ID;
-	}
-
 	public function the_kses_post( string $html ): void {
 
 		add_filter( 'wp_kses_allowed_html', $this->extend_wp_kses_post( ... ), 10, 2 );
@@ -85,11 +76,6 @@ final class PluginService {
 	private function get_asset_url( string $filename ): string {
 
 		return DCO_CA_URL . "assets/{$filename}";
-	}
-
-	private function get_version(): string {
-
-		return DCO_CA_VERSION;
 	}
 
 	public function extend_wp_kses_post( array $allowedposttags, string $context ): array {
