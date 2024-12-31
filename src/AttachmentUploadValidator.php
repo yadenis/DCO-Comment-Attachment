@@ -21,6 +21,7 @@ final class AttachmentUploadValidator {
 	private bool $is_required_attachment;
 	private int $max_upload_size;
 	private string $max_upload_size_formatted;
+	private array $upload_errors;
 
 	public function __construct(
 		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
@@ -33,8 +34,24 @@ final class AttachmentUploadValidator {
 
 		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
 		$this->is_required_attachment     = $this->required_attachment_setting->get_value();
-		$this->max_upload_size            = $this->max_upload_size_setting->get_value();
+		$this->max_upload_size            = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
 		$this->max_upload_size_formatted  = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
+
+		$this->upload_errors = [
+			1 => sprintf(
+				/* translators: %s: the maximum allowed upload file size */
+				__( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ),
+				$this->max_upload_size_formatted
+			),
+			2 => __(
+				'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+				'dco-comment-attachment'
+			),
+			3 => __( 'The uploaded file was only partially uploaded.', 'dco-comment-attachment' ),
+			6 => __( 'Missing a temporary folder.', 'dco-comment-attachment' ),
+			7 => __( 'Failed to write file to disk.', 'dco-comment-attachment' ),
+			8 => __( 'A PHP extension stopped the file upload.', 'dco-comment-attachment' ),
+		];
 	}
 
 	public function validate(): bool|WP_Error {
@@ -43,29 +60,19 @@ final class AttachmentUploadValidator {
 			return false;
 		}
 
-		$check_required_attachment = $this->check_required_attachment();
-		if ( is_wp_error( $check_required_attachment ) ) {
-			return $check_required_attachment;
-		}
+		foreach ( [
+			$this->check_required_attachment( ... ),
+			$this->check_error_codes( ... ),
+			$this->check_multiple_upload( ... ),
+			$this->check_upload_size( ... ),
+			$this->check_file_types( ... ),
+		] as $check ) {
 
-		$check_error_codes = $this->check_error_codes();
-		if ( is_wp_error( $check_error_codes ) ) {
-			return $check_error_codes;
-		}
+			$result = $check();
 
-		$check_multiple_upload = $this->check_multiple_upload();
-		if ( is_wp_error( $check_multiple_upload ) ) {
-			return $check_multiple_upload;
-		}
-
-		$check_upload_size = $this->check_upload_size();
-		if ( is_wp_error( $check_upload_size ) ) {
-			return $check_upload_size;
-		}
-
-		$check_file_types = $this->check_file_types();
-		if ( is_wp_error( $check_file_types ) ) {
-			return $check_file_types;
+			if ( is_wp_error( $result ) ) {
+				return $result;
+			}
 		}
 
 		// $this->attachment_checked = true;
@@ -75,6 +82,7 @@ final class AttachmentUploadValidator {
 
 	private function get_attachments(): array {
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		return $_FILES[ PluginService::UPLOAD_FIELD_NAME ] ?? [];
 	}
 
@@ -193,22 +201,6 @@ final class AttachmentUploadValidator {
 
 	private function get_upload_error( int $error_code ): ?string {
 
-		$upload_errors = [
-			1 => sprintf(
-				/* translators: %s: the maximum allowed upload file size */
-				__( 'The file is too large. Allowed attachments up to %s.', 'dco-comment-attachment' ),
-				$this->max_upload_size_formatted
-			),
-			2 => __(
-				'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
-				'dco-comment-attachment'
-			),
-			3 => __( 'The uploaded file was only partially uploaded.', 'dco-comment-attachment' ),
-			6 => __( 'Missing a temporary folder.', 'dco-comment-attachment' ),
-			7 => __( 'Failed to write file to disk.', 'dco-comment-attachment' ),
-			8 => __( 'A PHP extension stopped the file upload.', 'dco-comment-attachment' ),
-		];
-
-		return $upload_errors[ $error_code ] ?? null;
+		return $this->upload_errors[ $error_code ] ?? null;
 	}
 }

@@ -47,7 +47,7 @@ final class MaxUploadSizeSetting implements Setting {
 		return match ( $format ) {
 			MaxUploadSizeFormat::IN_BYTES => $value * MB_IN_BYTES,
 			MaxUploadSizeFormat::IN_MEGABYTES => $value,
-			MaxUploadSizeFormat::FORMATTED => (string) size_format( $value )
+			MaxUploadSizeFormat::FORMATTED => (string) size_format( $value * MB_IN_BYTES )
 		};
 	}
 

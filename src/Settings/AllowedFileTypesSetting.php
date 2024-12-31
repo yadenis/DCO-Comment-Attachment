@@ -223,13 +223,7 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private function get_group_title_by_name( string $name ): string {
 
-		$groups = $this->get_groups();
-
-		if ( ! isset( $groups[ $name ] ) ) {
-			return '';
-		}
-
-		return $groups[ $name ];
+		return $this->get_groups()[ $name ] ?? '';
 	}
 
 	public function filter_upload_mimes( array $mimes ): array {

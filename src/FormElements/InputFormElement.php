@@ -17,6 +17,7 @@ final class InputFormElement implements FormElement {
 	private array $allowed_file_types;
 
 	public function __construct(
+		private PluginService $plugin_service,
 		private EnableMultipleUploadSetting $enabled_multiple_upload_setting,
 		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
