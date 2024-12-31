@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace DCO_CA;
 
+use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
+use DCO_CA\Interfaces\Setting;
 use DCO_CA\Services\PluginService;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\AutoembedLinksSetting;
@@ -81,30 +83,14 @@ final class Settings {
 
 		register_setting( $this->settings_id, $this->settings_id );
 
-		foreach ( $this->get_sections() as $key => $title ) {
+		foreach ( $this->get_sections() as $id => $title ) {
 
-			add_settings_section(
-				id: $key,
-				title: $title,
-				callback: $this->render_section( ... ),
-				page: $this->settings_id
-			);
+			$this->add_section( $id, $title );
 		}
 
 		foreach ( $this->get_fields() as $field ) {
 
-			add_settings_field(
-				id: $field->id,
-				title: esc_html( $field->title ),
-				callback: $field->callback,
-				page: $this->settings_id,
-				section: esc_html( $field->section->value ),
-				args: [
-					'name'      => $this->settings_id . "[{$field->id}]",
-					'id'        => $field->id,
-					'label_for' => $field->id,
-				]
-			);
+			$this->add_field( $field );
 		}
 	}
 
@@ -123,21 +109,50 @@ final class Settings {
 
 	private function get_fields(): array {
 
-		return [
-			$this->max_upload_size->get_setting_field_dto(),
-			$this->required_attachment->get_setting_field_dto(),
-			$this->embed_attachment->get_setting_field_dto(),
-			$this->autoembed_links->get_setting_field_dto(),
-			$this->thumbnail_size->get_setting_field_dto(),
-			$this->link_thumbnail->get_setting_field_dto(),
-			$this->enable_multiple_upload->get_setting_field_dto(),
-			$this->combine_images->get_setting_field_dto(),
-			$this->gallery_size->get_setting_field_dto(),
-			$this->allowed_file_types->get_setting_field_dto(),
-			$this->who_can_upload->get_setting_field_dto(),
-			$this->manually_moderation->get_setting_field_dto(),
-			$this->delete_with_comment->get_setting_field_dto(),
-			$this->delete_attachment_action->get_setting_field_dto(),
-		];
+		return array_map(
+			fn( Setting $setting ): SettingFieldDTO => $setting->get_setting_field_dto(),
+			[
+				$this->max_upload_size,
+				$this->required_attachment,
+				$this->embed_attachment,
+				$this->autoembed_links,
+				$this->thumbnail_size,
+				$this->link_thumbnail,
+				$this->enable_multiple_upload,
+				$this->combine_images,
+				$this->gallery_size,
+				$this->allowed_file_types,
+				$this->who_can_upload,
+				$this->manually_moderation,
+				$this->delete_with_comment,
+				$this->delete_attachment_action,
+			]
+		);
+	}
+
+	private function add_section( string $id, string $title ): void {
+
+		add_settings_section(
+			id: $id,
+			title: esc_html( $title ),
+			callback: $this->render_section( ... ),
+			page: $this->settings_id
+		);
+	}
+
+	private function add_field( SettingFieldDTO $field ): void {
+
+		add_settings_field(
+			id: $field->id,
+			title: esc_html( $field->title ),
+			callback: $field->callback,
+			page: $this->settings_id,
+			section: esc_html( $field->section->value ),
+			args: [
+				'name'      => $this->settings_id . "[{$field->id}]",
+				'id'        => $field->id,
+				'label_for' => $field->id,
+			]
+		);
 	}
 }
