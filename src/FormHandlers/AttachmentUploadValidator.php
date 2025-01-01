@@ -79,10 +79,10 @@ final class AttachmentUploadValidator {
 
 	private function is_need_validate_attachment(): bool {
 
-		return $this->is_attachment_uploaded() || $this->is_required_attachment;
+		return $this->is_attachments_uploaded() || $this->is_required_attachment;
 	}
 
-	private function is_attachment_uploaded(): bool {
+	private function is_attachments_uploaded(): bool {
 
 		if ( ! $this->uploaded_attachments ) {
 			return false;
@@ -99,7 +99,7 @@ final class AttachmentUploadValidator {
 
 	private function check_required_attachment(): bool|WP_Error {
 
-		if ( ! $this->is_attachment_uploaded() && $this->is_required_attachment ) {
+		if ( ! $this->is_attachments_uploaded() && $this->is_required_attachment ) {
 
 			return new WP_Error(
 				'dco-comment-attachment',
