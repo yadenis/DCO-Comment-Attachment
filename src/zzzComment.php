@@ -13,7 +13,7 @@ final class Comment1 extends Instance {
 	public const ATTACHMENT_META_KEY = 'attachment_id';
 
 	private int $id;
-	private ?array $attachments_ids = null;
+	private ?array $attachment_ids = null;
 
 	private function __construct(
 		private WP_Comment $comment
@@ -21,7 +21,7 @@ final class Comment1 extends Instance {
 
 		$this->id = $this->comment->comment_ID;
 
-		$this->attachments_ids = $this->get_attachments_ids();
+		$this->attachment_ids = $this->get_attachment_ids();
 	}
 
 	public static function get_instance(
@@ -53,27 +53,27 @@ final class Comment1 extends Instance {
 		return static::get_bulk_instances( $comments );
 	}
 
-	private function get_attachments_ids(): array {
+	private function get_attachment_ids(): array {
 
-		if ( null !== $this->attachments_ids ) {
-			return $this->attachments_ids;
+		if ( null !== $this->attachment_ids ) {
+			return $this->attachment_ids;
 		}
 
-		$attachments_ids = get_comment_meta(
+		$attachment_ids = get_comment_meta(
 			$this->id,
 			static::ATTACHMENT_META_KEY,
 			true
 		);
 
-		if ( ! $attachments_ids ) {
+		if ( ! $attachment_ids ) {
 			return [];
 		}
 
-		return (array) $attachments_ids;
+		return (array) $attachment_ids;
 	}
 
 	public function get_attachments( string|array $type = 'all' ): array {
 
-		$attachments = Attachment::get_bulk_instances( $this->attachments_ids );
+		$attachments = Attachment::get_bulk_instances( $this->attachment_ids );
 	}
 }

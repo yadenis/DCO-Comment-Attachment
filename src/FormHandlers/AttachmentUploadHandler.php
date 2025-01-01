@@ -2,31 +2,35 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA;
+namespace DCO_CA\FormHandlers;
 
 use DCO_CA\Services\PluginService;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 
 defined( 'ABSPATH' ) || die;
 
-final class AttachmentUploader {
+final class AttachmentUploadHandler {
 
 	public function __construct(
 		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 	}
 
-	public function upload( array $attachments, int $comment_post_id ): array {
+	public function handle( array $uploaded_attachments, int $comment_post_id ): array {
 
-		$this->require_dependencies();
+		if ( ! $uploaded_attachments ) {
+			return [];
+		}
 
-		$field_name             = PluginService::UPLOAD_FIELD_NAME;
-		$attachments_for_upload = $this->prepare_attachments_for_upload( $attachments );
-		$comment_post_id        = $this->filter_comment_post_id( $comment_post_id );
+		$this->load_dependencies();
 
-		$attachments_ids = [];
+		$field_name        = PluginService::UPLOAD_FIELD_NAME;
+		$split_attachments = $this->split_attachments( $uploaded_attachments );
+		$comment_post_id   = $this->filter_comment_post_id( $comment_post_id );
 
-		foreach ( $attachments_for_upload as $attachment ) {
+		$attachment_ids = [];
+
+		foreach ( $split_attachments as $attachment ) {
 
 			$_FILES[ $field_name ] = $attachment;
 
@@ -39,20 +43,20 @@ final class AttachmentUploader {
 			);
 
 			if ( ! is_wp_error( $attachment_id ) ) {
-				$attachments_ids[] = $attachment_id;
+				$attachment_ids[] = $attachment_id;
 			}
 		}
 
-		$_FILES[ $field_name ] = $attachments;
+		$_FILES[ $field_name ] = $uploaded_attachments;
 
-		return $attachments_ids;
+		return $attachment_ids;
 	}
 
 	/**
 	 * The `media_handle_upload` function is only loaded by default in the WordPress admin area,
 	 * so let's make sure it's available on the frontend.
 	 */
-	private function require_dependencies(): void {
+	private function load_dependencies(): void {
 
 		if ( function_exists( 'media_handle_upload' ) ) {
 			return;
@@ -64,8 +68,9 @@ final class AttachmentUploader {
 	}
 
 	/**
-	 * Emulates the upload of each file separately, because the `media_handle_upload`
-	 * function doesn't support uploading multiple files.
+	 * Splits a `$_FILES`-like array of attachments into individual attachment arrays.
+	 * This is necessary because the `media_handle_upload` function only supports handling
+	 * one file at a time.
 	 *
 	 * Example input:
 	 * ```php
@@ -98,12 +103,16 @@ final class AttachmentUploader {
 	 * ]
 	 * ```
 	 *
-	 * @param array $attachments Attachments to upload as a `$_FILES`-like array.
+	 * @param array $attachments Attachments to split as a `$_FILES`-like array.
 	 *
 	 * @return array $attachments_for_upload An array of attachments, where each attachment
 	 *                                       is an associative array.
 	 */
-	private function prepare_attachments_for_upload( array $attachments ): array {
+	private function split_attachments( array $attachments ): array {
+
+		if ( ! $attachments ) {
+			return [];
+		}
 
 		$attachments_for_upload = [];
 

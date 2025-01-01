@@ -17,7 +17,7 @@ final class Form {
 		private AttachmentAreaFormElement $attachment_area,
 	) {
 
-		add_action( 'comment_form_submit_field', $this->add_attachment_area( ... ) );
+		add_filter( 'comment_form_submit_field', $this->add_attachment_area( ... ) );
 		add_action( 'wp_enqueue_scripts', $this->enqueue_scripts( ... ) );
 	}
 

@@ -13,7 +13,7 @@ final class Comment {
 	private const ATTACHMENT_META_KEY = 'attachment_id';
 
 	public readonly int $id;
-	public array $attachments = [];
+	public array $attachment_ids = [];
 
 	private function __construct(
 		private WP_Comment $comment
@@ -35,9 +35,9 @@ final class Comment {
 	public function save(): bool {
 
 		// Compatibility with 1.x version.
-		$attachments = $this->attachments;
+		$attachments = $this->attachment_ids;
 		if ( 1 === count( $attachments ) ) {
-			$attachments = current( $this->attachments );
+			$attachments = current( $this->attachment_ids );
 		}
 
 		return (bool) update_comment_meta(

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA;
+namespace DCO_CA\FormHandlers;
 
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\EnableMultipleUploadSetting;
@@ -15,7 +15,7 @@ defined( 'ABSPATH' ) || die;
 
 final class AttachmentUploadValidator {
 
-	private array $attachments;
+	private array $uploaded_attachments;
 	private bool $is_enabled_multiple_upload;
 	private bool $is_required_attachment;
 	private int $max_upload_size;
@@ -51,12 +51,12 @@ final class AttachmentUploadValidator {
 		];
 	}
 
-	public function validate( array $attachments ): bool|WP_Error {
+	public function validate( array $uploaded_attachments ): null|bool|WP_Error {
 
-		$this->attachments = $attachments;
+		$this->uploaded_attachments = $uploaded_attachments;
 
 		if ( ! $this->is_need_validate_attachment() ) {
-			return false;
+			return null;
 		}
 
 		foreach ( [
@@ -84,11 +84,11 @@ final class AttachmentUploadValidator {
 
 	private function is_attachment_uploaded(): bool {
 
-		if ( ! $this->attachments ) {
+		if ( ! $this->uploaded_attachments ) {
 			return false;
 		}
 
-		$tmp_names = (array) $this->attachments['tmp_name'];
+		$tmp_names = (array) $this->uploaded_attachments['tmp_name'];
 
 		if ( ! isset( $tmp_names[0] ) || ! is_uploaded_file( $tmp_names[0] ) ) {
 			return false;
@@ -113,7 +113,7 @@ final class AttachmentUploadValidator {
 
 	private function check_multiple_upload(): bool|WP_Error {
 
-		if ( ! $this->is_enabled_multiple_upload && is_array( $this->attachments['name'] ) ) {
+		if ( ! $this->is_enabled_multiple_upload && is_array( $this->uploaded_attachments['name'] ) ) {
 
 			return new WP_Error(
 				'dco-comment-attachment',
@@ -127,7 +127,7 @@ final class AttachmentUploadValidator {
 
 	private function check_error_codes(): bool|WP_Error {
 
-		$error_codes = (array) $this->attachments['error'];
+		$error_codes = (array) $this->uploaded_attachments['error'];
 
 		foreach ( $error_codes as $error_code ) {
 
@@ -148,7 +148,7 @@ final class AttachmentUploadValidator {
 
 	private function check_upload_size(): bool|WP_Error {
 
-		$sizes = (array) $this->attachments['size'];
+		$sizes = (array) $this->uploaded_attachments['size'];
 		$size  = array_sum( $sizes );
 
 		if ( $size > $this->max_upload_size ) {
@@ -168,7 +168,7 @@ final class AttachmentUploadValidator {
 
 	private function check_file_types(): bool|WP_Error {
 
-		$names = (array) $this->attachments['name'];
+		$names = (array) $this->uploaded_attachments['name'];
 
 		foreach ( $names as $name ) {
 
