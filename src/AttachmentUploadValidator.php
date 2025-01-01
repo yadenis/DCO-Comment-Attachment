@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DCO_CA;
 
-use DCO_CA\Services\PluginService;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\EnableMultipleUploadSetting;
 use DCO_CA\Enums\MaxUploadSizeFormat;
@@ -30,8 +29,6 @@ final class AttachmentUploadValidator {
 		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 
-		$this->attachments = $this->get_attachments();
-
 		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
 		$this->is_required_attachment     = $this->required_attachment_setting->get_value();
 		$this->max_upload_size            = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
@@ -54,7 +51,9 @@ final class AttachmentUploadValidator {
 		];
 	}
 
-	public function validate(): bool|WP_Error {
+	public function validate( array $attachments ): bool|WP_Error {
+
+		$this->attachments = $attachments;
 
 		if ( ! $this->is_need_validate_attachment() ) {
 			return false;
@@ -75,15 +74,7 @@ final class AttachmentUploadValidator {
 			}
 		}
 
-		// $this->attachment_checked = true;
-
 		return true;
-	}
-
-	private function get_attachments(): array {
-
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		return $_FILES[ PluginService::UPLOAD_FIELD_NAME ] ?? [];
 	}
 
 	private function is_need_validate_attachment(): bool {

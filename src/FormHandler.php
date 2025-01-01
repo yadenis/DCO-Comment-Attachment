@@ -4,31 +4,33 @@ declare(strict_types=1);
 
 namespace DCO_CA;
 
+use DCO_CA\Services\CommentService;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\ManuallyModerationSetting;
+use DCO_CA\Settings\AllowedFileTypesSetting;
 
 defined( 'ABSPATH' ) || die;
 
 final class FormHandler {
 
-	private bool $is_manually_moderation;
+	private array $attachments;
 
 	public function __construct(
 		private PluginService $plugin_service,
+		private CommentService $comment_service,
 		private AttachmentUploadValidator $attachment_upload_validator,
-		private ManuallyModerationSetting $manually_moderation,
+		private AttachmentUploader $attachment_uploader,
+		private AllowedFileTypesSetting $allowed_file_types_setting,
 	) {
 
-		$this->is_manually_moderation = $this->manually_moderation->get_value();
+		$this->attachments = $this->get_attachments();
 
 		add_filter( 'preprocess_comment', $this->check_attachment( ... ) );
-		//add_action( 'comment_post', array( $this, 'save_attachment' ), 5, 3 );
-		//add_filter( 'pre_comment_approved', array( $this, 'approve_comment' ) );
+		add_action( 'comment_post', $this->save_attachment( ... ), 5, 3 );
 	}
 
 	public function check_attachment( array $commentdata ): array {
 
-		$validated = $this->attachment_upload_validator->validate();
+		$validated = $this->attachment_upload_validator->validate( $this->attachments );
 
 		if ( ! is_wp_error( $validated ) ) {
 			return $commentdata;
@@ -43,5 +45,24 @@ final class FormHandler {
 			esc_html__( 'Comment Submission Failure', 'dco-comment-attachment' ),
 			[ 'back_link' => true ]
 		);
+	}
+
+	public function save_attachment( $comment_id, $comment_approved, $commentdata ): void {
+
+		$attachments_ids = $this->attachment_uploader->upload(
+			$this->attachments,
+			intval( $commentdata['comment_post_ID'] )
+		);
+
+		$this->comment_service->attach_attachments_to_comment(
+			$comment_id,
+			$attachments_ids
+		);
+	}
+
+	private function get_attachments(): array {
+
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+		return $_FILES[ PluginService::UPLOAD_FIELD_NAME ] ?? [];
 	}
 }

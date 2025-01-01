@@ -20,11 +20,11 @@ final class UserService {
 
 		$who_can_upload = $this->who_can_upload->get_value();
 
-		if ( WhoCanUploadType::ALL_USERS === $who_can_upload ) {
+		if ( WhoCanUploadType::ALL_USERS->value === $who_can_upload ) {
 			return true;
 		}
 
-		if ( WhoCanUploadType::LOGGED_USERS && is_user_logged_in() ) {
+		if ( WhoCanUploadType::LOGGED_USERS->value && is_user_logged_in() ) {
 			return true;
 		}
 

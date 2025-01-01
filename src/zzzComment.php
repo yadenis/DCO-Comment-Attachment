@@ -8,7 +8,7 @@ use WP_Comment;
 
 defined( 'ABSPATH' ) || die;
 
-final class Comment extends Instance {
+final class Comment1 extends Instance {
 
 	public const ATTACHMENT_META_KEY = 'attachment_id';
 
