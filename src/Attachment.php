@@ -14,6 +14,7 @@ defined( 'ABSPATH' ) || die;
 final class Attachment {
 
 	public readonly string $filepath;
+	public readonly string $extension;
 	public readonly string $title;
 	public readonly string $link;
 	public readonly AttachmentEmbedType $embed_type;
@@ -26,10 +27,11 @@ final class Attachment {
 		$this->filepath = (string) get_attached_file( $this->id );
 
 		if ( empty( $this->filepath ) ) {
-			throw new RuntimeException( esc_html( "Attachment with ID {$this->id} is invalid." ) );
+			throw new RuntimeException( esc_html( "File path for attachment ID {$this->id} is invalid." ) );
 		}
 
-		$this->title = get_the_title( $this->id );
+		$this->extension = (string) wp_check_filetype( $this->filepath )['ext'];
+		$this->title     = get_the_title( $this->id );
 
 		$this->init_link();
 		$this->init_embed_type();
@@ -156,8 +158,6 @@ final class Attachment {
 			return;
 		}
 
-		$extension = wp_check_filetype( $this->filepath )['ext'];
-
 		$types = [
 			[
 				'name'       => AttachmentEmbedType::IMAGE,
@@ -175,7 +175,7 @@ final class Attachment {
 
 		foreach ( $types as $type ) {
 
-			if ( in_array( $extension, $type['extensions'], true ) ) {
+			if ( in_array( $this->extension, $type['extensions'], true ) ) {
 				$embed_type = $type['name'];
 			}
 		}
