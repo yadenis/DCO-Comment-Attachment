@@ -45,26 +45,20 @@ final class Attachment {
 
 		$link_thumbnail_type = $this->settings_service->get_link_thumbnail_type();
 
-		$link = match ( $link_thumbnail_type ) {
-			LinkThumbnailType::NO_LINK->value         => '',
-			LinkThumbnailType::IMAGE_LIGHTBOX->value  => wp_get_attachment_image_url( $this->id, 'full' ),
-			LinkThumbnailType::IMAGE_NEW_TAB->value   => wp_get_attachment_image_url( $this->id, 'full' ),
-			LinkThumbnailType::ATTACHMENT_PAGE->value => $this->link,
-		};
-
-		if ( ! is_admin() && $link ) {
+		if ( ! is_admin() && $this->link ) {
 
 			$img_tag = sprintf(
 				'<a href="%s" class="dco-attachment-link dco-image-attachment-link"%s>%s</a>',
-				esc_url( $link ),
-				( LinkThumbnailType::IMAGE_NEW_TAB->value === $link_thumbnail_type ) ? 'target="_blank"' : '',
+				esc_url( $this->link ),
+				( LinkThumbnailType::IMAGE_NEW_TAB->value === $link_thumbnail_type ) ? ' target="_blank"' : '',
 				$img_tag
 			);
 		}
 
-		$attachment_content = '<p class="dco-attachment dco-image-attachment">' . $img_tag . '</p>';
-
-		return $attachment_content;
+		$attachment_content = sprintf(
+			'<p class="dco-attachment dco-image-attachment">%s</p>',
+			$img_tag
+		);
 
 		/**
 		* Filters the HTML markup for the image attachment.
@@ -73,13 +67,11 @@ final class Attachment {
 		*
 		* @param string $attachment_content HTML markup for the attachment.
 		* @param int $attachment_id The attachment ID.
-		* @param string $thumbnail_size The thumbnail size of the attachment image.
 		*/
 		return apply_filters(
 			'dco_ca_get_attachment_preview_image',
 			$attachment_content,
 			$this->id,
-			$thumbnail_size
 		);
 	}
 
