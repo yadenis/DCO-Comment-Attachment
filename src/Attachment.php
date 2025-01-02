@@ -7,23 +7,29 @@ namespace DCO_CA;
 use DCO_CA\Enums\AttachmentEmbedType;
 use DCO_CA\Enums\LinkThumbnailType;
 use DCO_CA\Services\SettingsService;
+use RuntimeException;
 
 defined( 'ABSPATH' ) || die;
 
 final class Attachment {
 
-	private string $filepath;
-	private string $title;
-	private string $link;
-	private AttachmentEmbedType $embed_type;
+	public readonly string $filepath;
+	public readonly string $title;
+	public readonly string $link;
+	public readonly AttachmentEmbedType $embed_type;
 
 	public function __construct(
 		private SettingsService $settings_service,
-		private int $id
+		public readonly int $id
 	) {
 
-		$this->filepath = get_attached_file( $this->id );
-		$this->title    = get_the_title( $this->id );
+		$this->filepath = (string) get_attached_file( $this->id );
+
+		if ( empty( $this->filepath ) ) {
+			throw new RuntimeException( esc_html( "Attachment with ID {$this->id} is invalid." ) );
+		}
+
+		$this->title = get_the_title( $this->id );
 
 		$this->init_link();
 		$this->init_embed_type();
@@ -39,9 +45,23 @@ final class Attachment {
 		};
 	}
 
-	private function get_image_markup(): string {
+	public function get_gallery_image_markup(): string {
 
-		$img_tag = $this->get_img_tag_markup();
+		return $this->get_image_markup( $this->settings_service->get_gallery_image_size() );
+	}
+
+	public function is_image(): bool {
+
+		return AttachmentEmbedType::IMAGE === $this->embed_type;
+	}
+
+	private function get_image_markup( string $image_size = '' ): string {
+
+		if ( ! $this->is_image() ) {
+			return '';
+		}
+
+		$img_tag = $this->get_img_tag_markup( $image_size );
 
 		$link_thumbnail_type = $this->settings_service->get_link_thumbnail_type();
 
@@ -77,6 +97,10 @@ final class Attachment {
 
 	private function get_video_markup(): string {
 
+		if ( AttachmentEmbedType::VIDEO !== $this->embed_type ) {
+			return '';
+		}
+
 		return sprintf(
 			'<div class="dco-attachment dco-video-attachment">%s</div>',
 			do_shortcode(
@@ -87,6 +111,10 @@ final class Attachment {
 
 	private function get_audio_markup(): string {
 
+		if ( AttachmentEmbedType::AUDIO !== $this->embed_type ) {
+			return '';
+		}
+
 		return sprintf(
 			'<div class="dco-attachment dco-audio-attachment">%s</div>',
 			do_shortcode(
@@ -96,6 +124,10 @@ final class Attachment {
 	}
 
 	private function get_misc_markup(): string {
+
+		if ( AttachmentEmbedType::MISC !== $this->embed_type ) {
+			return '';
+		}
 
 		/**
 		* Filters whether to force download misc attachments.
@@ -116,9 +148,11 @@ final class Attachment {
 
 	private function init_embed_type(): void {
 
-		$this->embed_type = AttachmentEmbedType::MISC;
+		$embed_type = AttachmentEmbedType::MISC;
 
 		if ( ! $this->settings_service->is_embeded_attachment() ) {
+
+			$this->embed_type = $embed_type;
 			return;
 		}
 
@@ -142,9 +176,11 @@ final class Attachment {
 		foreach ( $types as $type ) {
 
 			if ( in_array( $extension, $type['extensions'], true ) ) {
-				$this->embed_type = $type['name'];
+				$embed_type = $type['name'];
 			}
 		}
+
+		$this->embed_type = $embed_type;
 	}
 
 	private function init_link(): void {
@@ -153,21 +189,23 @@ final class Attachment {
 
 		$this->link = match ( $link_thumbnail_type ) {
 			LinkThumbnailType::NO_LINK->value         => '',
-			LinkThumbnailType::IMAGE_LIGHTBOX->value  => wp_get_attachment_image_url( $this->id, 'full' ),
-			LinkThumbnailType::IMAGE_NEW_TAB->value   => wp_get_attachment_image_url( $this->id, 'full' ),
+			LinkThumbnailType::IMAGE_LIGHTBOX->value  => (string) wp_get_attachment_image_url( $this->id, 'full' ),
+			LinkThumbnailType::IMAGE_NEW_TAB->value   => (string) wp_get_attachment_image_url( $this->id, 'full' ),
 			LinkThumbnailType::ATTACHMENT_PAGE->value => get_attachment_link( $this->id ),
 		};
 	}
 
-	private function get_img_tag_markup(): string {
+	private function get_img_tag_markup( string $image_size = '' ): string {
 
-		if ( AttachmentEmbedType::IMAGE !== $this->embed_type ) {
+		if ( ! $this->is_image() ) {
 			return '';
 		}
 
+		$image_size = ! empty( $image_size ) ? $image_size : $this->settings_service->get_thumbnail_image_size();
+
 		return wp_get_attachment_image(
 			$this->id,
-			$this->settings_service->get_thumbnail_size()
+			$image_size
 		);
 	}
 }

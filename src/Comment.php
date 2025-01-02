@@ -17,7 +17,6 @@ final class Comment {
 	private array $attachments;
 
 	public readonly int $id;
-	public array $attachment_ids = [];
 
 	public function __construct(
 		private AttachmentService $attachment_service,
@@ -25,30 +24,9 @@ final class Comment {
 		private WP_Comment $comment
 	) {
 
-		$this->id             = (int) $this->comment->comment_ID;
-		$this->attachment_ids = $this->get_attachment_ids();
-	}
+		$this->id = (int) $this->comment->comment_ID;
 
-	public function get_attachments(): array {
-
-		if ( isset( $this->attachments ) ) {
-			return $this->attachments;
-		}
-
-		$this->attachments = [];
-
-		foreach ( $this->attachment_ids as $attachment_id ) {
-
-			$attachment = $this->attachment_service->get_attachment_instance( $attachment_id );
-
-			if ( ! $attachment ) {
-				continue;
-			}
-
-			$this->attachments[] = $attachment;
-		}
-
-		return $this->attachments;
+		$this->init_attachments();
 	}
 
 	public function render_attachments(): void {
@@ -57,24 +35,39 @@ final class Comment {
 			return;
 		}
 
-		$attachments_content = [];
+		if ( ! $this->has_one_attachment() && $this->settings_service->is_combined_images() ) {
 
-		foreach ( $this->get_attachments() as $attachment ) {
-
-			$attachments_content[] = $attachment->get_markup();
+			$this->render_attachments_gallery();
+			return;
 		}
 
-		echo implode( '', $attachments_content );
+		$this->render_attachments_list();
 	}
 
 	public function has_attachments(): bool {
 
-		return (bool) count( $this->attachment_ids );
+		return (bool) count( $this->attachments );
 	}
 
 	public function has_one_attachment(): bool {
 
-		return 1 === count( $this->attachment_ids );
+		return 1 === count( $this->attachments );
+	}
+
+	public function set_attachment_ids( array $ids ): void {
+
+		$this->attachments = [];
+
+		foreach ( $ids as $attachment_id ) {
+
+			$attachment = $this->attachment_service->get_attachment_instance( (int) $attachment_id );
+
+			if ( ! $attachment ) {
+				continue;
+			}
+
+			$this->attachments[] = $attachment;
+		}
 	}
 
 	public function save(): bool {
@@ -84,9 +77,10 @@ final class Comment {
 		} else {
 
 			// Compatibility with 1.x version.
-			$attachments = $this->attachment_ids;
+			$attachments = wp_list_pluck( $this->attachments, 'id' );
+
 			if ( $this->has_one_attachment() ) {
-				$attachments = current( $this->attachment_ids );
+				$attachments = current( $attachments );
 			}
 		}
 
@@ -97,17 +91,49 @@ final class Comment {
 		);
 	}
 
-	private function get_attachment_ids(): array {
+	private function init_attachments(): void {
 
 		$ids = get_comment_meta( $this->id, self::ATTACHMENT_ID_META_KEY, single: true );
 
 		if ( ! $ids ) {
-			return [];
+
+			$this->attachments = [];
+			return;
 		}
 
-		return array_map(
-			fn( string $id ): int => intval( $id ),
-			(array) $ids
-		);
+		$this->set_attachment_ids( (array) $ids );
+	}
+
+	private function render_attachments_list(): void {
+
+		$attachments_content = [];
+
+		foreach ( $this->attachments as $attachment ) {
+
+			$attachments_content[] = $attachment->get_markup();
+		}
+
+		echo implode( '', $attachments_content );
+	}
+
+	private function render_attachments_gallery(): void {
+
+		$images     = [];
+		$not_images = [];
+
+		foreach ( $this->attachments as $attachment ) {
+
+			if ( $attachment->is_image() ) {
+				$images[] = $attachment->get_gallery_image_markup();
+			} else {
+				$not_images[] = $attachment->get_markup();
+			}
+		}
+
+		// wraps gallery.
+		array_unshift( $images, '<div class="dco-attachment-gallery">' );
+		$images[] = '</div>';
+
+		echo implode( '', array_merge( $images, $not_images ) );
 	}
 }

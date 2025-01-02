@@ -65,10 +65,14 @@ final class SettingsService {
 
 	public function is_autoembed_links(): bool {
 
+		if ( is_admin() ) {
+			return false;
+		}
+
 		return $this->autoembed_links_setting->get_value();
 	}
 
-	public function get_thumbnail_size(): string {
+	public function get_thumbnail_image_size(): string {
 
 		$thumbnail_size = $this->thumbnail_size_setting->get_value();
 
@@ -94,6 +98,20 @@ final class SettingsService {
 	public function is_enabled_multiple_upload(): bool {
 
 		return $this->enable_multiple_upload_setting->get_value();
+	}
+
+	public function is_combined_images(): bool {
+
+		if ( is_admin() ) {
+			return true;
+		}
+
+		return $this->combine_images_setting->get_value();
+	}
+
+	public function get_gallery_image_size(): string {
+
+		return $this->gallery_size_setting->get_value();
 	}
 
 	public function get_allowed_file_types(): array {

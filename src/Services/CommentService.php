@@ -47,18 +47,10 @@ final class CommentService {
 			return false;
 		}
 
-		$comment->attachment_ids = $attachment_ids;
+		$comment->set_attachment_ids( $attachment_ids );
 
 		return $comment->save();
 	}
-
-	/*
-	public function get_attachments_of_current_comment( ?WP_Comment $wp_comment ): array {
-
-		$comment = $this->get_current_comment( $wp_comment );
-
-		return $comment ? $comment->get_attachments() : [];
-	}*/
 
 	public function get_current_comment( ?WP_Comment $wp_comment ): ?Comment {
 
