@@ -43,14 +43,14 @@ final class SettingsService {
 	) {
 	}
 
-	public function is_autoembed_links(): bool {
+	public function get_formatted_max_upload_size(): string {
 
-		return $this->autoembed_links_setting->get_value();
+		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
 	}
 
-	public function is_enabled_multiple_upload(): bool {
+	public function get_max_upload_size_in_bytes(): int {
 
-		return $this->enable_multiple_upload_setting->get_value();
+		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
 	}
 
 	public function is_required_attachment(): bool {
@@ -58,9 +58,42 @@ final class SettingsService {
 		return $this->required_attachment_setting->get_value();
 	}
 
-	public function is_manually_moderation_enabled(): bool {
-		
-		return $this->manually_moderation_setting->get_value();
+	public function is_embeded_attachment(): bool {
+
+		return $this->embed_attachment_setting->get_value();
+	}
+
+	public function is_autoembed_links(): bool {
+
+		return $this->autoembed_links_setting->get_value();
+	}
+
+	public function get_thumbnail_size(): string {
+
+		$thumbnail_size = $this->thumbnail_size_setting->get_value();
+
+		if ( is_admin() ) {
+			/**
+			 * Filters the attachment image size for the admin panel.
+			 *
+			 * @since 2.0.0
+			 *
+			 * @param string $size The thumbnail size of the attachment image.
+			 */
+			$thumbnail_size = apply_filters( 'dco_ca_admin_thumbnail_size', 'medium' );
+		}
+
+		return $thumbnail_size;
+	}
+
+	public function get_link_thumbnail_type(): string {
+
+		return $this->link_thumbnail_setting->get_value();
+	}
+
+	public function is_enabled_multiple_upload(): bool {
+
+		return $this->enable_multiple_upload_setting->get_value();
 	}
 
 	public function get_allowed_file_types(): array {
@@ -73,19 +106,19 @@ final class SettingsService {
 		return $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
 	}
 
-	public function get_formatted_max_upload_size(): string {
+	public function get_image_extensions(): array {
 
-		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
-	}
-
-	public function get_max_upload_size_in_bytes(): string {
-
-		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
+		return AllowedFileTypesSetting::IMAGE_EXTENSIONS;
 	}
 
 	public function get_who_can_upload(): string {
 
 		return $this->who_can_upload_setting->get_value();
+	}
+
+	public function is_manually_moderation_enabled(): bool {
+
+		return $this->manually_moderation_setting->get_value();
 	}
 
 	public function get_all_settings_instances(): array {

@@ -9,7 +9,6 @@ use DCO_CA\FormHandlers\AttachmentUploadValidator;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\PluginService;
 use DCO_CA\Services\SettingsService;
-use DCO_CA\Settings\ManuallyModerationSetting;
 use WP_Error;
 
 defined( 'ABSPATH' ) || die;
@@ -23,9 +22,9 @@ final class FormHandler {
 
 	public function __construct(
 		private CommentService $comment_service,
+		private SettingsService $settings_service,
 		private AttachmentUploadValidator $attachment_upload_validator,
 		private AttachmentUploadHandler $attachment_upload_handler,
-		private SettingsService $settings_service,
 	) {
 
 		$this->uploaded_attachments = $this->get_uploaded_attachments();

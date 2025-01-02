@@ -54,7 +54,7 @@ final class EmbedAttachmentSetting implements Setting {
 			new CheckboxSettingControl(
 				name: $args['name'],
 				id: $args['id'],
-				checked: true === $this->get_value(),
+				checked: $this->get_value(),
 			)
 		)->render();
 

@@ -13,6 +13,7 @@ final class CommentService {
 
 	public function __construct(
 		private AttachmentService $attachment_service,
+		private SettingsService $settings_service,
 	) {
 	}
 
@@ -22,6 +23,7 @@ final class CommentService {
 
 			return new Comment(
 				$this->attachment_service,
+				$this->settings_service,
 				$comment_id
 			);
 		}
@@ -33,6 +35,7 @@ final class CommentService {
 
 		return new Comment(
 			$this->attachment_service,
+			$this->settings_service,
 			$comment
 		);
 	}

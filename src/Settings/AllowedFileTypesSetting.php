@@ -11,7 +11,6 @@ use DCO_CA\Options;
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\Services\AttachmentService;
 use DCO_CA\SettingControls\AllowedFileTypesSettingControl;
 use DCO_CA\SettingControls\DescriptionSettingControl;
 
@@ -21,6 +20,9 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private const OPTION_NAME = 'allowed_file_types';
 
+	public const IMAGE_EXTENSIONS          = [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+	private const ADMINISTRATOR_EXTENSIONS = [ 'htm', 'html', 'js' ];
+
 	private string $title;
 	private string $description;
 
@@ -29,7 +31,6 @@ final class AllowedFileTypesSetting implements Setting {
 
 	public function __construct(
 		private Options $options,
-		private AttachmentService $attachment_service,
 	) {
 
 		$this->title = __( 'Allowed File Types', 'dco-comment-attachment' );
@@ -183,8 +184,8 @@ final class AllowedFileTypesSetting implements Setting {
 			extension: $extension,
 			group: $this->get_extension_group( $extension ),
 			is_allowed: $is_allowed,
-			is_embedded: $this->attachment_service->is_embedded_extension( $extension ),
-			is_for_administrators: $this->attachment_service->is_administrator_extension( $extension ),
+			is_embedded: $this->is_embedded_extension( $extension ),
+			is_for_administrators: $this->is_administrator_extension( $extension ),
 		);
 	}
 
@@ -213,6 +214,25 @@ final class AllowedFileTypesSetting implements Setting {
 	private function get_group_title_by_name( string $name ): string {
 
 		return $this->get_groups()[ $name ] ?? '';
+	}
+
+	private function is_administrator_extension( string $extension ): bool {
+
+		return in_array( $extension, self::ADMINISTRATOR_EXTENSIONS, true );
+	}
+
+	private function is_embedded_extension( string $extension ): bool {
+
+		return in_array( $extension, $this->get_embedded_extensions(), true );
+	}
+
+	private function get_embedded_extensions(): array {
+
+		return array_merge(
+			wp_get_video_extensions(),
+			wp_get_audio_extensions(),
+			self::IMAGE_EXTENSIONS,
+		);
 	}
 
 	public function filter_upload_mimes( array $mimes ): array {

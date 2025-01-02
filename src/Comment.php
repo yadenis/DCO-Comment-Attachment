@@ -57,11 +57,14 @@ final class Comment {
 			return;
 		}
 
-		if ( $this->has_one_attachment() ) {
-			$this->render_single_attachment();
-		} else {
-			$this->render_multiple_attachments();
+		$attachments_content = [];
+
+		foreach ( $this->get_attachments() as $attachment ) {
+
+			$attachments_content[] = $attachment->get_markup();
 		}
+
+		echo implode( '', $attachments_content );
 	}
 
 	public function has_attachments(): bool {
@@ -82,7 +85,7 @@ final class Comment {
 
 			// Compatibility with 1.x version.
 			$attachments = $this->attachment_ids;
-			if ( 1 === count( $attachments ) ) {
+			if ( $this->has_one_attachment() ) {
 				$attachments = current( $this->attachment_ids );
 			}
 		}
@@ -106,19 +109,5 @@ final class Comment {
 			fn( string $id ): int => intval( $id ),
 			(array) $ids
 		);
-	}
-
-	private function render_single_attachment(): void {
-	}
-
-	private function render_multiple_attachments(): void {
-
-		$attachments_content = [];
-
-		foreach ( $this->get_attachments() as $attachment ) {
-
-			$attachments_content[] = $attachment->get_render();
-
-		}
 	}
 }

@@ -119,7 +119,7 @@ final class AttachmentUploadHandler {
 		array_walk(
 			$attachments,
 			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-			fn( int|string &$value ): array => $value = (array) $value
+			fn( int|string|array &$value ): array => $value = (array) $value
 		);
 
 		$keys  = array_keys( $attachments );

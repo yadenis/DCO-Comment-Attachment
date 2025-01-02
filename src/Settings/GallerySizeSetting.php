@@ -8,10 +8,8 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Options;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\Services\AttachmentService;
 use DCO_CA\SettingControls\DescriptionSettingControl;
-use DCO_CA\SettingControls\SelectSettingControl;
-use DCO_CA\SettingControls\SelectOptionSettingControl;
+use DCO_CA\SettingControls\ImageSizeControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -25,7 +23,6 @@ final class GallerySizeSetting implements Setting {
 
 	public function __construct(
 		private Options $options,
-		private AttachmentService $attachment_service,
 	) {
 
 		$this->title = __( 'Gallery image size', 'dco-comment-attachment' );
@@ -54,10 +51,10 @@ final class GallerySizeSetting implements Setting {
 	public function render_setting_field( array $args ): void {
 
 		(
-			new SelectSettingControl(
+			new ImageSizeControl(
 				name: $args['name'],
 				id: $args['id'],
-				options: $this->build_options(),
+				selected_size: $this->get_value(),
 			)
 		)->render();
 
@@ -71,23 +68,5 @@ final class GallerySizeSetting implements Setting {
 	private function get_default_value(): string {
 
 		return self::DEFAULT_VALUE;
-	}
-
-	private function build_options(): array {
-
-		$options = [];
-
-		$sizes = $this->attachment_service->get_image_sizes();
-
-		foreach ( $sizes as $name => $title ) {
-
-			$options[] = new SelectOptionSettingControl(
-				value: $name,
-				text: $title,
-				selected: $name === $this->get_value(),
-			);
-		}
-
-		return $options;
 	}
 }
