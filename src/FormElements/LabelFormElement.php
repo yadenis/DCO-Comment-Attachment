@@ -6,8 +6,7 @@ namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\EnableMultipleUploadSetting;
-use DCO_CA\Settings\RequiredAttachmentSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -21,12 +20,11 @@ final class LabelFormElement implements FormElement {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private RequiredAttachmentSetting $required_attachment_setting,
-		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->is_required_attachment     = $this->required_attachment_setting->get_value();
-		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
+		$this->is_required_attachment     = $this->settings_service->is_required_attachment();
+		$this->is_enabled_multiple_upload = $this->settings_service->is_enabled_multiple_upload();
 
 		$this->singular_text = __( 'Attachment', 'dco-comment-attachment' );
 		$this->plural_text   = __( 'Attachments', 'dco-comment-attachment' );

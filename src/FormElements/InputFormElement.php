@@ -6,8 +6,7 @@ namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\AllowedFileTypesSetting;
-use DCO_CA\Settings\EnableMultipleUploadSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -18,12 +17,11 @@ final class InputFormElement implements FormElement {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private EnableMultipleUploadSetting $enabled_multiple_upload_setting,
-		private AllowedFileTypesSetting $allowed_file_types_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->is_enabled_multiple_upload = $this->enabled_multiple_upload_setting->get_value();
-		$this->allowed_file_types         = $this->allowed_file_types_setting->get_value();
+		$this->is_enabled_multiple_upload = $this->settings_service->is_enabled_multiple_upload();
+		$this->allowed_file_types         = $this->settings_service->get_allowed_file_types();
 	}
 
 	public function render(): void {

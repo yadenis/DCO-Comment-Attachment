@@ -8,6 +8,7 @@ use DCO_CA\FormHandlers\AttachmentUploadHandler;
 use DCO_CA\FormHandlers\AttachmentUploadValidator;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\PluginService;
+use DCO_CA\Services\SettingsService;
 use DCO_CA\Settings\ManuallyModerationSetting;
 use WP_Error;
 
@@ -24,12 +25,12 @@ final class FormHandler {
 		private CommentService $comment_service,
 		private AttachmentUploadValidator $attachment_upload_validator,
 		private AttachmentUploadHandler $attachment_upload_handler,
-		private ManuallyModerationSetting $manually_moderation_setting,
+		private SettingsService $settings_service,
 	) {
 
 		$this->uploaded_attachments = $this->get_uploaded_attachments();
 
-		$this->is_manually_moderation_enabled = $this->manually_moderation_setting->get_value();
+		$this->is_manually_moderation_enabled = $this->settings_service->is_manually_moderation_enabled();
 
 		add_filter( 'preprocess_comment', $this->validate_uploaded_attachments( ... ) );
 		add_action( 'comment_post', $this->handle_uploaded_attachments( ... ), 5, 3 );
@@ -79,7 +80,6 @@ final class FormHandler {
 	public function unapprove_comment_or_not( int|string|WP_Error $approved ): int|string|WP_Error {
 
 		if ( ! $this->handled_attachment_ids || ! $this->is_manually_moderation_enabled ) {
-
 			return $approved;
 		}
 

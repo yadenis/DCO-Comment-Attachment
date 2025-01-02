@@ -33,9 +33,11 @@ function dco_ca() {
 
 	$injector = dco_ca_get_injector();
 
+	$injector->make( DCO_CA\Admin::class );
+
 	$injector->make( DCO_CA\Form::class );
 
-	$injector->make( DCO_CA\Admin::class );
+	$injector->make( DCO_CA\CommentsList::class );
 
 	$injector->make( DCO_CA\BackwardCompatibility::class );
 }

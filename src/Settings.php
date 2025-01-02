@@ -8,20 +8,7 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\AllowedFileTypesSetting;
-use DCO_CA\Settings\AutoembedLinksSetting;
-use DCO_CA\Settings\CombineImagesSetting;
-use DCO_CA\Settings\DeleteAttachmentActionSetting;
-use DCO_CA\Settings\DeleteWithCommentSetting;
-use DCO_CA\Settings\EmbedAttachmentSetting;
-use DCO_CA\Settings\EnableMultipleUploadSetting;
-use DCO_CA\Settings\GallerySizeSetting;
-use DCO_CA\Settings\LinkThumbnailSetting;
-use DCO_CA\Settings\ManuallyModerationSetting;
-use DCO_CA\Settings\MaxUploadSizeSetting;
-use DCO_CA\Settings\RequiredAttachmentSetting;
-use DCO_CA\Settings\ThumbnailSizeSetting;
-use DCO_CA\Settings\WhoCanUploadSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -30,20 +17,7 @@ final class Settings {
 	private string $settings_id;
 
 	public function __construct(
-		private MaxUploadSizeSetting $max_upload_size_setting,
-		private RequiredAttachmentSetting $required_attachment_setting,
-		private EmbedAttachmentSetting $embed_attachment_setting,
-		private AutoembedLinksSetting $autoembed_links_setting,
-		private ThumbnailSizeSetting $thumbnail_size_setting,
-		private LinkThumbnailSetting $link_thumbnail_setting,
-		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
-		private CombineImagesSetting $combine_images_setting,
-		private GallerySizeSetting $gallery_size_setting,
-		private AllowedFileTypesSetting $allowed_file_types_setting,
-		private WhoCanUploadSetting $who_can_upload_setting,
-		private ManuallyModerationSetting $manually_moderation_setting,
-		private DeleteWithCommentSetting $delete_with_comment_setting,
-		private DeleteAttachmentActionSetting $delete_attachment_action_setting,
+		private SettingsService $settings_service,
 	) {
 
 		$this->settings_id = PluginService::SETTINGS_ID;
@@ -111,22 +85,7 @@ final class Settings {
 
 		return array_map(
 			fn( Setting $setting ): SettingFieldDTO => $setting->get_setting_field_dto(),
-			[
-				$this->max_upload_size_setting,
-				$this->required_attachment_setting,
-				$this->embed_attachment_setting,
-				$this->autoembed_links_setting,
-				$this->thumbnail_size_setting,
-				$this->link_thumbnail_setting,
-				$this->enable_multiple_upload_setting,
-				$this->combine_images_setting,
-				$this->gallery_size_setting,
-				$this->allowed_file_types_setting,
-				$this->who_can_upload_setting,
-				$this->manually_moderation_setting,
-				$this->delete_with_comment_setting,
-				$this->delete_attachment_action_setting,
-			]
+			$this->settings_service->get_all_settings_instances()
 		);
 	}
 

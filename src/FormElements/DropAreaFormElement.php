@@ -6,7 +6,7 @@ namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\EnableMultipleUploadSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -19,10 +19,10 @@ final class DropAreaFormElement implements FormElement {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
+		$this->is_enabled_multiple_upload = $this->settings_service->is_enabled_multiple_upload();
 
 		$this->singular_text = esc_html__( 'Drop file here', 'dco-comment-attachment' );
 		$this->plural_text   = esc_html__( 'Drop files here', 'dco-comment-attachment' );

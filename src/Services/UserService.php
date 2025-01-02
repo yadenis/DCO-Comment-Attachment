@@ -5,20 +5,19 @@ declare(strict_types=1);
 namespace DCO_CA\Services;
 
 use DCO_CA\Enums\WhoCanUploadType;
-use DCO_CA\Settings\WhoCanUploadSetting;
 
 defined( 'ABSPATH' ) || die;
 
 final class UserService {
 
 	public function __construct(
-		private WhoCanUploadSetting $who_can_upload
+		private SettingsService $settings_service,
 	) {
 	}
 
 	public function is_current_user_can_upload_attachment(): bool {
 
-		$who_can_upload = $this->who_can_upload->get_value();
+		$who_can_upload = $this->settings_service->get_who_can_upload();
 
 		if ( WhoCanUploadType::ALL_USERS->value === $who_can_upload ) {
 			return true;

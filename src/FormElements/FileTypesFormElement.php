@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
-use DCO_CA\Settings\AllowedFileTypesSetting;
-use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Services\PluginService;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -19,10 +18,10 @@ final class FileTypesFormElement implements FormElement {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private AllowedFileTypesSetting $allowed_file_types_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->file_types_groups = $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
+		$this->file_types_groups = $this->settings_service->get_grouped_allowed_file_types();
 
 		/* translators: %s: the allowed file types list */
 		$this->text = __( 'You can upload: %s.', 'dco-comment-attachment' );

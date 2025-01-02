@@ -6,7 +6,7 @@ namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\AutoembedLinksSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -18,10 +18,10 @@ final class AutoembedLinksFormElement implements FormElement {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private AutoembedLinksSetting $autoembed_links_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->is_autoembed_links = $this->autoembed_links_setting->get_value();
+		$this->is_autoembed_links = $this->settings_service->is_autoembed_links();
 
 		$this->text = esc_html__(
 			'Links to YouTube, Facebook, Twitter and other services inserted in the comment text will be automatically embedded.',

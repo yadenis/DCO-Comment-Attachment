@@ -4,11 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\FormHandlers;
 
-use DCO_CA\Settings\AllowedFileTypesSetting;
-use DCO_CA\Settings\EnableMultipleUploadSetting;
-use DCO_CA\Enums\MaxUploadSizeFormat;
-use DCO_CA\Settings\MaxUploadSizeSetting;
-use DCO_CA\Settings\RequiredAttachmentSetting;
+use DCO_CA\Services\SettingsService;
 use WP_Error;
 
 defined( 'ABSPATH' ) || die;
@@ -23,16 +19,13 @@ final class AttachmentUploadValidator {
 	private array $upload_errors;
 
 	public function __construct(
-		private EnableMultipleUploadSetting $enable_multiple_upload_setting,
-		private RequiredAttachmentSetting $required_attachment_setting,
-		private MaxUploadSizeSetting $max_upload_size_setting,
-		private AllowedFileTypesSetting $allowed_file_types_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->is_enabled_multiple_upload = $this->enable_multiple_upload_setting->get_value();
-		$this->is_required_attachment     = $this->required_attachment_setting->get_value();
-		$this->max_upload_size            = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
-		$this->max_upload_size_formatted  = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
+		$this->is_enabled_multiple_upload = $this->settings_service->is_enabled_multiple_upload();
+		$this->is_required_attachment     = $this->settings_service->is_required_attachment();
+		$this->max_upload_size            = $this->settings_service->get_max_upload_size_in_bytes();
+		$this->max_upload_size_formatted  = $this->settings_service->get_formatted_max_upload_size();
 
 		$this->upload_errors = [
 			1 => sprintf(
@@ -172,7 +165,7 @@ final class AttachmentUploadValidator {
 
 		foreach ( $names as $name ) {
 
-			$filetype = $this->allowed_file_types_setting->apply_file_types_filter_to_function(
+			$filetype = $this->settings_service->apply_file_types_filter_to_function(
 				wp_check_filetype( ... ),
 				[ $name ]
 			);

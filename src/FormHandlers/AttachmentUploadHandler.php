@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace DCO_CA\FormHandlers;
 
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\AllowedFileTypesSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
 final class AttachmentUploadHandler {
 
 	public function __construct(
-		private AllowedFileTypesSetting $allowed_file_types_setting,
+		private SettingsService $settings_service,
 	) {
 	}
 
@@ -34,7 +34,7 @@ final class AttachmentUploadHandler {
 
 			$_FILES[ $field_name ] = $attachment;
 
-			$attachment_id = $this->allowed_file_types_setting->apply_file_types_filter_to_function(
+			$attachment_id = $this->settings_service->apply_file_types_filter_to_function(
 				media_handle_upload( ... ),
 				[
 					$field_name,
@@ -119,7 +119,7 @@ final class AttachmentUploadHandler {
 		array_walk(
 			$attachments,
 			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-			fn( &$value ) => $value = (array) $value
+			fn( int|string &$value ): array => $value = (array) $value
 		);
 
 		$keys  = array_keys( $attachments );

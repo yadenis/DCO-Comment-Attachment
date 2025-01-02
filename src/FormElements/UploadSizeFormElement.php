@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace DCO_CA\FormElements;
 
 use DCO_CA\Interfaces\FormElement;
-use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Settings\MaxUploadSizeSetting;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -19,10 +18,10 @@ final class UploadSizeFormElement implements FormElement {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private MaxUploadSizeSetting $max_upload_size_setting,
+		private SettingsService $settings_service,
 	) {
 
-		$this->max_upload_size = $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
+		$this->max_upload_size = $this->settings_service->get_formatted_max_upload_size();
 
 		/* translators: %s: the maximum allowed upload file size */
 		$this->text = __( 'The maximum upload file size: %s.', 'dco-comment-attachment' );

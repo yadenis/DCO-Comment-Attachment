@@ -86,17 +86,6 @@ final class AllowedFileTypesSetting implements Setting {
 		)->render();
 	}
 
-	public function apply_file_types_filter_to_function( callable $callback, array $arguments ): mixed {
-
-		add_filter( 'upload_mimes', $this->filter_upload_mimes( ... ), 999 );
-
-		$result = call_user_func_array( $callback, $arguments );
-
-		remove_filter( 'upload_mimes', $this->filter_upload_mimes( ... ), 999 );
-
-		return $result;
-	}
-
 	private function format_value( array $value, AllowedFileTypesFormat $format ) {
 
 		return match ( $format ) {
@@ -145,7 +134,7 @@ final class AllowedFileTypesSetting implements Setting {
 		array_walk(
 			$groups,
 			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-			fn( &$value, $key ) => $value = $this->get_group_dto( $key, $value )
+			fn( array &$extensions, string $group ): AllowedFileTypesGroupDTO => $extensions = $this->get_group_dto( $group, $extensions )
 		);
 
 		return $groups;

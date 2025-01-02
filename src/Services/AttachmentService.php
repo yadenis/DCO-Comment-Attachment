@@ -4,14 +4,26 @@ declare(strict_types=1);
 
 namespace DCO_CA\Services;
 
+use DCO_CA\Attachment;
+
 defined( 'ABSPATH' ) || die;
 
 final class AttachmentService {
 
-	private const IMAGE_EXTENSIONS         = [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+	public const IMAGE_EXTENSIONS          = [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
 	private const ADMINISTRATOR_EXTENSIONS = [ 'htm', 'html', 'js' ];
 
 	public function __construct() {
+	}
+
+	public function get_attachment_instance( int $attachment_id ): ?Attachment {
+
+		// Checks attachment exists.
+		if ( ! wp_get_attachment_url( $attachment_id ) ) {
+			return null;
+		}
+
+		return new self( $attachment_id );
 	}
 
 	public function get_image_sizes(): array {
