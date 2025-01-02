@@ -12,6 +12,7 @@ defined( 'ABSPATH' ) || die;
 final class CommentService {
 
 	public function __construct(
+		private PluginService $plugin_service,
 		private AttachmentService $attachment_service,
 		private SettingsService $settings_service,
 	) {
@@ -19,23 +20,15 @@ final class CommentService {
 
 	public function get_comment_instance( int|WP_Comment $comment_id ): ?Comment {
 
-		if ( $comment_id instanceof WP_Comment ) {
-
-			return new Comment(
-				$this->attachment_service,
-				$this->settings_service,
-				$comment_id
-			);
-		}
-
 		$comment = get_comment( $comment_id );
 		if ( ! $comment ) {
 			return null;
 		}
 
 		return new Comment(
-			$this->attachment_service,
+			$this->plugin_service,
 			$this->settings_service,
+			$this->attachment_service,
 			$comment
 		);
 	}

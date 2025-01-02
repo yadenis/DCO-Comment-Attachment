@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA;
 
 use DCO_CA\Services\AttachmentService;
+use DCO_CA\Services\PluginService;
 use DCO_CA\Services\SettingsService;
 use WP_Comment;
 
@@ -19,8 +20,9 @@ final class Comment {
 	public readonly int $id;
 
 	public function __construct(
-		private AttachmentService $attachment_service,
+		private PluginService $plugin_service,
 		private SettingsService $settings_service,
+		private AttachmentService $attachment_service,
 		private WP_Comment $comment
 	) {
 
@@ -113,7 +115,9 @@ final class Comment {
 			$attachments_content[] = $attachment->get_markup();
 		}
 
-		echo implode( '', $attachments_content );
+		$this->plugin_service->the_kses_post(
+			implode( '', $attachments_content )
+		);
 	}
 
 	private function render_attachments_gallery(): void {
@@ -134,6 +138,8 @@ final class Comment {
 		array_unshift( $images, '<div class="dco-attachment-gallery">' );
 		$images[] = '</div>';
 
-		echo implode( '', array_merge( $images, $not_images ) );
+		$this->plugin_service->the_kses_post(
+			implode( '', array_merge( $images, $not_images ) )
+		);
 	}
 }
