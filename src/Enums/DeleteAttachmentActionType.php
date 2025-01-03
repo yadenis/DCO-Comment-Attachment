@@ -8,6 +8,6 @@ defined( 'ABSPATH' ) || die;
 
 enum DeleteAttachmentActionType: string {
 
-	case DELETE   = 'delete';
-	case UNATTACH = 'unattach';
+	case DELETE = 'delete';
+	case DETACH = 'detach';
 }

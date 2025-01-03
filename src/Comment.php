@@ -75,12 +75,12 @@ final class Comment {
 		}
 	}
 
-	public function remove_attachments(): void {
+	public function detach_attachments(): void {
 
 		$this->attachments = [];
 	}
 
-	public function delete_attachments_with_media_files(): void {
+	public function delete_attachments_files(): void {
 
 		$this->attachments_to_delete = $this->attachments;
 

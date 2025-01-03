@@ -33,8 +33,8 @@ final class DeleteAttachmentActionSetting implements Setting {
 				'Delete attachment from Media Library',
 				'dco-comment-attachment'
 			),
-			DeleteAttachmentActionType::UNATTACH->value => __(
-				'Unattach attachment from comment',
+			DeleteAttachmentActionType::DETACH->value => __(
+				'Detach attachment from comment',
 				'dco-comment-attachment'
 			),
 		];

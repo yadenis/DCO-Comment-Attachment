@@ -72,9 +72,9 @@ final class DeleteAttachmentAdminAction {
 		$this->process_delete_attachment_action_checks( $comment );
 
 		if ( $this->settings_service->is_delete_attachment_from_media_library() ) {
-			$comment->delete_attachments_with_media_files();
+			$comment->delete_attachments_files();
 		} else {
-			$comment->remove_attachments();
+			$comment->detach_attachments();
 		}
 
 		$comment->save();
@@ -93,8 +93,8 @@ final class DeleteAttachmentAdminAction {
 
 	private function get_action_link_text( Comment $comment ): string {
 
-		$singular_text = __( 'Remove Attachment', 'dco-comment-attachment' );
-		$plural_text   = __( 'Remove Attachments', 'dco-comment-attachment' );
+		$singular_text = __( 'Detach Attachment', 'dco-comment-attachment' );
+		$plural_text   = __( 'Detach Attachments', 'dco-comment-attachment' );
 
 		if ( $this->settings_service->is_delete_attachment_from_media_library() ) {
 			$singular_text = __( 'Delete Attachment', 'dco-comment-attachment' );
