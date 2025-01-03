@@ -19,34 +19,38 @@
 	$( document ).ready( function () {
 		$( '#the-comment-list' ).on(
 			'click',
-			'.dco-del-attachment',
+			'.dco-delete-attachment',
 			function ( event ) {
 				event.preventDefault();
-
-				/* eslint-disable no-undef, no-alert */
-				if (
-					1 === parseInt( dcoCA.delete_attachment_action ) &&
-					! confirm( dcoCA.delete_attachment_confirm )
-				) {
-					return;
-				}
-				/* eslint-enable no-undef, no-alert */
 
 				const $this = $( this );
 				const nonce = $this.data( 'nonce' );
 				const id = $this.data( 'id' );
 
+				const $comment = $this.closest( '.comment' );
+				const $attachment = $comment.find( '.dco-attachment' );
+
+				const $confirm_text = $attachment.length > 1 ? dcoCA.delete_attachments_confirm_text : dcoCA.delete_attachment_confirm_text;
+
+				/* eslint-disable no-undef, no-alert */
+				if (
+					dcoCA.is_delete_attachment_from_media_library &&
+					! confirm( $confirm_text )
+				) {
+					return;
+				}
+				/* eslint-enable no-undef, no-alert */
+
 				const data = {
 					action: 'delete_attachment',
-					id,
+					c: id,
 					_ajax_nonce: nonce, // eslint-disable-line camelcase
 				};
 
 				// eslint-disable-next-line no-undef
 				$.post( ajaxurl, data, function ( response ) {
 					if ( response.success ) {
-						const $comment = $this.closest( '.comment' );
-						const $attachment = $comment.find( '.dco-attachment' );
+
 						$attachment.remove();
 						$this.remove();
 					}

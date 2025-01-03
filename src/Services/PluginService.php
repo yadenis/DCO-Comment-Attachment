@@ -9,10 +9,12 @@ defined( 'ABSPATH' ) || die;
 final class PluginService {
 
 	public const VERSION           = DCO_CA_VERSION;
+	public const BASENAME          = DCO_CA_BASENAME;
 	public const UPLOAD_FIELD_NAME = 'attachment';
 	public const SETTINGS_ID       = 'dco_ca';
 
 	public function __construct(
+		private SettingsService $settings_service,
 		private UserService $user_service,
 		private PostService $post_service,
 	) {
@@ -36,6 +38,35 @@ final class PluginService {
 			ver: DCO_CA_VERSION,
 			args: [ 'in_footer' => true ]
 		);
+
+		if ( 'dco-comment-attachment' === $script_name ) {
+
+			wp_localize_script(
+				'dco-comment-attachment',
+				'dco_ca',
+				[
+					'commenting_form_not_found' => esc_attr__( 'The commenting form not found.', 'dco-comment-attachment' ),
+				]
+			);
+		}
+
+		if ( 'dco-comment-attachment-admin' === $script_name ) {
+
+			wp_localize_script(
+				'dco-comment-attachment-admin',
+				'dcoCA',
+				[
+					'set_attachment_title'            => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
+					'add_attachment_label'            => esc_attr__( 'Add Attachment', 'dco-comment-attachment' ),
+					'replace_attachment_label'        => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
+					'delete_attachment_confirm_text'  => esc_attr__( 'This action will delete the attachment from the Media Library and cannot be undone. Continue?', 'dco-comment-attachment' ),
+					'delete_attachments_confirm_text' => esc_attr__( 'This action will delete the attachments from the Media Library and cannot be undone. Continue?', 'dco-comment-attachment' ),
+					'show_all_label'                  => esc_attr__( 'Show all', 'dco-comment-attachment' ),
+					'show_less_label'                 => esc_attr__( 'Show less', 'dco-comment-attachment' ),
+					'is_delete_attachment_from_media_library' => boolval( $this->settings_service->is_delete_attachment_from_media_library() ),
+				]
+			);
+		}
 	}
 
 	public function is_form_enabled(): bool {

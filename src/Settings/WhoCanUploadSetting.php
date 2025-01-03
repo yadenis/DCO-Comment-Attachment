@@ -29,14 +29,32 @@ final class WhoCanUploadSetting implements Setting {
 		$this->title = __( 'Who can upload attachment?', 'dco-comment-attachment' );
 
 		$this->types = [
-			WhoCanUploadType::ALL_USERS->value    => __( 'All users', 'dco-comment-attachment' ),
-			WhoCanUploadType::LOGGED_USERS->value => __( 'Only logged users', 'dco-comment-attachment' ),
+			WhoCanUploadType::ALL_USERS->value         => __( 'All users', 'dco-comment-attachment' ),
+			WhoCanUploadType::ONLY_LOGGED_USERS->value => __( 'Only logged users', 'dco-comment-attachment' ),
 		];
 	}
 
 	public function get_value(): string {
 
 		return $this->options->get_string_option( self::OPTION_NAME ) ?? $this->get_default_value();
+	}
+
+	public function is_can_upload_all_users(): bool {
+
+		if ( WhoCanUploadType::ALL_USERS->value === $this->get_value() ) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function is_can_upload_only_logged_users(): bool {
+
+		if ( WhoCanUploadType::ONLY_LOGGED_USERS->value === $this->get_value() ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	public function get_setting_field_dto(): SettingFieldDTO {

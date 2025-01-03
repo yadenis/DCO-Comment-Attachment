@@ -129,14 +129,24 @@ final class SettingsService {
 		return AllowedFileTypesSetting::IMAGE_EXTENSIONS;
 	}
 
-	public function get_who_can_upload(): string {
+	public function is_can_upload_all_users(): bool {
 
-		return $this->who_can_upload_setting->get_value();
+		return $this->who_can_upload_setting->is_can_upload_all_users();
+	}
+
+	public function is_can_upload_only_logged_users(): bool {
+
+		return $this->who_can_upload_setting->is_can_upload_only_logged_users();
 	}
 
 	public function is_manually_moderation_enabled(): bool {
 
 		return $this->manually_moderation_setting->get_value();
+	}
+
+	public function is_delete_attachment_from_media_library(): bool {
+
+		return $this->delete_attachment_action_setting->is_delete_attachment_from_media_library();
 	}
 
 	public function get_all_settings_instances(): array {

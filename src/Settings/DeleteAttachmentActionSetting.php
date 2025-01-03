@@ -45,6 +45,15 @@ final class DeleteAttachmentActionSetting implements Setting {
 		return $this->options->get_string_option( self::OPTION_NAME ) ?? $this->get_default_value();
 	}
 
+	public function is_delete_attachment_from_media_library(): bool {
+
+		if ( DeleteAttachmentActionType::DELETE->value === $this->get_value() ) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public function get_setting_field_dto(): SettingFieldDTO {
 
 		return new SettingFieldDTO(

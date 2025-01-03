@@ -33,16 +33,16 @@ final class CommentService {
 		);
 	}
 
-	public function attach_attachments_to_comment( int $comment_id, array $attachment_ids ): bool {
+	public function attach_attachments_to_comment( int $comment_id, array $attachment_ids ): void {
 
 		$comment = $this->get_comment_instance( $comment_id );
 		if ( ! $comment ) {
-			return false;
+			return;
 		}
 
 		$comment->set_attachment_ids( $attachment_ids );
 
-		return $comment->save();
+		$comment->save();
 	}
 
 	public function get_current_comment( ?WP_Comment $wp_comment ): ?Comment {
@@ -54,4 +54,19 @@ final class CommentService {
 
 		return $this->get_comment_instance( $current_wp_comment );
 	}
+
+	/*
+		public static function get_comments( int|string $post_id ): array {
+
+		$args = [
+			'post_id'  => $post_id,
+			'meta_key' => static::ATTACHMENT_META_KEY,
+			'status'   => 'approve',
+		];
+
+		$comments = get_comments( $args );
+
+		return static::get_bulk_instances( $comments );
+	}
+	*/
 }

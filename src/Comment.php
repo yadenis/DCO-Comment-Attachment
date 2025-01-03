@@ -16,8 +16,10 @@ final class Comment {
 	private const ATTACHMENT_ID_META_KEY = 'attachment_id';
 
 	private array $attachments;
+	private array $attachments_to_delete = [];
 
 	public readonly int $id;
+	public readonly int $post_id;
 
 	public function __construct(
 		private PluginService $plugin_service,
@@ -26,7 +28,8 @@ final class Comment {
 		private WP_Comment $comment
 	) {
 
-		$this->id = (int) $this->comment->comment_ID;
+		$this->id      = (int) $this->comment->comment_ID;
+		$this->post_id = (int) $this->comment->comment_post_ID;
 
 		$this->init_attachments();
 	}
@@ -72,7 +75,21 @@ final class Comment {
 		}
 	}
 
-	public function save(): bool {
+	public function remove_attachments(): void {
+
+		$this->attachments = [];
+	}
+
+	public function delete_attachments_with_media_files(): void {
+
+		$this->attachments_to_delete = $this->attachments;
+
+		$this->attachments = [];
+	}
+
+	public function save(): void {
+
+		$this->handle_attachments_to_delete();
 
 		if ( ! $this->has_attachments() ) {
 			$attachments = '';
@@ -86,7 +103,7 @@ final class Comment {
 			}
 		}
 
-		return (bool) update_comment_meta(
+		update_comment_meta(
 			$this->id,
 			self::ATTACHMENT_ID_META_KEY,
 			$attachments
@@ -141,5 +158,13 @@ final class Comment {
 		$this->plugin_service->the_kses_post(
 			implode( '', array_merge( $images, $not_images ) )
 		);
+	}
+
+	private function handle_attachments_to_delete(): void {
+
+		foreach ( $this->attachments_to_delete as $attachment ) {
+
+			wp_delete_attachment( $attachment->id );
+		}
 	}
 }
