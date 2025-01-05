@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA;
 
-use DCO_CA\AdminActions\DeleteAttachmentAdminAction;
+use DCO_CA\AdminActions\DeleteCommentAttachmentAdminAction;
 use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
@@ -22,7 +22,7 @@ final class Admin {
 	public function __construct(
 		private PluginService $plugin_service,
 		private Settings $settings,
-		private DeleteAttachmentAdminAction $delete_attachment_admin_action,
+		private DeleteCommentAttachmentAdminAction $delete_attachment_admin_action,
 	) {
 
 		add_action( 'admin_enqueue_scripts', $this->enqueue_scripts( ... ) );

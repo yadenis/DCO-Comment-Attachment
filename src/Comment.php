@@ -34,6 +34,11 @@ final class Comment {
 		$this->init_attachments();
 	}
 
+	public function get_attachments(): array {
+
+		return $this->attachments;
+	}
+
 	public function render_attachments(): void {
 
 		if ( ! $this->has_attachments() ) {

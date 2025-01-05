@@ -113,3 +113,7 @@
 .dco-file-type-items-more.show {
 	display: block;
 }
+
+.detach-attachment-notice {
+	display: none;
+}

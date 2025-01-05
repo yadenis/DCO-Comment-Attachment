@@ -25,25 +25,27 @@
 
 				const $this = $( this );
 				const nonce = $this.data( 'nonce' );
-				const id = $this.data( 'id' );
+				const comment_id = $this.data( 'comment-id' );
 
 				const $comment = $this.closest( '.comment' );
 				const $attachment = $comment.find( '.dco-attachment' );
+				const $row_actions = $comment.find('.row-actions');
 
-				const $confirm_text = $attachment.length > 1 ? dcoCA.delete_attachments_confirm_text : dcoCA.delete_attachment_confirm_text;
+				const confirm_text = $attachment.length > 1 ? dcoCA.delete_attachments_confirm_text : dcoCA.delete_attachment_confirm_text;
+				const notice_text = $attachment.length > 1 ? dcoCA.detach_attachments_notice : dcoCA.detach_attachment_notice;
 
 				/* eslint-disable no-undef, no-alert */
 				if (
 					dcoCA.is_delete_attachment_from_media_library &&
-					! confirm( $confirm_text )
+					! confirm( confirm_text )
 				) {
 					return;
 				}
 				/* eslint-enable no-undef, no-alert */
 
 				const data = {
-					action: 'delete_attachment',
-					c: id,
+					action: 'delete_comment_attachment',
+					c: comment_id,
 					_ajax_nonce: nonce, // eslint-disable-line camelcase
 				};
 
@@ -51,8 +53,51 @@
 				$.post( ajaxurl, data, function ( response ) {
 					if ( response.success ) {
 
-						$attachment.remove();
-						$this.remove();
+						$notice = $('<p/>')
+							.addClass('detach-attachment-notice')
+							.html(notice_text);
+									
+						$row_actions.before($notice);
+
+						$attachment.fadeOut(400, () => $notice.fadeIn());
+						
+						$this.hide();
+					}
+				} );
+			}
+		);
+
+		$( '#the-comment-list' ).on(
+			'click',
+			'.detach-attachment-notice a',
+			function ( event ) {
+				event.preventDefault();
+
+				$this = $(this);
+				$comment = $this.closest('.comment');
+
+				$delete_attachment = $comment.find('.dco-delete-attachment');
+				const nonce = $delete_attachment.data( 'nonce' );
+				const comment_id = $delete_attachment.data( 'comment-id' );
+				const attachment_ids = $delete_attachment.data('attachment-ids');
+
+				const $attachment = $comment.find('.dco-attachment');
+				const $notice = $this.parent();
+
+				const data = {
+					action: 'undo_delete_comment_attachment',
+					c: comment_id,
+					undo_attachment_ids: attachment_ids.toString().split(','),
+					_ajax_nonce: nonce, // eslint-disable-line camelcase
+				};
+
+				// eslint-disable-next-line no-undef
+				$.post( ajaxurl, data, function ( response ) {
+					if ( response.success ) {
+
+						$notice.fadeOut(400, () => {$attachment.fadeIn(); $notice.remove();});
+						
+						$delete_attachment.show();
 					}
 				} );
 			}

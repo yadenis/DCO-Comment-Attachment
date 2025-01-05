@@ -29,7 +29,7 @@ final class DeleteAttachmentActionSetting implements Setting {
 		$this->title = __( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' );
 
 		$this->types = [
-			DeleteAttachmentActionType::DELETE->value   => __(
+			DeleteAttachmentActionType::DELETE->value => __(
 				'Delete attachment from Media Library',
 				'dco-comment-attachment'
 			),

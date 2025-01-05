@@ -64,6 +64,14 @@ final class PluginService {
 					'show_all_label'                  => esc_attr__( 'Show all', 'dco-comment-attachment' ),
 					'show_less_label'                 => esc_attr__( 'Show less', 'dco-comment-attachment' ),
 					'is_delete_attachment_from_media_library' => boolval( $this->settings_service->is_delete_attachment_from_media_library() ),
+					'detach_attachment_notice'        => wp_kses(
+						__( 'Attachment detached. <a href="#">Undo</a>', 'dco-comment-attachment' ),
+						[ 'a' => [ 'href' => true ] ]
+					),
+					'detach_attachments_notice'       => wp_kses(
+						__( 'Attachments detached. <a href="#">Undo</a>', 'dco-comment-attachment' ),
+						[ 'a' => [ 'href' => true ] ]
+					),
 				]
 			);
 		}
