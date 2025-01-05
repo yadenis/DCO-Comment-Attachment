@@ -45,9 +45,9 @@ final class CommentService {
 		$comment->save();
 	}
 
-	public function get_current_comment( ?WP_Comment $wp_comment ): ?Comment {
+	public function get_current_comment(): ?Comment {
 
-		$current_wp_comment = get_comment( $wp_comment );
+		$current_wp_comment = get_comment();
 		if ( ! $current_wp_comment ) {
 			return null;
 		}

@@ -31,7 +31,7 @@ final class CommentsList {
 			return $comment_text;
 		}
 
-		$comment = $this->comment_service->get_current_comment( $wp_comment );
+		$comment = $this->comment_service->get_comment_instance( $wp_comment );
 		if ( ! $comment ) {
 			return $comment_text;
 		}

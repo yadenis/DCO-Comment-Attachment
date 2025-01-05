@@ -14,7 +14,6 @@ final class PluginService {
 	public const SETTINGS_ID       = 'dco_ca';
 
 	public function __construct(
-		private SettingsService $settings_service,
 		private UserService $user_service,
 		private PostService $post_service,
 	) {
@@ -29,7 +28,7 @@ final class PluginService {
 		);
 	}
 
-	public function enqueue_script( string $script_name ): void {
+	public function enqueue_script( string $script_name, array $script_data = [] ): void {
 
 		// phpcs:ignore WordPress.WP.EnqueuedResourceParameters.NotInFooter
 		wp_enqueue_script(
@@ -39,40 +38,12 @@ final class PluginService {
 			args: [ 'in_footer' => true ]
 		);
 
-		if ( 'dco-comment-attachment' === $script_name ) {
+		if ( $script_data ) {
 
 			wp_localize_script(
-				'dco-comment-attachment',
+				$script_name,
 				'dco_ca',
-				[
-					'commenting_form_not_found' => esc_attr__( 'The commenting form not found.', 'dco-comment-attachment' ),
-				]
-			);
-		}
-
-		if ( 'dco-comment-attachment-admin' === $script_name ) {
-
-			wp_localize_script(
-				'dco-comment-attachment-admin',
-				'dcoCA',
-				[
-					'set_attachment_title'            => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
-					'add_attachment_label'            => esc_attr__( 'Add Attachment', 'dco-comment-attachment' ),
-					'replace_attachment_label'        => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
-					'delete_attachment_confirm_text'  => esc_attr__( 'This action will delete the attachment from the Media Library and cannot be undone. Continue?', 'dco-comment-attachment' ),
-					'delete_attachments_confirm_text' => esc_attr__( 'This action will delete the attachments from the Media Library and cannot be undone. Continue?', 'dco-comment-attachment' ),
-					'show_all_label'                  => esc_attr__( 'Show all', 'dco-comment-attachment' ),
-					'show_less_label'                 => esc_attr__( 'Show less', 'dco-comment-attachment' ),
-					'is_delete_attachment_from_media_library' => boolval( $this->settings_service->is_delete_attachment_from_media_library() ),
-					'detach_attachment_notice'        => wp_kses(
-						__( 'Attachment detached. <a href="#">Undo</a>', 'dco-comment-attachment' ),
-						[ 'a' => [ 'href' => true ] ]
-					),
-					'detach_attachments_notice'       => wp_kses(
-						__( 'Attachments detached. <a href="#">Undo</a>', 'dco-comment-attachment' ),
-						[ 'a' => [ 'href' => true ] ]
-					),
-				]
+				$script_data
 			);
 		}
 	}

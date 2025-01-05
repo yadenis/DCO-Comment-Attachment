@@ -34,6 +34,9 @@ function dco_ca() {
 
 	$injector = dco_ca_get_injector();
 
+	// todo: add all shares.
+	$injector->share( DCO_CA\Services\SettingsService::class );
+
 	$injector->make( DCO_CA\Admin::class );
 
 	$injector->make( DCO_CA\Form::class );

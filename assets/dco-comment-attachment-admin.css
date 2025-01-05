@@ -1,8 +1,8 @@
-.dco-attachment-wrap {
+.dco-edit-attachment-item {
 	margin-top: 30px;
 }
 
-.dco-attachment-wrap:first-child {
+.dco-edit-attachment-item:first-child {
 	margin-top: 0;
 }
 

@@ -23,16 +23,16 @@ final class DeleteCommentAttachmentBulkAdminAction {
 
 		$this->is_delete_attachment = $this->settings_service->is_delete_attachment_from_media_library();
 
-		add_filter( 'bulk_actions-edit-comments', $this->add_delete_comment_attachment_bulk_action( ... ) );
+		add_filter( 'bulk_actions-edit-comments', $this->add_bulk_action( ... ) );
 
-		add_action( 'admin_action_' . self::ACTION_NAME, $this->handle_delete_comment_attachment_bulk_action( ... ) );
+		add_action( 'admin_action_' . self::ACTION_NAME, $this->handle_bulk_action( ... ) );
 
 		add_filter( 'ngettext', $this->show_bulk_action_success_message( ... ), 10, 5 );
 
 		add_filter( 'removable_query_args', $this->add_bulk_action_name_to_removable_query_args( ... ) );
 	}
 
-	public function add_delete_comment_attachment_bulk_action( array $actions ): array {
+	public function add_bulk_action( array $actions ): array {
 
 		$text = __( 'Detach Attachments', 'dco-comment-attachment' );
 		if ( $this->is_delete_attachment ) {
@@ -44,7 +44,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		return $actions;
 	}
 
-	public function handle_delete_comment_attachment_bulk_action(): never {
+	public function handle_bulk_action(): never {
 
 		check_admin_referer( 'bulk-comments' );
 

@@ -6,6 +6,7 @@ namespace DCO_CA\Services;
 
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\MaxUploadSizeFormat;
+use DCO_CA\Settings;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\AutoembedLinksSetting;
 use DCO_CA\Settings\CombineImagesSetting;
@@ -41,6 +42,8 @@ final class SettingsService {
 		private DeleteWithCommentSetting $delete_with_comment_setting,
 		private DeleteAttachmentActionSetting $delete_attachment_action_setting,
 	) {
+
+		new Settings( $this->get_all_settings_instances() );
 	}
 
 	public function get_formatted_max_upload_size(): string {

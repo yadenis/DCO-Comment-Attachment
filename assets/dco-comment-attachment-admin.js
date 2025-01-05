@@ -31,12 +31,12 @@
 				const $attachment = $comment.find( '.dco-attachment' );
 				const $row_actions = $comment.find('.row-actions');
 
-				const confirm_text = $attachment.length > 1 ? dcoCA.delete_attachments_confirm_text : dcoCA.delete_attachment_confirm_text;
-				const notice_text = $attachment.length > 1 ? dcoCA.detach_attachments_notice : dcoCA.detach_attachment_notice;
+				const confirm_text = $attachment.length > 1 ? dco_ca.delete_attachments_confirm_text : dco_ca.delete_attachment_confirm_text;
+				const notice_text = $attachment.length > 1 ? dco_ca.detach_attachments_notice : dco_ca.detach_attachment_notice;
 
 				/* eslint-disable no-undef, no-alert */
 				if (
-					dcoCA.is_delete_attachment_from_media_library &&
+					dco_ca.is_delete_attachment &&
 					! confirm( confirm_text )
 				) {
 					return;
@@ -132,13 +132,13 @@
 				$wrap = $( this ).closest( '.dco-attachment-wrap' );
 
 				const frame = new wp.media.view.MediaFrame.Select( {
-					title: dcoCA.set_attachment_title, // eslint-disable-line no-undef
+					title: dco_ca.set_attachment_title, // eslint-disable-line no-undef
 					multiple: false,
 					library: {
 						uploadedTo: null,
 					},
 					button: {
-						text: dcoCA.set_attachment_title, // eslint-disable-line no-undef
+						text: dco_ca.set_attachment_title, // eslint-disable-line no-undef
 					},
 				} );
 
@@ -234,7 +234,7 @@
 					$removeAttachment.removeClass( 'dco-hidden' );
 					$wrap
 						.find( '.dco-set-attachment' )
-						.text( dcoCA.replace_attachment_label ); // eslint-disable-line no-undef
+						.text( dco_ca.replace_attachment_label ); // eslint-disable-line no-undef
 				} );
 
 				frame.open();
@@ -263,10 +263,10 @@
 
 				if ( $more.is( ':visible' ) ) {
 					$more.removeClass( 'show' );
-					$this.text( dcoCA.show_all ); // eslint-disable-line no-undef
+					$this.text( dco_ca.show_all ); // eslint-disable-line no-undef
 				} else {
 					$more.addClass( 'show' );
-					$this.text( dcoCA.show_less ); // eslint-disable-line no-undef
+					$this.text( dco_ca.show_less ); // eslint-disable-line no-undef
 				}
 			}
 		);

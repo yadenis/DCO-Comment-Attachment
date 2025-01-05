@@ -8,7 +8,6 @@ use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\Services\PluginService;
-use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -17,7 +16,7 @@ final class Settings {
 	private string $settings_id;
 
 	public function __construct(
-		private SettingsService $settings_service,
+		private array $settings
 	) {
 
 		$this->settings_id = PluginService::SETTINGS_ID;
@@ -85,7 +84,7 @@ final class Settings {
 
 		return array_map(
 			fn( Setting $setting ): SettingFieldDTO => $setting->get_setting_field_dto(),
-			$this->settings_service->get_all_settings_instances()
+			$this->settings
 		);
 	}
 

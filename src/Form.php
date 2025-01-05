@@ -42,6 +42,11 @@ final class Form {
 
 		$this->plugin_service->enqueue_style( 'dco-comment-attachment' );
 
-		$this->plugin_service->enqueue_script( 'dco-comment-attachment' );
+		$this->plugin_service->enqueue_script(
+			script_name: 'dco-comment-attachment',
+			script_data: [
+				'commenting_form_not_found' => esc_attr__( 'The commenting form not found.', 'dco-comment-attachment' ),
+			]
+		);
 	}
 }
