@@ -16,12 +16,16 @@ final class DeleteCommentAttachmentAdminAction {
 
 	protected const ACTION_NAME = 'delete_comment_attachment';
 
+	protected bool $is_delete_attachment;
+
 	public function __construct(
 		private CommentService $comment_service,
 		private SettingsService $settings_service
 	) {
 
 		$this->load_dependencies();
+
+		$this->is_delete_attachment = $this->settings_service->is_delete_attachment_from_media_library();
 
 		add_filter( 'comment_row_actions', $this->add_delete_comment_attachment_action_link( ... ), 10, 2 );
 
@@ -52,7 +56,7 @@ final class DeleteCommentAttachmentAdminAction {
 		);
 
 		$attachment_ids_attribute = '';
-		if ( ! $this->settings_service->is_delete_attachment_from_media_library() ) {
+		if ( ! $this->is_delete_attachment ) {
 
 			$attachment_ids_list      = implode( ',', wp_list_pluck( $comment->get_attachments(), 'id' ) );
 			$attachment_ids_attribute = sprintf(
@@ -83,7 +87,7 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$this->process_delete_attachment_action_checks( $comment );
 
-		if ( $this->settings_service->is_delete_attachment_from_media_library() ) {
+		if ( $this->is_delete_attachment ) {
 			$comment->delete_attachments_files();
 		} else {
 			$comment->detach_attachments();
@@ -126,7 +130,7 @@ final class DeleteCommentAttachmentAdminAction {
 		$singular_text = __( 'Detach Attachment', 'dco-comment-attachment' );
 		$plural_text   = __( 'Detach Attachments', 'dco-comment-attachment' );
 
-		if ( $this->settings_service->is_delete_attachment_from_media_library() ) {
+		if ( $this->is_delete_attachment ) {
 			$singular_text = __( 'Delete Attachment', 'dco-comment-attachment' );
 			$plural_text   = __( 'Delete Attachments', 'dco-comment-attachment' );
 		}
@@ -185,7 +189,7 @@ final class DeleteCommentAttachmentAdminAction {
 
 	private function process_undo_delete_attachment_action_checks( ?Comment $comment, array $undo_attachment_ids ): void {
 
-		if ( $this->settings_service->is_delete_attachment_from_media_library() ) {
+		if ( $this->is_delete_attachment ) {
 
 			$this->error(
 				'detaching_comment_attachment_disabled',
