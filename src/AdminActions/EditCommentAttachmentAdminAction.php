@@ -6,6 +6,7 @@ namespace DCO_CA\AdminActions;
 
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\PluginService;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
@@ -13,12 +14,16 @@ final class EditCommentAttachmentAdminAction {
 
 	public function __construct(
 		private PluginService $plugin_service,
+		private SettingsService $settings_service,
 		private CommentService $comment_service,
 	) {
 
 		add_action( 'add_meta_boxes_comment', $this->add_edit_attachment_action_metabox( ... ) );
-
 		add_action( 'admin_footer-comment.php', $this->add_comment_attachment_editor_template( ... ) );
+
+		add_action( 'edit_comment', $this->update_comment_attachments( ... ) );
+
+		add_action( 'delete_comment', $this->delete_comment_attachments( ... ) );
 	}
 
 	public function add_edit_attachment_action_metabox(): void {
@@ -73,5 +78,41 @@ final class EditCommentAttachmentAdminAction {
 		</template>
 
 		<?php
+	}
+
+	public function update_comment_attachments( int $comment_id ): void {
+
+		check_admin_referer( "update-comment_{$comment_id}" );
+
+		if ( ! isset( $_POST['dco_attachment_id'] ) || ! is_array( $_POST['dco_attachment_id'] ) ) {
+			return;
+		}
+
+		$attachment_ids = array_map(
+			'intval',
+			$_POST['dco_attachment_id']
+		);
+
+		// We need to delete the last empty element, because it's used
+		// as a placeholder in the attachments edit form.
+		array_pop( $attachment_ids );
+
+		$this->comment_service->attach_attachments_to_comment( $comment_id, $attachment_ids );
+	}
+
+	public function delete_comment_attachments( int $comment_id ): void {
+
+		if ( ! $this->settings_service->is_delete_attachments_with_comment() ) {
+			return;
+		}
+
+		$comment = $this->comment_service->get_comment_instance( $comment_id );
+		if ( ! $comment ) {
+			return;
+		}
+
+		$comment->delete_attachments_files();
+
+		$comment->save();
 	}
 }

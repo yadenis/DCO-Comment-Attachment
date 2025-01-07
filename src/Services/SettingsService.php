@@ -147,6 +147,11 @@ final class SettingsService {
 		return $this->manually_moderation_setting->get_value();
 	}
 
+	public function is_delete_attachments_with_comment(): bool {
+
+		return $this->delete_with_comment_setting->get_value();
+	}
+
 	public function is_delete_attachment_from_media_library(): bool {
 
 		return $this->delete_attachment_action_setting->is_delete_attachment_from_media_library();

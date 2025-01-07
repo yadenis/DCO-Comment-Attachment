@@ -100,19 +100,28 @@ final class Comment {
 			$attachments = '';
 		} else {
 
-			// Compatibility with 1.x version.
 			$attachments = wp_list_pluck( $this->attachments, 'id' );
 
+			// Compatibility with 1.x version.
 			if ( $this->has_one_attachment() ) {
 				$attachments = current( $attachments );
 			}
 		}
 
-		update_comment_meta(
-			$this->id,
-			self::ATTACHMENT_ID_META_KEY,
-			$attachments
-		);
+		if ( $attachments ) {
+
+			update_comment_meta(
+				$this->id,
+				self::ATTACHMENT_ID_META_KEY,
+				$attachments
+			);
+		} else {
+
+			delete_comment_meta(
+				$this->id,
+				self::ATTACHMENT_ID_META_KEY
+			);
+		}
 	}
 
 	private function init_attachments(): void {
