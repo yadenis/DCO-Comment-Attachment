@@ -106,13 +106,6 @@ final class EditCommentAttachmentAdminAction {
 			return;
 		}
 
-		$comment = $this->comment_service->get_comment_instance( $comment_id );
-		if ( ! $comment ) {
-			return;
-		}
-
-		$comment->delete_attachments_files();
-
-		$comment->save();
+		$this->comment_service->delete_comment_attachments( $comment_id );
 	}
 }

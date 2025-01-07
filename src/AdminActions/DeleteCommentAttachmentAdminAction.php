@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\AdminActions;
 
-use DCO_CA\Comment;
+use DCO_CA\Entities\CommentEntity;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\SettingsService;
 use WP_Comment;
@@ -35,9 +35,9 @@ final class DeleteCommentAttachmentAdminAction {
 		add_action( 'wp_ajax_undo_' . self::ACTION_NAME, $this->handle_undo_delete_comment_attachment_action( ... ) );
 	}
 
-	public function add_delete_comment_attachment_action_link( array $actions, WP_Comment $comment ): array {
+	public function add_delete_comment_attachment_action_link( array $actions, WP_Comment $wp_comment ): array {
 
-		$comment = $this->comment_service->get_comment_instance( $comment );
+		$comment = $this->comment_service->get_comment_instance( $wp_comment );
 		if ( ! $comment ) {
 			return $actions;
 		}
@@ -125,7 +125,7 @@ final class DeleteCommentAttachmentAdminAction {
 		require_once ABSPATH . 'wp-admin/includes/comment.php';
 	}
 
-	private function get_action_link_text( Comment $comment ): string {
+	private function get_action_link_text( CommentEntity $comment ): string {
 
 		$singular_text = __( 'Detach Attachment', 'dco-comment-attachment' );
 		$plural_text   = __( 'Detach Attachments', 'dco-comment-attachment' );
@@ -172,7 +172,7 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
-	private function process_delete_attachment_action_checks( ?Comment $comment ): void {
+	private function process_delete_attachment_action_checks( ?CommentEntity $comment ): void {
 
 		$this->check_comment_exist( $comment );
 
@@ -187,7 +187,7 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
-	private function process_undo_delete_attachment_action_checks( ?Comment $comment, array $undo_attachment_ids ): void {
+	private function process_undo_delete_attachment_action_checks( ?CommentEntity $comment, array $undo_attachment_ids ): void {
 
 		if ( $this->is_delete_attachment ) {
 
@@ -218,7 +218,7 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
-	private function check_comment_exist( ?Comment $comment ): void {
+	private function check_comment_exist( ?CommentEntity $comment ): void {
 
 		if ( ! $comment ) {
 
@@ -229,7 +229,7 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
-	private function check_edit_comment_capability( ?Comment $comment ): void {
+	private function check_edit_comment_capability( ?CommentEntity $comment ): void {
 
 		if ( ! current_user_can( 'edit_comment', $comment?->id ) ) {
 
@@ -240,7 +240,7 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
-	private function handle_success( Comment $comment ): never {
+	private function handle_success( CommentEntity $comment ): never {
 
 		if ( wp_doing_ajax() ) {
 

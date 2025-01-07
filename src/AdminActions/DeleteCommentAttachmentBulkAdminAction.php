@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\AdminActions;
 
-use DCO_CA\Comment;
+use DCO_CA\Entities\CommentEntity;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\SettingsService;
 
@@ -67,6 +67,8 @@ final class DeleteCommentAttachmentBulkAdminAction {
 				$comment->detach_attachments();
 			}
 
+			$comment->save();
+
 			++$count;
 		}
 
@@ -128,7 +130,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		);
 	}
 
-	private function process_bulk_action_checks( ?Comment $comment ): bool {
+	private function process_bulk_action_checks( ?CommentEntity $comment ): bool {
 
 		if ( ! $comment ) {
 			return false;

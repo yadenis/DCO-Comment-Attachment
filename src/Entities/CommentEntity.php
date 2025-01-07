@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA;
+namespace DCO_CA\Entities;
 
 use DCO_CA\Services\AttachmentService;
 use DCO_CA\Services\PluginService;
@@ -11,7 +11,7 @@ use WP_Comment;
 
 defined( 'ABSPATH' ) || die;
 
-final class Comment {
+final class CommentEntity {
 
 	private const ATTACHMENT_ID_META_KEY = 'attachment_id';
 

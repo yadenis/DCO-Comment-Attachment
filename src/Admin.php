@@ -156,7 +156,7 @@ final class Admin {
 
 		$data = [];
 
-		$comment = $this->comment_service->get_current_comment();
+		$comment = $this->comment_service->get_current_comment_instance();
 		if ( ! $comment ) {
 			return [];
 		}

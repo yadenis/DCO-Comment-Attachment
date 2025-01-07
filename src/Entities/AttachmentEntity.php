@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA;
+namespace DCO_CA\Entities;
 
 use DCO_CA\Enums\AttachmentEmbedType;
 use DCO_CA\Enums\LinkThumbnailType;
@@ -11,7 +11,7 @@ use RuntimeException;
 
 defined( 'ABSPATH' ) || die;
 
-final class Attachment {
+final class AttachmentEntity {
 
 	public readonly string $file_path;
 	public readonly string $file_url;
