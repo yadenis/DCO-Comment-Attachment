@@ -13,7 +13,8 @@ defined( 'ABSPATH' ) || die;
 
 final class Attachment {
 
-	public readonly string $filepath;
+	public readonly string $file_path;
+	public readonly string $file_url;
 	public readonly string $extension;
 	public readonly string $title;
 	public readonly string $link;
@@ -24,13 +25,14 @@ final class Attachment {
 		public readonly int $id
 	) {
 
-		$this->filepath = (string) get_attached_file( $this->id );
+		$this->file_path = (string) get_attached_file( $this->id );
 
-		if ( empty( $this->filepath ) ) {
+		if ( empty( $this->file_path ) ) {
 			throw new RuntimeException( esc_html( "File path for attachment ID {$this->id} is invalid." ) );
 		}
 
-		$this->extension = (string) wp_check_filetype( $this->filepath )['ext'];
+		$this->file_url  = (string) wp_get_attachment_url( $this->id );
+		$this->extension = (string) wp_check_filetype( $this->file_path )['ext'];
 		$this->title     = get_the_title( $this->id );
 
 		$this->init_embed_type();

@@ -27,6 +27,10 @@ final class CommentsList {
 
 	public function display_comment_attachments( string $comment_text, ?WP_Comment $wp_comment ): string {
 
+		if ( ! $wp_comment ) {
+			return $comment_text;
+		}
+
 		if ( ! $this->is_attachments_displayed() ) {
 			return $comment_text;
 		}

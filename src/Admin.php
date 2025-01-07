@@ -33,6 +33,9 @@ final class Admin {
 		add_action( 'admin_enqueue_scripts', $this->enqueue_scripts( ... ) );
 
 		add_filter( 'plugin_action_links_' . PluginService::BASENAME, $this->add_plugin_action_links( ... ) );
+
+		add_filter( 'comment_notification_text', $this->add_attachment_links_to_new_comment_email( ... ), 10, 2 );
+		add_filter( 'comment_moderation_text', $this->add_attachment_links_to_new_comment_email( ... ), 10, 2 );
 	}
 
 	public function enqueue_scripts( string $hook_suffix ): void {
@@ -66,6 +69,25 @@ final class Admin {
 		);
 
 		return $actions;
+	}
+
+	public function add_attachment_links_to_new_comment_email( string $notification_text, int $comment_id ): string {
+
+		$comment = $this->comment_service->get_comment_instance( $comment_id );
+		if ( ! $comment ) {
+			return $notification_text;
+		}
+
+		if ( ! $comment->has_attachments() ) {
+			return $notification_text;
+		}
+
+		$attachment_links = [
+			"\r\n" . __( 'Attached attachments:', 'dco-comment-attachment' ),
+			...wp_list_pluck( $comment->get_attachments(), 'file_url' ),
+		];
+
+		return $notification_text . implode( "\r\n- ", $attachment_links );
 	}
 
 	private function enqueue_edit_comments_page_scripts(): void {

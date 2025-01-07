@@ -94,18 +94,16 @@ final class PluginService {
 			return $allowedposttags;
 		}
 
-		return array_merge(
-			$allowedposttags,
-			[
-				'input' => [
-					'class'    => true,
-					'id'       => true,
-					'name'     => true,
-					'type'     => true,
-					'accept'   => true,
-					'multiple' => true,
-				],
-			]
-		);
+		return [
+			...$allowedposttags,
+			'input' => [
+				'class'    => true,
+				'id'       => true,
+				'name'     => true,
+				'type'     => true,
+				'accept'   => true,
+				'multiple' => true,
+			],
+		];
 	}
 }
