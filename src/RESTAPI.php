@@ -43,10 +43,6 @@ final class RESTAPI {
 
 	public function validate_uploaded_attachments( array $commentdata, WP_REST_Request $request ): array|WP_Error {
 
-		if ( ! $this->plugin_service->is_form_enabled() ) {
-			return $commentdata;
-		}
-
 		$validated = $this->attachment_upload_validator->validate( $this->get_uploaded_attachments( $request ) );
 
 		if ( ! is_wp_error( $validated ) ) {
@@ -57,10 +53,6 @@ final class RESTAPI {
 	}
 
 	public function handle_uploaded_attachments( WP_Comment $wp_comment, WP_REST_Request $request, bool $creating ): void {
-
-		if ( ! $this->plugin_service->is_form_enabled() ) {
-			return;
-		}
 
 		if ( ! $creating ) {
 			return;

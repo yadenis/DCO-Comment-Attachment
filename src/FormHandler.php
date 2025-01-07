@@ -33,15 +33,11 @@ final class FormHandler {
 		$this->is_manually_moderation_enabled = $this->settings_service->is_manually_moderation_enabled();
 
 		add_filter( 'preprocess_comment', $this->validate_uploaded_attachments( ... ) );
-		add_action( 'comment_post', $this->handle_uploaded_attachments( ... ), 5, 3 );
+		add_action( 'comment_post', $this->handle_uploaded_attachments( ... ), 5 );
 		add_filter( 'pre_comment_approved', $this->unapprove_comment_or_not( ... ) );
 	}
 
 	public function validate_uploaded_attachments( array $commentdata ): array {
-
-		if ( ! $this->plugin_service->is_form_enabled() ) {
-			return $commentdata;
-		}
 
 		$validated = $this->attachment_upload_validator->validate( $this->uploaded_attachments );
 
@@ -60,15 +56,7 @@ final class FormHandler {
 		);
 	}
 
-	public function handle_uploaded_attachments(
-		int $comment_id,
-		int|string $comment_approved,
-		array $commentdata
-	): void {
-
-		if ( ! $this->plugin_service->is_form_enabled() ) {
-			return;
-		}
+	public function handle_uploaded_attachments( int $comment_id ): void {
 
 		$comment = $this->comment_service->get_comment_instance( $comment_id );
 		if ( ! $comment ) {
