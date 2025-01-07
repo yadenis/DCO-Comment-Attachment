@@ -21,13 +21,14 @@ final class FormHandler {
 	private bool $is_manually_moderation_enabled;
 
 	public function __construct(
+		private PluginService $plugin_service,
 		private CommentService $comment_service,
 		private SettingsService $settings_service,
 		private AttachmentUploadValidator $attachment_upload_validator,
 		private AttachmentUploadHandler $attachment_upload_handler,
 	) {
 
-		$this->uploaded_attachments = $this->get_uploaded_attachments();
+		$this->init_uploaded_attachments();
 
 		$this->is_manually_moderation_enabled = $this->settings_service->is_manually_moderation_enabled();
 
@@ -37,6 +38,10 @@ final class FormHandler {
 	}
 
 	public function validate_uploaded_attachments( array $commentdata ): array {
+
+		if ( ! $this->plugin_service->is_form_enabled() ) {
+			return $commentdata;
+		}
 
 		$validated = $this->attachment_upload_validator->validate( $this->uploaded_attachments );
 
@@ -61,9 +66,18 @@ final class FormHandler {
 		array $commentdata
 	): void {
 
+		if ( ! $this->plugin_service->is_form_enabled() ) {
+			return;
+		}
+
+		$comment = $this->comment_service->get_comment_instance( $comment_id );
+		if ( ! $comment ) {
+			return;
+		}
+
 		$this->handled_attachment_ids = $this->attachment_upload_handler->handle(
 			$this->uploaded_attachments,
-			intval( $commentdata['comment_post_ID'] )
+			$comment->post_id
 		);
 
 		if ( ! $this->handled_attachment_ids ) {
@@ -71,12 +85,16 @@ final class FormHandler {
 		}
 
 		$this->comment_service->attach_attachments_to_comment(
-			$comment_id,
+			$comment->id,
 			$this->handled_attachment_ids
 		);
 	}
 
 	public function unapprove_comment_or_not( int|string|WP_Error $approved ): int|string|WP_Error {
+
+		if ( ! $this->plugin_service->is_form_enabled() ) {
+			return $approved;
+		}
 
 		if ( ! $this->handled_attachment_ids || ! $this->is_manually_moderation_enabled ) {
 			return $approved;
@@ -85,9 +103,24 @@ final class FormHandler {
 		return 0;
 	}
 
-	private function get_uploaded_attachments(): array {
+	private function init_uploaded_attachments(): void {
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		return $_FILES[ PluginService::UPLOAD_FIELD_NAME ] ?? [];
+		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+
+		if ( empty( $_FILES[ PluginService::UPLOAD_FIELD_NAME ] ) ) {
+			$this->uploaded_attachments = [];
+			return;
+		}
+
+		$files = $_FILES[ PluginService::UPLOAD_FIELD_NAME ];
+
+		if ( ! is_array( $files ) ) {
+			$this->uploaded_attachments = [];
+			return;
+		}
+
+		$this->uploaded_attachments = $files;
+
+		// phpcs:enable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 	}
 }

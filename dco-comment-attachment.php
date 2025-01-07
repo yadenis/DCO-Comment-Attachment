@@ -39,6 +39,8 @@ function dco_ca() {
 
 	$injector->make( DCO_CA\Admin::class );
 
+	$injector->make( DCO_CA\RESTAPI::class );
+
 	$injector->make( DCO_CA\Form::class );
 
 	$injector->make( DCO_CA\FormHandler::class );
