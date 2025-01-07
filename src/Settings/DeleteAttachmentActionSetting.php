@@ -7,7 +7,7 @@ namespace DCO_CA\Settings;
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\DeleteAttachmentActionType;
 use DCO_CA\Enums\SettingsSection;
-use DCO_CA\Options;
+use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\SettingControls\RadioChoiceSettingControl;
 use DCO_CA\SettingControls\RadioSettingControl;
@@ -23,7 +23,7 @@ final class DeleteAttachmentActionSetting implements Setting {
 	private array $types;
 
 	public function __construct(
-		private Options $options,
+		private OptionsHelper $options,
 	) {
 
 		$this->title = __( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' );

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
-use DCO_CA\Options;
+use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
@@ -22,7 +22,7 @@ final class RequiredAttachmentSetting implements Setting {
 	private string $description;
 
 	public function __construct(
-		private Options $options,
+		private OptionsHelper $options,
 	) {
 
 		$this->title = __( 'Is attachment required?', 'dco-comment-attachment' );

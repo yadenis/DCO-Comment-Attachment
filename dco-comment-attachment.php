@@ -41,6 +41,8 @@ function dco_ca() {
 
 	$injector->make( DCO_CA\Form::class );
 
+	$injector->make( DCO_CA\FormHandler::class );
+
 	$injector->make( DCO_CA\CommentsList::class );
 
 	$injector->make( DCO_CA\BackwardCompatibility::class );

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
-use DCO_CA\Options;
+use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Enums\SettingsSection;
@@ -22,7 +22,7 @@ final class MaxUploadSizeSetting implements Setting {
 	private string $description;
 
 	public function __construct(
-		private Options $options,
+		private OptionsHelper $options,
 	) {
 
 		$this->title = __( 'Maximum upload file size', 'dco-comment-attachment' );

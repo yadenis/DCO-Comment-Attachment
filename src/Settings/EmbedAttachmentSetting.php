@@ -6,7 +6,7 @@ namespace DCO_CA\Settings;
 
 use DCO_CA\DTO\SettingFieldDTO;
 use DCO_CA\Enums\SettingsSection;
-use DCO_CA\Options;
+use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\SettingControls\CheckboxSettingControl;
 use DCO_CA\SettingControls\DescriptionSettingControl;
@@ -22,7 +22,7 @@ final class EmbedAttachmentSetting implements Setting {
 	private string $description;
 
 	public function __construct(
-		private Options $options,
+		private OptionsHelper $options,
 	) {
 
 		$this->title = __( 'Embed attachment?', 'dco-comment-attachment' );

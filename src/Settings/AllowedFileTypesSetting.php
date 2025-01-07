@@ -7,7 +7,7 @@ namespace DCO_CA\Settings;
 use DCO_CA\DTO\AllowedFileTypesExtensionDTO;
 use DCO_CA\DTO\AllowedFileTypesGroupDTO;
 use DCO_CA\DTO\SettingFieldDTO;
-use DCO_CA\Options;
+use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
@@ -30,7 +30,7 @@ final class AllowedFileTypesSetting implements Setting {
 	private array $system_value;
 
 	public function __construct(
-		private Options $options,
+		private OptionsHelper $options,
 	) {
 
 		$this->title = __( 'Allowed File Types', 'dco-comment-attachment' );

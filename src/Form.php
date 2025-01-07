@@ -13,7 +13,6 @@ final class Form {
 
 	public function __construct(
 		private PluginService $plugin_service,
-		private FormHandler $form_handler,
 		private AttachmentAreaFormElement $attachment_area,
 	) {
 

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA;
+namespace DCO_CA\Helpers;
 
 use DCO_CA\Enums\OptionType;
 use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
 
-final class Options {
+final class OptionsHelper {
 
 	private array $options;
 
