@@ -38,7 +38,16 @@ final class AllowedFileTypesSetting implements Setting {
 		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
 		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
 
-		$this->description = "* — {$mark1}<br>** — {$mark2}";
+		$note1 = __( 'To view all file extensions in a group, click the "Show All" link below that group.' );
+		$note2 = __( 'Clicking on the name of a file type group (e.g. image) will select or deselect all extensions in that group.' );
+
+		$this->description = sprintf(
+			'* — %s<br>** — %s<br><br>- %s<br>- %s',
+			$mark1,
+			$mark2,
+			$note1,
+			$note2
+		);
 
 		$value = $this->options->get_array_option( self::OPTION_NAME );
 

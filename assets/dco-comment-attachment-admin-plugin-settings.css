@@ -24,6 +24,7 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	font-weight: 600;
+	cursor: pointer;
 }
 
 @media (max-width: 782px) {
@@ -47,6 +48,7 @@
 .dco-file-type-extension {
 	display: block;
 	margin-bottom: 3px;
+	cursor: pointer;
 }
 
 @media (max-width: 782px) {
