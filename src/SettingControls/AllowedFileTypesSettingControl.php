@@ -31,7 +31,7 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 
 	public function render(): void {
 
-		echo '<div id="dco-file-types">';
+		echo '<div class="dco-file-types">';
 
 		foreach ( $this->groups as $group ) {
 
@@ -43,8 +43,11 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 
 	private function render_group( AllowedFileTypesGroupDTO $group ): void {
 
+		$show_less_class = count( $group->extensions ) > 5 ? 'show-less' : '';
+
 		printf(
-			'<div class="dco-file-types-group" style="width: %dpx;">',
+			'<div class="dco-file-types-group %s" style="width: %dpx;">',
+			esc_attr( $show_less_class ),
 			intval( $this->group_column_width )
 		);
 
@@ -60,7 +63,7 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 		printf(
 			'<label class="dco-file-types-group__name" title="%s">%s %s</label>',
 			esc_attr__( 'Click to check/uncheck all extensions of this type.', 'dco-comment-attachment' ),
-			'<input type="checkbox" class="dco-file-types-group__checkbox">',
+			'<input type="checkbox" class="dco-file-types-group__checkbox dco-file-types-group-checkbox">',
 			esc_html( $group->title ),
 		);
 	}
@@ -74,6 +77,15 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 			$this->render_extension( $extension );
 		}
 
+		if ( count( $group->extensions ) > 5 ) {
+
+			printf(
+				'<a href="#" class="%s">%s</a>',
+				'dco-file-types-group__show-all-extensions dco-file-types-group-show-all-extensions',
+				esc_html__( 'Show all', 'dco-comment-attachment' )
+			);
+		}
+
 		echo '</div>';
 	}
 
@@ -85,7 +97,8 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 		$mark = $this->get_extension_mark( $extension );
 
 		printf(
-			'<input type="checkbox" class="dco-file-type-extension__checkbox" name="%s[]" value="%s"%s> %s',
+			'<input type="checkbox" class="%s" name="%s[]" value="%s"%s> %s',
+			'dco-file-type-extension__checkbox dco-file-type-extension-checkbox',
 			esc_attr( $this->name ),
 			esc_attr( $ext ),
 			checked(

@@ -33,8 +33,8 @@ final class Attachment {
 		$this->extension = (string) wp_check_filetype( $this->filepath )['ext'];
 		$this->title     = get_the_title( $this->id );
 
-		$this->init_link();
 		$this->init_embed_type();
+		$this->init_link();
 	}
 
 	public function get_markup(): string {
@@ -185,14 +185,21 @@ final class Attachment {
 
 	private function init_link(): void {
 
-		$link_thumbnail_type = $this->settings_service->get_link_thumbnail_type();
+		if ( $this->is_image() ) {
 
-		$this->link = match ( $link_thumbnail_type ) {
-			LinkThumbnailType::NO_LINK->value         => '',
-			LinkThumbnailType::IMAGE_LIGHTBOX->value  => (string) wp_get_attachment_image_url( $this->id, 'full' ),
-			LinkThumbnailType::IMAGE_NEW_TAB->value   => (string) wp_get_attachment_image_url( $this->id, 'full' ),
-			LinkThumbnailType::ATTACHMENT_PAGE->value => get_attachment_link( $this->id ),
-		};
+			$attachment_image_url = (string) wp_get_attachment_image_url( $this->id, 'full' );
+
+			$link_thumbnail_type = $this->settings_service->get_link_thumbnail_type();
+
+			$this->link = match ( $link_thumbnail_type ) {
+				LinkThumbnailType::NO_LINK->value         => '',
+				LinkThumbnailType::IMAGE_LIGHTBOX->value  => $attachment_image_url,
+				LinkThumbnailType::IMAGE_NEW_TAB->value   => $attachment_image_url,
+				LinkThumbnailType::ATTACHMENT_PAGE->value => get_attachment_link( $this->id ),
+			};
+		} else {
+			$this->link = wp_get_attachment_url( $this->id );
+		}
 	}
 
 	private function get_img_tag_markup( string $image_size = '' ): string {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace DCO_CA\AdminActions;
 
-use DCO_CA\Attachment;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\PluginService;
 
@@ -18,6 +17,8 @@ final class EditCommentAttachmentAdminAction {
 	) {
 
 		add_action( 'add_meta_boxes_comment', $this->add_edit_attachment_action_metabox( ... ) );
+
+		add_action( 'admin_footer-comment.php', $this->add_comment_attachment_editor_template( ... ) );
 	}
 
 	public function add_edit_attachment_action_metabox(): void {
@@ -33,36 +34,43 @@ final class EditCommentAttachmentAdminAction {
 
 	public function render_edit_attachment_action_metabox(): void {
 
+		echo '<div class="dco-comment-attachment-editors"></div>';
+	}
+
+	public function add_comment_attachment_editor_template(): void {
+
 		?>
 
-		<div class="dco-edit-attachment-item">
-			<div class="dco-edit-attachment-item__markup dco-edit-attachment-item-markup">
-			<div class="dco-edit-attachment-item__notice dco-edit-attachment-item-notice">
-				<?php
-				echo wp_kses(
-					__(
-						'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.',
-						'dco-comment-attachment'
-					),
-					[
-						'a' => [
-							'href'   => true,
-							'target' => true,
-						],
-					]
-				);
-				?>
+		<template id="dco-comment-attachment-editor">
+			<div class="dco-comment-attachment-editor">
+				<div class="dco-comment-attachment-editor__markup dco-comment-attachment-editor-markup"></div>
+				<div class="dco-comment-attachment-editor__notice dco-comment-attachment-editor-notice dco-comment-attachment-editor-notice--hidden">
+					<?php
+					echo wp_kses(
+						__(
+							'Update the comment to see a preview of <a href="#" target="_blank">the selected attachment</a>.',
+							'dco-comment-attachment'
+						),
+						[
+							'a' => [
+								'href'   => true,
+								'target' => true,
+							],
+						]
+					);
+					?>
+				</div>
+				<div class="dco-comment-attachment-editor__actions">
+					<a href="#" class="dco-set-attachment button">
+						<?php esc_html_e( 'Replace Attachment', 'dco-comment-attachment' ); ?>
+					</a>
+					<a href="#" class="dco-detach-attachment">
+						<?php esc_html_e( 'Detach Attachment', 'dco-comment-attachment' ); ?>
+					</a>
+				</div>
+				<input type="hidden" name="dco_attachment_id[]" class="dco-comment-attachment-editor-id" value="">
 			</div>
-			<div class="dco-edit-attachment-item__actions">
-				<a href="#" class="dco-set-attachment button">
-					<?php esc_html_e( 'Replace Attachment', 'dco-comment-attachment' ); ?>
-				</a>
-				<a href="#" class="dco-detach-attachment">
-					<?php esc_html_e( 'Detach Attachment', 'dco-comment-attachment' ); ?>
-				</a>
-			</div>
-			<input type="hidden" name="dco_attachment_id[]" class="dco-edit-attachment-item-id" value="">
-		</div>
+		</template>
 
 		<?php
 	}

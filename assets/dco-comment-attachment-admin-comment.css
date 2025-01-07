@@ -1,0 +1,50 @@
+.dco-comment-attachment-editor {
+	margin-top: 30px;
+}
+
+.dco-comment-attachment-editor:first-child {
+	margin-top: 0;
+}
+
+.dco-comment-attachment-editor__actions {
+	display: flex;
+	align-items: center;
+	margin-top: 13px;
+}
+
+@media (max-width: 359px) {
+
+	.dco-comment-attachment-editor__actions {
+		display: block;
+	}
+}
+
+.dco-detach-attachment {
+	margin-left: 30px;
+	color: #a00;
+}
+
+@media (max-width: 359px) {
+
+	.dco-detach-attachment {
+		display: inline-block;
+		margin-top: 20px;
+		margin-left: 0;
+	}
+}
+
+.dco-detach-attachment:hover {
+	color: #dc3232;
+}
+
+.dco-comment-attachment-editor-markup--hidden {
+	display: none;
+}
+
+.dco-comment-attachment-editor-notice--hidden {
+	display: none;
+}
+
+.dco-detach-attachment--hidden {
+	display: none;
+}
