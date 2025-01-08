@@ -1,4 +1,14 @@
 <?php
+/**
+ * Admin Actions: Delete Comment Attachment Bulk
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -10,12 +20,33 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to bulk delete or detach comment attachments
+ * in the Comments admin screen.
+ *
+ * @since 3.0.0
+ */
 final class DeleteCommentAttachmentBulkAdminAction {
 
 	protected const ACTION_NAME = 'delete_comment_attachment_bulk';
 
+	/**
+	 * Whether comment attachments should be deleted or detached.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool $is_delete_attachment True for deletion, false for detachment.
+	 */
 	protected bool $is_delete_attachment;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentService  $comment_service Service functions for comments.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private CommentService $comment_service,
 		private SettingsService $settings_service
@@ -32,6 +63,17 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		add_filter( 'removable_query_args', $this->add_bulk_action_name_to_removable_query_args( ... ) );
 	}
 
+	/**
+	 * Adds a delete/detach attachment bulk action to the comments bulk actions dropdown.
+	 *
+	 * The action behavior (delete or detach) is determined by plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $actions Bulk actions.
+	 *
+	 * @return array Modified bulk actions with the delete/detach action.
+	 */
 	public function add_bulk_action( array $actions ): array {
 
 		$text = __( 'Detach Attachments', 'dco-comment-attachment' );
@@ -44,13 +86,18 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		return $actions;
 	}
 
+	/**
+	 * Handles the delete comment attachment bulk action.
+	 *
+	 * Deletes or detaches comment attachments based on plugin settings.
+	 *
+	 * @since 3.0.0
+	 */
 	public function handle_bulk_action(): never {
 
 		check_admin_referer( 'bulk-comments' );
 
 		$comment_ids = $this->get_request_comment_ids();
-
-		wp_defer_comment_counting( true );
 
 		$count = 0;
 		foreach ( $comment_ids as $comment_id ) {
@@ -72,11 +119,25 @@ final class DeleteCommentAttachmentBulkAdminAction {
 			++$count;
 		}
 
-		wp_defer_comment_counting( false );
-
 		$this->handle_success( $count );
 	}
 
+	/**
+	 * Show the success message for the delete comment attachment bulk action.
+	 *
+	 * There is no hook in WordPress to add updated message for custom comments bulk action.
+	 * So we override the approval message if attachment deletion was triggered.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $translation The success message.
+	 * @param string $single      Singular form of the message.
+	 * @param string $plural      Plural form of the message.
+	 * @param int    $number      The number of comments processed.
+	 * @param string $domain      Text domain for translation.
+	 *
+	 * @return string The modified success message, if applicable.
+	 */
 	public function show_bulk_action_success_message(
 		string $translation,
 		string $single,
@@ -85,10 +146,6 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		string $domain
 	): string {
 
-		/**
-		 * There is no hook in WordPress to add updated message for custom comments bulk action.
-		 * So we override the approval message if attachment deletion was triggered.
-		 */
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( empty( $_REQUEST[ self::ACTION_NAME ] ) ) {
 			return $translation;
@@ -98,6 +155,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 
 			/* translators: %s: Number of comments. */
 			$text = _n( 'Attachments detached from %s comment.', 'Attachments detached from %s comments.', $number, 'dco-comment-attachment' );
+
 			if ( $this->is_delete_attachment ) {
 				/* translators: %s: Number of comments. */
 				$text = _n( 'Attachments deleted from %s comment.', 'Attachments deleted from %s comments.', $number, 'dco-comment-attachment' );
@@ -109,6 +167,16 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		return $translation;
 	}
 
+	/**
+	 * Adds the delete comment attachment bulk action name to the list of removable query arguments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $removable_query_args Removable query arguments.
+	 *
+	 * @return array Modified removable query arguments with
+	 *               the delete comment attachment bulk action name.
+	 */
 	public function add_bulk_action_name_to_removable_query_args( array $removable_query_args ): array {
 
 		$removable_query_args[] = self::ACTION_NAME;
@@ -116,20 +184,41 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		return $removable_query_args;
 	}
 
+	/**
+	 * Retrieves comment IDs from the request.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array Comment IDs from the request,
+	 *               or empty array if not available.
+	 */
 	private function get_request_comment_ids(): array {
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$ids = wp_unslash( $_REQUEST['delete_comments'] ?? [] );
-		if ( ! is_array( $ids ) ) {
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
+
+		$field_name = 'delete_comments';
+
+		if ( ! isset( $_POST[ $field_name ] ) || ! is_array( $_POST[ $field_name ] ) ) {
 			return [];
 		}
 
 		return array_map(
-			fn( string $id ): int => intval( $id ),
-			$ids
+			intval( ... ),
+			$_POST[ $field_name ]
 		);
+
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 	}
 
+	/**
+	 * Checks prerequisites for a delete comment attachment bulk action.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity|null $comment The comment entity to check.
+	 *
+	 * @return bool True if the comment is valid for processing, false otherwise.
+	 */
 	private function process_bulk_action_checks( ?CommentEntity $comment ): bool {
 
 		if ( ! $comment ) {
@@ -147,6 +236,13 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		return true;
 	}
 
+	/**
+	 * Redirects to the Comments admin page after successful action
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $count_processed_comments Number of comments successfully processed.
+	 */
 	private function handle_success( int $count_processed_comments ): never {
 
 		$redirect_to = add_query_arg( self::ACTION_NAME, $count_processed_comments, wp_get_referer() );

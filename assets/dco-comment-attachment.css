@@ -16,6 +16,7 @@
 	position: relative;
 }
 
+/* .required is a span that wraps the asterisk if the upload field is required. */
 .comment-form-attachment>span:not(.required) {
 	display: block;
 }

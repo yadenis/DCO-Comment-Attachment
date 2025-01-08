@@ -1,4 +1,14 @@
 <?php
+/**
+ * Admin Actions: Delete Comment Attachment
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -12,12 +22,33 @@ use WP_Error;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to delete or detach comment attachments
+ * in the Comments admin screen.
+ *
+ * @since 3.0.0
+ */
 final class DeleteCommentAttachmentAdminAction {
 
 	protected const ACTION_NAME = 'delete_comment_attachment';
 
+	/**
+	 * Whether comment attachments should be deleted or detached.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool $is_delete_attachment True for deletion, false for detachment.
+	 */
 	protected bool $is_delete_attachment;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentService  $comment_service Service functions for comments.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private CommentService $comment_service,
 		private SettingsService $settings_service
@@ -35,6 +66,19 @@ final class DeleteCommentAttachmentAdminAction {
 		add_action( 'wp_ajax_undo_' . self::ACTION_NAME, $this->handle_undo_delete_comment_attachment_action( ... ) );
 	}
 
+	/**
+	 * Adds a delete/detach attachment action link in the comment row actions.
+	 *
+	 * The action link is displayed only for comments with attachments.
+	 * The action behavior (delete or detach) is determined by plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array      $actions The actions for the comment row.
+	 * @param WP_Comment $wp_comment The comment for which the actions are displayed.
+	 *
+	 * @return array Modified actions with the delete/detach link.
+	 */
 	public function add_delete_comment_attachment_action_link( array $actions, WP_Comment $wp_comment ): array {
 
 		$comment = $this->comment_service->get_comment_instance( $wp_comment );
@@ -48,11 +92,13 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$nonce = wp_create_nonce( "delete-comment-attachment_{$comment->id}" );
 
-		$action_url = sprintf(
-			'comment.php?action=%s&c=%d&%s',
-			esc_attr( self::ACTION_NAME ),
-			intval( $comment->id ),
-			esc_attr( '_wpnonce=' . $nonce )
+		$action_url = add_query_arg(
+			[
+				'action'   => self::ACTION_NAME,
+				'c'        => $comment->id,
+				'_wpnonce' => $nonce,
+			],
+			'comment.php'
 		);
 
 		$attachment_ids_attribute = '';
@@ -77,6 +123,13 @@ final class DeleteCommentAttachmentAdminAction {
 		return $actions;
 	}
 
+	/**
+	 * Handles the delete comment attachment action.
+	 *
+	 * Deletes or detaches comment attachments based on plugin settings.
+	 *
+	 * @since 3.0.0
+	 */
 	public function handle_delete_comment_attachment_action(): never {
 
 		$comment_id = $this->get_request_comment_id();
@@ -98,6 +151,13 @@ final class DeleteCommentAttachmentAdminAction {
 		$this->handle_success( $comment );
 	}
 
+	/**
+	 * Handles the undo delete comment attachment action.
+	 *
+	 * Reattaches previously detached attachments to a comment.
+	 *
+	 * @since 3.0.0
+	 */
 	public function handle_undo_delete_comment_attachment_action(): never {
 
 		$comment_id          = $this->get_request_comment_id();
@@ -116,6 +176,11 @@ final class DeleteCommentAttachmentAdminAction {
 		wp_send_json_success();
 	}
 
+	/**
+	 * Loads dependencies if they are not already available.
+	 *
+	 * @since 3.0.0
+	 */
 	private function load_dependencies(): void {
 
 		if ( function_exists( 'comment_footer_die' ) ) {
@@ -125,6 +190,15 @@ final class DeleteCommentAttachmentAdminAction {
 		require_once ABSPATH . 'wp-admin/includes/comment.php';
 	}
 
+	/**
+	 * Retrieves the appropriate text for the action link.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity $comment The comment entity.
+	 *
+	 * @return string The action link text.
+	 */
 	private function get_action_link_text( CommentEntity $comment ): string {
 
 		$singular_text = __( 'Detach Attachment', 'dco-comment-attachment' );
@@ -143,35 +217,70 @@ final class DeleteCommentAttachmentAdminAction {
 		return $text;
 	}
 
+	/**
+	 * Retrieves the comment ID from the request.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return int Comment ID from the request, or 0 if not available.
+	 */
 	private function get_request_comment_id(): int {
 
 		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		return intval( $_REQUEST['c'] ?? 0 );
 	}
 
+	/**
+	 * Retrieves attachment IDs for undo action from the request.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array Attachment IDs from the request,
+	 *               or empty array if not available.
+	 */
 	private function get_request_undo_attachment_ids(): array {
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-		$ids = wp_unslash( $_REQUEST['undo_attachment_ids'] ?? [] );
-		if ( ! is_array( $ids ) ) {
+		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
+
+		$field_name = 'undo_attachment_ids';
+
+		if ( ! isset( $_POST[ $field_name ] ) || ! is_array( $_POST[ $field_name ] ) ) {
 			return [];
 		}
 
 		return array_map(
-			fn( string $id ): int => intval( $id ),
-			$ids
+			intval( ... ),
+			$_POST[ $field_name ]
 		);
+
+		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 	}
 
+	/**
+	 * Validates the nonce for the current action.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id The comment ID associated with the request.
+	 */
 	private function check_referer( int $comment_id ): void {
 
+		$action = "delete-comment-attachment_{$comment_id}";
+
 		if ( wp_doing_ajax() ) {
-			check_ajax_referer( "delete-comment-attachment_{$comment_id}" );
+			check_ajax_referer( $action );
 		} else {
-			check_admin_referer( "delete-comment-attachment_{$comment_id}" );
+			check_admin_referer( $action );
 		}
 	}
 
+	/**
+	 * Checks prerequisites for a delete comment attachment action.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity|null $comment The comment entity to check.
+	 */
 	private function process_delete_attachment_action_checks( ?CommentEntity $comment ): void {
 
 		$this->check_comment_exist( $comment );
@@ -187,6 +296,14 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
+	/**
+	 * Checks prerequisites for undoing a delete comment attachment action.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity|null $comment The comment entity to check.
+	 * @param array              $undo_attachment_ids The attachment IDs to reattach.
+	 */
 	private function process_undo_delete_attachment_action_checks( ?CommentEntity $comment, array $undo_attachment_ids ): void {
 
 		if ( $this->is_delete_attachment ) {
@@ -218,6 +335,13 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
+	/**
+	 * Ensures the comment exists.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity|null $comment The comment entity to check.
+	 */
 	private function check_comment_exist( ?CommentEntity $comment ): void {
 
 		if ( ! $comment ) {
@@ -229,6 +353,13 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
+	/**
+	 * Ensures the user has permission to edit the comment.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity|null $comment The comment entity to check.
+	 */
 	private function check_edit_comment_capability( ?CommentEntity $comment ): void {
 
 		if ( ! current_user_can( 'edit_comment', $comment?->id ) ) {
@@ -240,6 +371,16 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 	}
 
+	/**
+	 * Redirects or sends a success response after successful action.
+	 *
+	 * If the request is an AJAX request, a JSON success response is sent.
+	 * Otherwise, redirects to the Comments admin page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity $comment The comment entity.
+	 */
 	private function handle_success( CommentEntity $comment ): never {
 
 		if ( wp_doing_ajax() ) {
@@ -254,6 +395,14 @@ final class DeleteCommentAttachmentAdminAction {
 		exit();
 	}
 
+	/**
+	 * Sends an error response and terminates the execution.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $code    The error code.
+	 * @param string $message The error message.
+	 */
 	private function error( string $code, string $message ): never {
 
 		if ( wp_doing_ajax() ) {

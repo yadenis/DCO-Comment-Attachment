@@ -1,4 +1,4 @@
-document.addEventListener( 'DOMContentLoaded', function () {
+document.addEventListener( 'DOMContentLoaded', () => {
 	try {
 		const form = document.querySelector( '#respond form' );
 		if ( form ) {

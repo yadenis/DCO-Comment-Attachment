@@ -99,6 +99,6 @@ final class DeleteAttachmentActionSetting implements Setting {
 
 	private function ensure_backward_compatibility( ?string $value ): ?string {
 
-		return self::LEGACY_VALUES_MAP[ $value ]->value ?? null;
+		return self::LEGACY_VALUES_MAP[ $value ]->value ?? $value;
 	}
 }

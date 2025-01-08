@@ -42,11 +42,13 @@
 				$.post( ajaxurl, data, ( response ) => {
 					if ( response.success ) {
 
-						$notice = $('<p/>')
-							.addClass('detach-attachment-notice')
-							.html(notice_text);
-									
-						$row_actions.before($notice);
+						if( ! dco_ca.is_delete_attachment ) {
+							$notice = $('<p/>')
+								.addClass('detach-attachment-notice')
+								.html(notice_text);
+										
+							$row_actions.before($notice);
+						}
 
 						$attachment.fadeOut(400, () => $notice.fadeIn());
 						
