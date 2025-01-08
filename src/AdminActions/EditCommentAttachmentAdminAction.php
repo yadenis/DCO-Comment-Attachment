@@ -90,6 +90,7 @@ final class EditCommentAttachmentAdminAction {
 
 		$attachment_ids = array_map(
 			intval( ... ),
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 			$_POST['dco_attachment_id']
 		);
 

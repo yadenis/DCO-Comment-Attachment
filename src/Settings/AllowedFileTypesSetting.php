@@ -35,23 +35,9 @@ final class AllowedFileTypesSetting implements Setting {
 
 		$this->title = __( 'Allowed File Types', 'dco-comment-attachment' );
 
-		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
-		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
+		$this->setting_value = $this->options->get_array_option( self::OPTION_NAME ) ?? $this->get_system_value();
 
-		$note1 = __( 'To view all file extensions in a group, click the "Show All" link below that group.' );
-		$note2 = __( 'Clicking on the name of a file type group (e.g. image) will select or deselect all extensions in that group.' );
-
-		$this->description = sprintf(
-			'* — %s<br>** — %s<br><br>- %s<br>- %s',
-			$mark1,
-			$mark2,
-			$note1,
-			$note2
-		);
-
-		$value = $this->options->get_array_option( self::OPTION_NAME );
-
-		$this->setting_value = $value ?? $this->get_system_value();
+		$this->init_description();
 	}
 
 	public function get_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
@@ -241,6 +227,29 @@ final class AllowedFileTypesSetting implements Setting {
 			wp_get_video_extensions(),
 			wp_get_audio_extensions(),
 			self::IMAGE_EXTENSIONS,
+		);
+	}
+
+	private function init_description(): void {
+
+		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
+		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
+
+		$note1 = __(
+			'To view all file extensions in a group, click the "Show All" link below that group.',
+			'dco-comment-attachment'
+		);
+		$note2 = __(
+			'Clicking on the name of a file type group (e.g. image) will select or deselect all extensions in that group.',
+			'dco-comment-attachment'
+		);
+
+		$this->description = sprintf(
+			'* — %s<br>** — %s<br><br>- %s<br>- %s',
+			$mark1,
+			$mark2,
+			$note1,
+			$note2
 		);
 	}
 

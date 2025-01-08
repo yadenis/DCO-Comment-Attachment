@@ -19,6 +19,11 @@ final class DeleteAttachmentActionSetting implements Setting {
 	private const OPTION_NAME   = 'delete_attachment_action';
 	private const DEFAULT_VALUE = DeleteAttachmentActionType::DELETE;
 
+	private const LEGACY_VALUES_MAP = [
+		'1' => DeleteAttachmentActionType::DELETE,
+		'0' => DeleteAttachmentActionType::DETACH,
+	];
+
 	private string $title;
 	private array $types;
 
@@ -42,7 +47,9 @@ final class DeleteAttachmentActionSetting implements Setting {
 
 	public function get_value(): string {
 
-		return $this->options->get_string_option( self::OPTION_NAME ) ?? $this->get_default_value();
+		$value = $this->options->get_string_option( self::OPTION_NAME );
+
+		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
 	public function is_delete_attachment_from_media_library(): bool {
@@ -73,11 +80,6 @@ final class DeleteAttachmentActionSetting implements Setting {
 		)->render();
 	}
 
-	private function get_default_value(): string {
-
-		return self::DEFAULT_VALUE->value;
-	}
-
 	private function build_choices( array $args ): array {
 
 		$choices = [];
@@ -93,5 +95,10 @@ final class DeleteAttachmentActionSetting implements Setting {
 		}
 
 		return $choices;
+	}
+
+	private function ensure_backward_compatibility( ?string $value ): ?string {
+
+		return self::LEGACY_VALUES_MAP[ $value ]->value ?? null;
 	}
 }

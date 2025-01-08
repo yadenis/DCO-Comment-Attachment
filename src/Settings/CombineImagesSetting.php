@@ -35,7 +35,7 @@ final class CombineImagesSetting implements Setting {
 
 	public function get_value(): bool {
 
-		return $this->options->get_bool_option( self::OPTION_NAME ) ?? $this->get_default_value();
+		return $this->options->get_bool_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
 	}
 
 	public function get_setting_field_dto(): SettingFieldDTO {
@@ -63,10 +63,5 @@ final class CombineImagesSetting implements Setting {
 				text: $this->description
 			)
 		)->render();
-	}
-
-	private function get_default_value(): bool {
-
-		return self::DEFAULT_VALUE;
 	}
 }

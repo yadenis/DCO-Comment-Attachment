@@ -19,6 +19,11 @@ final class WhoCanUploadSetting implements Setting {
 	private const OPTION_NAME   = 'who_can_upload';
 	private const DEFAULT_VALUE = WhoCanUploadType::ALL_USERS;
 
+	private const LEGACY_VALUES_MAP = [
+		'1' => WhoCanUploadType::ALL_USERS,
+		'2' => WhoCanUploadType::ONLY_LOGGED_USERS,
+	];
+
 	private string $title;
 	private array $types;
 
@@ -36,7 +41,9 @@ final class WhoCanUploadSetting implements Setting {
 
 	public function get_value(): string {
 
-		return $this->options->get_string_option( self::OPTION_NAME ) ?? $this->get_default_value();
+		$value = $this->options->get_string_option( self::OPTION_NAME );
+
+		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
 	public function is_can_upload_all_users(): bool {
@@ -76,11 +83,6 @@ final class WhoCanUploadSetting implements Setting {
 		)->render();
 	}
 
-	private function get_default_value(): string {
-
-		return self::DEFAULT_VALUE->value;
-	}
-
 	private function build_choices( array $args ): array {
 
 		$choices = [];
@@ -96,5 +98,10 @@ final class WhoCanUploadSetting implements Setting {
 		}
 
 		return $choices;
+	}
+
+	private function ensure_backward_compatibility( ?string $value ): ?string {
+
+		return self::LEGACY_VALUES_MAP[ $value ]->value ?? null;
 	}
 }

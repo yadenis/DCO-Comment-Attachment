@@ -18,6 +18,14 @@ final class LinkThumbnailSetting implements Setting {
 
 	private const OPTION_NAME   = 'link_thumbnail';
 	private const DEFAULT_VALUE = LinkThumbnailType::NO_LINK;
+	private const FAQ_LINK      = 'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F';
+
+	private const LEGACY_VALUES_MAP = [
+		'0' => LinkThumbnailType::NO_LINK,
+		'1' => LinkThumbnailType::IMAGE_LIGHTBOX,
+		'2' => LinkThumbnailType::IMAGE_NEW_TAB,
+		'3' => LinkThumbnailType::ATTACHMENT_PAGE,
+	];
 
 	private string $title;
 	private array $types;
@@ -28,34 +36,14 @@ final class LinkThumbnailSetting implements Setting {
 
 		$this->title = __( 'Link thumbnail?', 'dco-comment-attachment' );
 
-		$this->types[ LinkThumbnailType::NO_LINK->value ] = __(
-			'Not link',
-			'dco-comment-attachment'
-		);
-
-		$this->types[ LinkThumbnailType::IMAGE_LIGHTBOX->value ] = sprintf(
-			/* translators: %s: the link to the plugin FAQ section on WordPress.org */
-			__(
-				'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)',
-				'dco-comment-attachment'
-			),
-			'https://wordpress.org/plugins/dco-comment-attachment/#what%20lightbox%20plugins%20are%20supported%3F'
-		);
-
-		$this->types[ LinkThumbnailType::IMAGE_NEW_TAB->value ] = __(
-			'Link to a full-size image in a new tab',
-			'dco-comment-attachment'
-		);
-
-		$this->types[ LinkThumbnailType::ATTACHMENT_PAGE->value ] = __(
-			'Link to the attachment page',
-			'dco-comment-attachment'
-		);
+		$this->init_types();
 	}
 
 	public function get_value(): string {
 
-		return $this->options->get_string_option( self::OPTION_NAME ) ?? $this->get_default_value();
+		$value = $this->options->get_string_option( self::OPTION_NAME );
+
+		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
 	public function get_setting_field_dto(): SettingFieldDTO {
@@ -77,25 +65,49 @@ final class LinkThumbnailSetting implements Setting {
 		)->render();
 	}
 
-	private function get_default_value(): string {
-
-		return self::DEFAULT_VALUE->value;
-	}
-
 	private function build_choices( array $args ): array {
 
-		$choices = [];
-
-		foreach ( $this->types as $value => $text ) {
-
-			$choices[] = new RadioChoiceSettingControl(
+		return array_map(
+			fn( string $value, string $text ): RadioChoiceSettingControl => new RadioChoiceSettingControl(
 				name: $args['name'],
 				value: $value,
 				text: $text,
 				checked: $value === $this->get_value(),
-			);
-		}
+			),
+			array_keys( $this->types ),
+			$this->types
+		);
+	}
 
-		return $choices;
+	private function ensure_backward_compatibility( ?string $value ): ?string {
+
+		return self::LEGACY_VALUES_MAP[ $value ]->value ?? null;
+	}
+
+	private function init_types(): void {
+
+		$this->types[ LinkThumbnailType::NO_LINK->value ] = __(
+			'Not link',
+			'dco-comment-attachment'
+		);
+
+		$this->types[ LinkThumbnailType::IMAGE_LIGHTBOX->value ] = sprintf(
+			/* translators: %s: the link to the plugin FAQ section on WordPress.org */
+			__(
+				'Link to a full-size image with lightbox plugins support (see <a href="%s">FAQ</a> for details)',
+				'dco-comment-attachment'
+			),
+			self::FAQ_LINK
+		);
+
+		$this->types[ LinkThumbnailType::IMAGE_NEW_TAB->value ] = __(
+			'Link to a full-size image in a new tab',
+			'dco-comment-attachment'
+		);
+
+		$this->types[ LinkThumbnailType::ATTACHMENT_PAGE->value ] = __(
+			'Link to the attachment page',
+			'dco-comment-attachment'
+		);
 	}
 }
