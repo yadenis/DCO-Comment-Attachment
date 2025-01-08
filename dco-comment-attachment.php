@@ -47,6 +47,8 @@ function dco_ca() {
 
 	$injector->make( DCO_CA\CommentsList::class );
 
+	$injector->make( DCO_CA\Shortcode::class );
+
 	$injector->make( DCO_CA\BackwardCompatibility::class );
 }
 
@@ -61,4 +63,12 @@ function dco_ca_get_injector(): Auryn\Injector {
 	}
 
 	return $injector;
+}
+
+if ( ! function_exists( 'mb_ucfirst' ) ) {
+
+	function mb_ucfirst( string $string, ?string $encoding = null ): string {
+
+		return mb_strtoupper( mb_substr( $string, 0, 1, $encoding ), $encoding ) . mb_substr( $string, 1, null, $encoding );
+	}
 }

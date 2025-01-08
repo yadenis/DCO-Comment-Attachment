@@ -109,7 +109,7 @@ final class RESTAPI {
 		}
 
 		$attachment_ids = array_map(
-			'intval',
+			intval( ... ),
 			$attachment_ids
 		);
 

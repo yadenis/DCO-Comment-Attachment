@@ -67,18 +67,21 @@ final class CommentService {
 		$comment->save();
 	}
 
-	/*
-		public static function get_comments( int|string $post_id ): array {
+
+	public function get_post_comments_with_attachments( int $post_id ): array {
 
 		$args = [
 			'post_id'  => $post_id,
-			'meta_key' => static::ATTACHMENT_META_KEY,
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_key' => PluginService::ATTACHMENT_ID_META_KEY,
 			'status'   => 'approve',
 		];
 
 		$comments = get_comments( $args );
 
-		return static::get_bulk_instances( $comments );
+		return array_map(
+			$this->get_comment_instance( ... ),
+			$comments
+		);
 	}
-	*/
 }

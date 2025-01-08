@@ -35,11 +35,11 @@ final class Form {
 
 	public function enqueue_scripts(): void {
 
+		$this->plugin_service->enqueue_style( 'dco-comment-attachment' );
+
 		if ( ! $this->plugin_service->is_form_enabled() ) {
 			return;
 		}
-
-		$this->plugin_service->enqueue_style( 'dco-comment-attachment' );
 
 		$this->plugin_service->enqueue_script(
 			script_name: 'dco-comment-attachment',

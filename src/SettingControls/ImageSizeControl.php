@@ -66,7 +66,7 @@ final class ImageSizeControl implements SettingControl {
 		$crop = $attributes['crop'] ? __( 'Yes', 'dco-comment-attachment' ) : __( 'No', 'dco-comment-attachment' );
 		$crop = __( 'Crop', 'dco-comment-attachment' ) . ": {$crop}";
 
-		$name = ucfirst( $name );
+		$name = mb_ucfirst( $name );
 
 		return "{$name}, {$size}, {$crop}";
 	}

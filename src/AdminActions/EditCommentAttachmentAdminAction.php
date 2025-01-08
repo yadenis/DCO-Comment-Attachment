@@ -89,7 +89,7 @@ final class EditCommentAttachmentAdminAction {
 		}
 
 		$attachment_ids = array_map(
-			'intval',
+			intval( ... ),
 			$_POST['dco_attachment_id']
 		);
 

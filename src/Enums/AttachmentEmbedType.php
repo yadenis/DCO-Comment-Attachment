@@ -6,10 +6,10 @@ namespace DCO_CA\Enums;
 
 defined( 'ABSPATH' ) || die;
 
-enum AttachmentEmbedType {
+enum AttachmentEmbedType: string {
 
-	case IMAGE;
-	case VIDEO;
-	case AUDIO;
-	case MISC;
+	case IMAGE = 'image';
+	case VIDEO = 'video';
+	case AUDIO = 'audio';
+	case MISC  = 'misc';
 }

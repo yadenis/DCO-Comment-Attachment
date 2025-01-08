@@ -18,11 +18,11 @@ final class AttachmentEntity {
 	public readonly string $extension;
 	public readonly string $title;
 	public readonly string $link;
-	public readonly AttachmentEmbedType $embed_type;
+	public readonly string $embed_type;
 
 	public function __construct(
 		private SettingsService $settings_service,
-		public readonly int $id
+		public readonly int $id,
 	) {
 
 		$this->file_path = (string) get_attached_file( $this->id );
@@ -42,24 +42,24 @@ final class AttachmentEntity {
 	public function get_markup(): string {
 
 		return match ( $this->embed_type ) {
-			AttachmentEmbedType::IMAGE => $this->get_image_markup(),
-			AttachmentEmbedType::VIDEO => $this->get_video_markup(),
-			AttachmentEmbedType::AUDIO => $this->get_audio_markup(),
-			AttachmentEmbedType::MISC => $this->get_misc_markup(),
+			AttachmentEmbedType::IMAGE->value => $this->get_image_markup(),
+			AttachmentEmbedType::VIDEO->value => $this->get_video_markup(),
+			AttachmentEmbedType::AUDIO->value => $this->get_audio_markup(),
+			AttachmentEmbedType::MISC->value => $this->get_misc_markup(),
 		};
 	}
 
-	public function get_gallery_image_markup(): string {
+	public function get_gallery_image_markup( int $gallery_id ): string {
 
-		return $this->get_image_markup( $this->settings_service->get_gallery_image_size() );
+		return $this->get_image_markup( $this->settings_service->get_gallery_image_size(), $gallery_id );
 	}
 
 	public function is_image(): bool {
 
-		return AttachmentEmbedType::IMAGE === $this->embed_type;
+		return AttachmentEmbedType::IMAGE->value === $this->embed_type;
 	}
 
-	private function get_image_markup( string $image_size = '' ): string {
+	private function get_image_markup( string $image_size = '', ?int $gallery_id = null ): string {
 
 		if ( ! $this->is_image() ) {
 			return '';
@@ -77,6 +77,10 @@ final class AttachmentEntity {
 				( LinkThumbnailType::IMAGE_NEW_TAB->value === $link_thumbnail_type ) ? ' target="_blank"' : '',
 				$img_tag
 			);
+
+			if ( LinkThumbnailType::IMAGE_LIGHTBOX->value === $link_thumbnail_type ) {
+				$img_tag = $this->add_lightbox_attributes( $img_tag, $gallery_id );
+			}
 		}
 
 		$attachment_content = sprintf(
@@ -101,7 +105,7 @@ final class AttachmentEntity {
 
 	private function get_video_markup(): string {
 
-		if ( AttachmentEmbedType::VIDEO !== $this->embed_type ) {
+		if ( AttachmentEmbedType::VIDEO->value !== $this->embed_type ) {
 			return '';
 		}
 
@@ -115,7 +119,7 @@ final class AttachmentEntity {
 
 	private function get_audio_markup(): string {
 
-		if ( AttachmentEmbedType::AUDIO !== $this->embed_type ) {
+		if ( AttachmentEmbedType::AUDIO->value !== $this->embed_type ) {
 			return '';
 		}
 
@@ -129,7 +133,7 @@ final class AttachmentEntity {
 
 	private function get_misc_markup(): string {
 
-		if ( AttachmentEmbedType::MISC !== $this->embed_type ) {
+		if ( AttachmentEmbedType::MISC->value !== $this->embed_type ) {
 			return '';
 		}
 
@@ -150,9 +154,51 @@ final class AttachmentEntity {
 		);
 	}
 
+	private function get_img_tag_markup( string $image_size = '' ): string {
+
+		if ( ! $this->is_image() ) {
+			return '';
+		}
+
+		$image_size = ! empty( $image_size ) ? $image_size : $this->settings_service->get_thumbnail_image_size();
+
+		return wp_get_attachment_image(
+			$this->id,
+			$image_size
+		);
+	}
+
+	private function add_lightbox_attributes( string $img_tag, ?int $gallery_id = null ): string {
+
+		if ( ! $gallery_id ) {
+			$gallery_id = $this->id;
+		}
+
+		// Simple Lightbox.
+		if ( function_exists( 'slb_activate' ) ) {
+			$img_tag = slb_activate( $img_tag, $gallery_id );
+			// Responsive Lightbox & Gallery.
+		} elseif ( function_exists( 'Responsive_Lightbox' ) ) {
+			$selector = Responsive_Lightbox()->options['settings']['selector'];
+			$rel      = $selector . '-gallery-' . $gallery_id;
+			$img_tag  = str_replace( '<a', '<a data-rel="' . $rel . '"', $img_tag );
+			// Other lightbox plugins.
+		} else {
+			$rel     = 'dco-ca-gallery-' . $gallery_id;
+			$img_tag = str_replace( '<a', '<a rel="' . $rel . '"', $img_tag );
+		}
+
+		// FooBox Image Lightbox.
+		if ( class_exists( 'FooBox' ) ) {
+			$img_tag = str_replace( '<a', '<a class="foobox"', $img_tag );
+		}
+
+		return $img_tag;
+	}
+
 	private function init_embed_type(): void {
 
-		$embed_type = AttachmentEmbedType::MISC;
+		$embed_type = AttachmentEmbedType::MISC->value;
 
 		if ( ! $this->settings_service->is_embeded_attachment() ) {
 
@@ -161,24 +207,15 @@ final class AttachmentEntity {
 		}
 
 		$types = [
-			[
-				'name'       => AttachmentEmbedType::IMAGE,
-				'extensions' => $this->settings_service->get_image_extensions(),
-			],
-			[
-				'name'       => AttachmentEmbedType::VIDEO,
-				'extensions' => wp_get_video_extensions(),
-			],
-			[
-				'name'       => AttachmentEmbedType::AUDIO,
-				'extensions' => wp_get_audio_extensions(),
-			],
+			AttachmentEmbedType::IMAGE->value => $this->settings_service->get_image_extensions(),
+			AttachmentEmbedType::VIDEO->value => wp_get_video_extensions(),
+			AttachmentEmbedType::AUDIO->value => wp_get_audio_extensions(),
 		];
 
-		foreach ( $types as $type ) {
+		foreach ( $types as $name => $extensions ) {
 
-			if ( in_array( $this->extension, $type['extensions'], true ) ) {
-				$embed_type = $type['name'];
+			if ( in_array( $this->extension, $extensions, true ) ) {
+				$embed_type = $name;
 			}
 		}
 
@@ -202,19 +239,5 @@ final class AttachmentEntity {
 		} else {
 			$this->link = wp_get_attachment_url( $this->id );
 		}
-	}
-
-	private function get_img_tag_markup( string $image_size = '' ): string {
-
-		if ( ! $this->is_image() ) {
-			return '';
-		}
-
-		$image_size = ! empty( $image_size ) ? $image_size : $this->settings_service->get_thumbnail_image_size();
-
-		return wp_get_attachment_image(
-			$this->id,
-			$image_size
-		);
 	}
 }

@@ -8,10 +8,11 @@ defined( 'ABSPATH' ) || die;
 
 final class PluginService {
 
-	public const VERSION           = DCO_CA_VERSION;
-	public const BASENAME          = DCO_CA_BASENAME;
-	public const UPLOAD_FIELD_NAME = 'attachment';
-	public const SETTINGS_ID       = 'dco_ca';
+	public const VERSION                = DCO_CA_VERSION;
+	public const BASENAME               = DCO_CA_BASENAME;
+	public const UPLOAD_FIELD_NAME      = 'attachment';
+	public const SETTINGS_ID            = 'dco_ca';
+	public const ATTACHMENT_ID_META_KEY = 'attachment_id';
 
 	public function __construct(
 		private UserService $user_service,

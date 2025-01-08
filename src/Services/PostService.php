@@ -15,4 +15,14 @@ final class PostService {
 
 		return is_singular() && comments_open();
 	}
+
+	public function get_current_post_id(): ?int {
+
+		$post_id = get_the_ID();
+		if ( ! $post_id ) {
+			return null;
+		}
+
+		return $post_id;
+	}
 }
