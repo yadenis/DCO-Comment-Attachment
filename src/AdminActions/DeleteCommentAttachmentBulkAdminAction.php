@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace DCO_CA\AdminActions;
 
 use DCO_CA\Entities\CommentEntity;
+use DCO_CA\Helpers\RequestHelper;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\SettingsService;
 
@@ -29,6 +30,8 @@ defined( 'ABSPATH' ) || die;
 final class DeleteCommentAttachmentBulkAdminAction {
 
 	protected const ACTION_NAME = 'delete_comment_attachment_bulk';
+
+	protected const DELETE_COMMENT_IDS_FIELD_NAME = 'delete_comments';
 
 	/**
 	 * Whether comment attachments should be deleted or detached.
@@ -46,10 +49,12 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @param CommentService  $comment_service Service functions for comments.
 	 * @param SettingsService $settings_service Service functions for settings.
+	 * @param RequestHelper   $request_helper Helper functions for request.
 	 */
 	public function __construct(
 		private CommentService $comment_service,
-		private SettingsService $settings_service
+		private SettingsService $settings_service,
+		private RequestHelper $request_helper,
 	) {
 
 		$this->is_delete_attachment = $this->settings_service->is_delete_attachment_from_media_library();
@@ -102,19 +107,15 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		$count = 0;
 		foreach ( $comment_ids as $comment_id ) {
 
-			$comment = $this->comment_service->get_comment_instance( $comment_id );
-
-			if ( ! $this->process_bulk_action_checks( $comment ) ) {
+			if ( ! $this->process_bulk_action_checks( $comment_id ) ) {
 				continue;
 			}
 
 			if ( $this->is_delete_attachment ) {
-				$comment->delete_attachments();
+				$this->comment_service->delete_comment_attachments( $comment_id );
 			} else {
-				$comment->detach_attachments();
+				$this->comment_service->detach_comment_attachments( $comment_id );
 			}
-
-			$comment->save();
 
 			++$count;
 		}
@@ -190,24 +191,19 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 * @since 3.0.0
 	 *
 	 * @return array Comment IDs from the request,
-	 *               or empty array if not available.
+	 *               or null if not available.
 	 */
-	private function get_request_comment_ids(): array {
+	private function get_request_comment_ids(): ?array {
 
-		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-
-		$field_name = 'delete_comments';
-
-		if ( ! isset( $_POST[ $field_name ] ) || ! is_array( $_POST[ $field_name ] ) ) {
-			return [];
+		$delete_comments_ids = $this->request_helper->get_array_field( self::DELETE_COMMENT_IDS_FIELD_NAME );
+		if ( ! $delete_comments_ids ) {
+			return null;
 		}
 
 		return array_map(
 			intval( ... ),
-			$_POST[ $field_name ]
+			$delete_comments_ids
 		);
-
-		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
@@ -215,21 +211,21 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param CommentEntity|null $comment The comment entity to check.
+	 * @param int $comment_id The comment id to check.
 	 *
-	 * @return bool True if the comment is valid for processing, false otherwise.
+	 * @return bool True if the comment id is valid for processing, false otherwise.
 	 */
-	private function process_bulk_action_checks( ?CommentEntity $comment ): bool {
+	private function process_bulk_action_checks( int $comment_id ): bool {
 
-		if ( ! $comment ) {
+		if ( ! $this->comment_service->is_comment_exists( $comment_id ) ) {
 			return false;
 		}
 
-		if ( ! current_user_can( 'edit_comment', $comment->id ) ) {
+		if ( ! current_user_can( 'edit_comment', $comment_id ) ) {
 			return false;
 		}
 
-		if ( ! $comment->has_attachments() ) {
+		if ( ! $this->comment_service->is_comment_has_attachments( $comment_id ) ) {
 			return false;
 		}
 

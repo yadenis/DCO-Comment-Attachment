@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace DCO_CA\AdminActions;
 
+use DCO_CA\Helpers\RequestHelper;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\PluginService;
 use DCO_CA\Services\SettingsService;
@@ -28,6 +29,8 @@ defined( 'ABSPATH' ) || die;
  */
 final class EditCommentAttachmentAdminAction {
 
+	protected const ATTACHMENT_IDS_FIELD_NAME = 'dco_attachment_id';
+
 	/**
 	 * Constructor
 	 *
@@ -36,11 +39,13 @@ final class EditCommentAttachmentAdminAction {
 	 * @param PluginService   $plugin_service Service functions for the plugin.
 	 * @param CommentService  $comment_service Service functions for comments.
 	 * @param SettingsService $settings_service Service functions for settings.
+	 * @param RequestHelper   $request_helper Helper functions for request.
 	 */
 	public function __construct(
 		private PluginService $plugin_service,
 		private CommentService $comment_service,
 		private SettingsService $settings_service,
+		private RequestHelper $request_helper,
 	) {
 
 		add_action( 'add_meta_boxes_comment', $this->add_edit_attachment_action_metabox( ... ) );
@@ -133,15 +138,10 @@ final class EditCommentAttachmentAdminAction {
 
 		check_admin_referer( "update-comment_{$comment_id}" );
 
-		if ( ! isset( $_POST['dco_attachment_id'] ) || ! is_array( $_POST['dco_attachment_id'] ) ) {
+		$attachment_ids = $this->get_request_attachment_ids();
+		if ( ! $attachment_ids ) {
 			return;
 		}
-
-		$attachment_ids = array_map(
-			intval( ... ),
-			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
-			$_POST['dco_attachment_id']
-		);
 
 		// We need to delete the last empty element, because it's used
 		// as a placeholder in the attachments edit form.
@@ -166,5 +166,26 @@ final class EditCommentAttachmentAdminAction {
 		}
 
 		$this->comment_service->delete_comment_attachments( $comment_id );
+	}
+
+	/**
+	 * Retrieves attachment IDs from the request.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array Attachment IDs from the request,
+	 *               or null if not available.
+	 */
+	private function get_request_attachment_ids(): ?array {
+
+		$delete_comments_ids = $this->request_helper->get_array_field( self::ATTACHMENT_IDS_FIELD_NAME );
+		if ( ! $delete_comments_ids ) {
+			return null;
+		}
+
+		return array_map(
+			intval( ... ),
+			$delete_comments_ids
+		);
 	}
 }

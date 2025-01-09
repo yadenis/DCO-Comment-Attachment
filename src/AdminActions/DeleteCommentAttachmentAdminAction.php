@@ -52,7 +52,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @param CommentService  $comment_service Service functions for comments.
 	 * @param SettingsService $settings_service Service functions for settings.
-	 * @param RequestHelper $request_helper Helper functions for request.
+	 * @param RequestHelper   $request_helper Helper functions for request.
 	 */
 	public function __construct(
 		private CommentService $comment_service,
@@ -100,11 +100,11 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$actions[ self::ACTION_NAME ] = sprintf(
 			'<a href="%s" class="dco-delete-attachment" data-comment-id="%d" data-nonce="%s"%s>%s</a>',
-			esc_url( $this->get_action_link_url( $comment, $nonce ) ),
+			esc_url( $this->generate_action_link_url( $comment, $nonce ) ),
 			intval( $comment->id ),
 			esc_attr( $nonce ),
-			$this->get_action_link_attachment_ids_attribute( $comment ),
-			esc_html( $this->get_action_link_text( $comment ) )
+			$this->generate_action_link_attachment_ids_attribute( $comment ),
+			esc_html( $this->generate_action_link_text( $comment ) )
 		);
 
 		return $actions;
@@ -121,9 +121,7 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$comment_id = $this->get_request_comment_id();
 
-		$this->check_referer( $comment_id );
-
-		$this->check_edit_comment_capability( $comment_id );
+		$this->process_delete_comment_attachment_action_checks( $comment_id );
 
 		if ( $this->is_delete_attachment ) {
 			$this->comment_service->delete_comment_attachments( $comment_id );
@@ -146,15 +144,9 @@ final class DeleteCommentAttachmentAdminAction {
 		$comment_id          = $this->get_request_comment_id();
 		$undo_attachment_ids = $this->get_request_undo_attachment_ids();
 
-		$this->check_referer( $comment_id );
+		$this->process_undo_delete_comment_attachment_action_checks( $comment_id, $undo_attachment_ids );
 
-		$comment = $this->comment_service->get_comment_instance( $comment_id );
-
-		$this->process_undo_delete_attachment_action_checks( $comment_id, $undo_attachment_ids );
-
-		$comment->set_attachment_ids( $undo_attachment_ids );
-
-		$comment->save();
+		$this->comment_service->attach_attachments_to_comment( $comment_id, $undo_attachment_ids );
 
 		wp_send_json_success();
 	}
@@ -173,7 +165,17 @@ final class DeleteCommentAttachmentAdminAction {
 		require_once ABSPATH . 'wp-admin/includes/comment.php';
 	}
 
-	private function get_action_link_url( CommentEntity $comment, string $nonce ): string {
+	/**
+	 * Generates the URL for the delete/detach attachment action link.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity $comment The comment entity.
+	 * @param string        $nonce   The nonce for the action.
+	 *
+	 * @return string The action link URL.
+	 */
+	private function generate_action_link_url( CommentEntity $comment, string $nonce ): string {
 
 		return add_query_arg(
 			[
@@ -185,7 +187,16 @@ final class DeleteCommentAttachmentAdminAction {
 		);
 	}
 
-	private function get_action_link_attachment_ids_attribute( CommentEntity $comment ): string {
+	/**
+	 * Generates the attachment ids attribute for the delete/detach attachment action link.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param CommentEntity $comment The comment entity.
+	 *
+	 * @return string The action link attachment ids attribute.
+	 */
+	private function generate_action_link_attachment_ids_attribute( CommentEntity $comment ): string {
 
 		if ( $this->is_delete_attachment ) {
 			return '';
@@ -200,7 +211,7 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Retrieves the appropriate text for the action link.
+	 * Generates the text for the delete/detach attachment action link.
 	 *
 	 * @since 3.0.0
 	 *
@@ -208,7 +219,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @return string The action link text.
 	 */
-	private function get_action_link_text( CommentEntity $comment ): string {
+	private function generate_action_link_text( CommentEntity $comment ): string {
 
 		$singular_text = __( 'Detach Attachment', 'dco-comment-attachment' );
 		$plural_text   = __( 'Detach Attachments', 'dco-comment-attachment' );
@@ -259,20 +270,26 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Validates the nonce for the current action.
+	 * Checks prerequisites for a delete comment attachment action.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $comment_id The comment ID associated with the request.
+	 * @param int $comment_id The comment id to check.
 	 */
-	private function check_referer( int $comment_id ): void {
+	private function process_delete_comment_attachment_action_checks( int $comment_id ): void {
 
-		$action = "delete-comment-attachment_{$comment_id}";
+		$this->check_referer( $comment_id );
 
-		if ( wp_doing_ajax() ) {
-			check_ajax_referer( $action );
-		} else {
-			check_admin_referer( $action );
+		$this->check_edit_comment_capability( $comment_id );
+
+		$this->check_comment_exist( $comment_id );
+
+		if ( ! $this->comment_service->is_comment_has_attachments( $comment_id ) ) {
+
+			$this->error(
+				'comment_without_attachments',
+				__( 'The comment has no attachments to delete or detach.', 'dco-comment-attachment' )
+			);
 		}
 	}
 
@@ -281,10 +298,12 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param CommentEntity|null $comment The comment entity to check.
-	 * @param array              $undo_attachment_ids The attachment IDs to reattach.
+	 * @param int   $comment_id The comment id to check.
+	 * @param array $undo_attachment_ids The attachment IDs to reattach.
 	 */
-	private function process_undo_delete_attachment_action_checks( int $comment_id, array $undo_attachment_ids ): void {
+	private function process_undo_delete_comment_attachment_action_checks( int $comment_id, array $undo_attachment_ids ): void {
+
+		$this->check_referer( $comment_id );
 
 		if ( $this->is_delete_attachment ) {
 
@@ -304,7 +323,7 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$this->check_edit_comment_capability( $comment_id );
 
-		if ( $comment->has_attachments() ) {
+		if ( $this->comment_service->is_comment_has_attachments( $comment_id ) ) {
 
 			$this->error(
 				'comment_with_attachments',
@@ -314,11 +333,29 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
+	 * Ensures the nonce for the current action.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id The comment ID associated with the request.
+	 */
+	private function check_referer( int $comment_id ): void {
+
+		$action = "delete-comment-attachment_{$comment_id}";
+
+		if ( wp_doing_ajax() ) {
+			check_ajax_referer( $action );
+		} else {
+			check_admin_referer( $action );
+		}
+	}
+
+	/**
 	 * Ensures the user has permission to edit the comment.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param CommentEntity|null $comment The comment entity to check.
+	 * @param int $comment_id The comment id to check.
 	 */
 	private function check_edit_comment_capability( int $comment_id ): void {
 
@@ -332,6 +369,24 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
+	 * Ensures the comment exists.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id The comment id to check.
+	 */
+	private function check_comment_exist( int $comment_id ): void {
+
+		if ( ! $this->comment_service->is_comment_exists( $comment_id ) ) {
+
+			$this->error(
+				'comment_not_exist',
+				__( 'Comment does not exist.', 'dco-comment-attachment' )
+			);
+		}
+	}
+
+	/**
 	 * Redirects or sends a success response after successful action.
 	 *
 	 * If the request is an AJAX request, a JSON success response is sent.
@@ -339,7 +394,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param CommentEntity $comment The comment entity.
+	 * @param int $comment_id The comment id.
 	 */
 	private function handle_success( int $comment_id ): never {
 

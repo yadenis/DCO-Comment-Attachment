@@ -20,13 +20,18 @@ final class CommentService {
 	) {
 	}
 
-	public function get_comment_instance( int|WP_Comment $comment_id ): ?CommentEntity {
+	public function get_comment_instance( int|WP_Comment $wp_comment ): ?CommentEntity {
+
+		$comment_id = $wp_comment;
+		if ( $wp_comment instanceof WP_Comment ) {
+			$comment_id = (int) $wp_comment->comment_ID;
+		}
 
 		if ( isset( $this->instances[ $comment_id ] ) ) {
 			return $this->instances[ $comment_id ];
 		}
 
-		$comment = get_comment( $comment_id );
+		$comment = get_comment( $wp_comment );
 		if ( ! $comment ) {
 			return null;
 		}
@@ -43,18 +48,17 @@ final class CommentService {
 
 	public function get_current_comment_instance(): ?CommentEntity {
 
-		$current_comment_id = (int) get_comment_ID();
-		if ( ! $current_comment_id ) {
+		$current_comment = get_comment();
+		if ( ! $current_comment ) {
 			return null;
 		}
 
-		if ( isset( $this->instances[ $current_comment_id ] ) ) {
-			return $this->instances[ $current_comment_id ];
+		$instance = $this->get_comment_instance( $current_comment );
+		if ( ! $instance ) {
+			return null;
 		}
 
-		$this->instances[ $current_comment_id ] = $this->get_comment_instance( $current_comment_id );
-
-		return $this->instances[ $current_comment_id ];
+		return $instance;
 	}
 
 	public function get_post_comments_with_attachments( int $post_id ): array {
@@ -113,5 +117,15 @@ final class CommentService {
 		$comment->detach_attachments();
 
 		$comment->save();
+	}
+
+	public function is_comment_exists( int $comment_id ): bool {
+
+		return (bool) $this->get_comment_instance( $comment_id );
+	}
+
+	public function is_comment_has_attachments( int $comment_id ): bool {
+
+		return (bool) $this->get_comment_instance( $comment_id )?->has_attachments();
 	}
 }
