@@ -23,6 +23,8 @@ final class AllowedFileTypesGroupDTO {
 
 	/**
 	 * Constructor.
+	 * 
+	 * @since 3.0.0
 	 *
 	 * @param string $name       The unique name of the file types group (e.g., 'image', 'video').
 	 * @param string $title      The display title of the file types group (e.g., 'Images', 'Videos').

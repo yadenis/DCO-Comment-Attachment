@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DCO_CA\Services;
 
 use DCO_CA\Entities\AttachmentEntity;
+use RuntimeException;
 
 defined( 'ABSPATH' ) || die;
 
@@ -22,10 +23,14 @@ final class AttachmentService {
 			return null;
 		}
 
-		return new AttachmentEntity(
-			$this->settings_service,
-			$attachment_id
-		);
+		try {
+			return new AttachmentEntity(
+				$this->settings_service,
+				$attachment_id
+			);
+		} catch ( RuntimeException $e ) {
+			return null;
+		}
 	}
 
 	public function render_attachments( array $attachments, ?int $gallery_id = null ): void {
@@ -54,7 +59,7 @@ final class AttachmentService {
 
 		foreach ( $attachments as $attachment ) {
 
-			$attachments_content[] = $attachment->get_markup();
+			$attachments_content[] = $attachment->generate_markup();
 		}
 
 		$this->plugin_service->the_kses_post(
@@ -72,7 +77,7 @@ final class AttachmentService {
 			if ( $attachment->is_image() ) {
 				$images[] = $attachment->get_gallery_image_markup( $gallery_id );
 			} else {
-				$not_images[] = $attachment->get_markup();
+				$not_images[] = $attachment->generate_markup();
 			}
 		}
 

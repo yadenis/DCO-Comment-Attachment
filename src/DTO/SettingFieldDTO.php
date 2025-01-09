@@ -26,6 +26,8 @@ final class SettingFieldDTO {
 
 	/**
 	 * Constructor.
+	 * 
+	 * @since 3.0.0
 	 *
 	 * @param string          $id        The unique name of the setting field.
 	 * @param string          $title     The display title of the setting field.

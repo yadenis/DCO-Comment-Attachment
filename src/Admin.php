@@ -165,7 +165,7 @@ final class Admin {
 
 			$data[] = [
 				'id'     => $attachment->id,
-				'markup' => $attachment->get_markup(),
+				'markup' => $attachment->generate_markup(),
 			];
 		}
 

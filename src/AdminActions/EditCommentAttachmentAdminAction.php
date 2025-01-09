@@ -36,10 +36,10 @@ final class EditCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param PluginService   $plugin_service Service functions for the plugin.
-	 * @param CommentService  $comment_service Service functions for comments.
-	 * @param SettingsService $settings_service Service functions for settings.
-	 * @param RequestHelper   $request_helper Helper functions for request.
+	 * @param PluginService   $plugin_service    Service functions for the plugin.
+	 * @param CommentService  $comment_service   Service functions for comments.
+	 * @param SettingsService $settings_service  Service functions for settings.
+	 * @param RequestHelper   $request_helper    Helper functions for request.
 	 */
 	public function __construct(
 		private PluginService $plugin_service,

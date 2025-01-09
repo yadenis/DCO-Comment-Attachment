@@ -24,6 +24,8 @@ final class AllowedFileTypesExtensionDTO {
 	/**
 	 * Constructor.
 	 *
+	 * @since 3.0.0
+	 *
 	 * @param string $extension               The file extension (e.g., 'jpg', 'pdf').
 	 * @param string $group                   The group the file extension belongs to (e.g., 'image', 'video').
 	 * @param bool   $is_allowed_to_upload    Whether the file type is allowed to upload.

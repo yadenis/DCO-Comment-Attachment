@@ -43,13 +43,13 @@ final class AutoembedLinksFormElement implements FormElement {
 			 */
 			apply_filters(
 				'dco_ca_form_element_autoembed_links',
-				$this->get_markup(),
+				$this->generate_markup(),
 				$this->is_autoembed_links
 			)
 		);
 	}
 
-	private function get_markup(): string {
+	private function generate_markup(): string {
 
 		if ( ! $this->is_autoembed_links ) {
 			return '';

@@ -32,13 +32,13 @@ final class FileTypesFormElement implements FormElement {
 		$this->plugin_service->the_kses_post(
 			apply_filters(
 				'dco_ca_form_element_file_types',
-				$this->get_markup(),
+				$this->generate_markup(),
 				$this->file_types_groups
 			)
 		);
 	}
 
-	private function get_markup(): string {
+	private function generate_markup(): string {
 
 		if ( ! $this->file_types_groups ) {
 			return '';
