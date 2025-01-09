@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || die;
 
 /**
  * Provides functionality to bulk delete or detach comment attachments
- * in the Comments admin screen.
+ * on the Comments admin screen.
  *
  * @since 3.0.0
  */
@@ -66,7 +66,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	/**
 	 * Adds a delete/detach attachment bulk action to the comments bulk actions dropdown.
 	 *
-	 * The action behavior (delete or detach) is determined by plugin settings.
+	 * Deletes or detaches comment attachments based on plugin settings.
 	 *
 	 * @since 3.0.0
 	 *
@@ -109,7 +109,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 			}
 
 			if ( $this->is_delete_attachment ) {
-				$comment->delete_attachments_files();
+				$comment->delete_attachments();
 			} else {
 				$comment->detach_attachments();
 			}

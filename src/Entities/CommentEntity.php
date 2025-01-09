@@ -77,7 +77,7 @@ final class CommentEntity {
 		$this->attachments = [];
 	}
 
-	public function delete_attachments_files(): void {
+	public function delete_attachments(): void {
 
 		$this->attachments_to_delete = $this->attachments;
 

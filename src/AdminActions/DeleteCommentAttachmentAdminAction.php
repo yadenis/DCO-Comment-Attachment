@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace DCO_CA\AdminActions;
 
 use DCO_CA\Entities\CommentEntity;
+use DCO_CA\Helpers\RequestHelper;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\SettingsService;
 use WP_Comment;
@@ -24,13 +25,16 @@ defined( 'ABSPATH' ) || die;
 
 /**
  * Provides functionality to delete or detach comment attachments
- * in the Comments admin screen.
+ * on the Comments admin screen.
  *
  * @since 3.0.0
  */
 final class DeleteCommentAttachmentAdminAction {
 
 	protected const ACTION_NAME = 'delete_comment_attachment';
+
+	protected const COMMENT_ID_FIELD_NAME          = 'c';
+	protected const UNDO_ATTACHMENT_IDS_FIELD_NAME = 'undo_attachment_ids';
 
 	/**
 	 * Whether comment attachments should be deleted or detached.
@@ -48,10 +52,12 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @param CommentService  $comment_service Service functions for comments.
 	 * @param SettingsService $settings_service Service functions for settings.
+	 * @param RequestHelper $request_helper Helper functions for request.
 	 */
 	public function __construct(
 		private CommentService $comment_service,
-		private SettingsService $settings_service
+		private SettingsService $settings_service,
+		private RequestHelper $request_helper,
 	) {
 
 		$this->load_dependencies();
@@ -70,7 +76,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 * Adds a delete/detach attachment action link in the comment row actions.
 	 *
 	 * The action link is displayed only for comments with attachments.
-	 * The action behavior (delete or detach) is determined by plugin settings.
+	 * Deletes or detaches comment attachments based on plugin settings.
 	 *
 	 * @since 3.0.0
 	 *
@@ -92,31 +98,12 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$nonce = wp_create_nonce( "delete-comment-attachment_{$comment->id}" );
 
-		$action_url = add_query_arg(
-			[
-				'action'   => self::ACTION_NAME,
-				'c'        => $comment->id,
-				'_wpnonce' => $nonce,
-			],
-			'comment.php'
-		);
-
-		$attachment_ids_attribute = '';
-		if ( ! $this->is_delete_attachment ) {
-
-			$attachment_ids_list      = implode( ',', wp_list_pluck( $comment->get_attachments(), 'id' ) );
-			$attachment_ids_attribute = sprintf(
-				' data-attachment-ids="%s"',
-				esc_attr( $attachment_ids_list )
-			);
-		}
-
 		$actions[ self::ACTION_NAME ] = sprintf(
 			'<a href="%s" class="dco-delete-attachment" data-comment-id="%d" data-nonce="%s"%s>%s</a>',
-			esc_url( $action_url ),
+			esc_url( $this->get_action_link_url( $comment, $nonce ) ),
 			intval( $comment->id ),
 			esc_attr( $nonce ),
-			$attachment_ids_attribute,
+			$this->get_action_link_attachment_ids_attribute( $comment ),
 			esc_html( $this->get_action_link_text( $comment ) )
 		);
 
@@ -136,19 +123,15 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$this->check_referer( $comment_id );
 
-		$comment = $this->comment_service->get_comment_instance( $comment_id );
-
-		$this->process_delete_attachment_action_checks( $comment );
+		$this->check_edit_comment_capability( $comment_id );
 
 		if ( $this->is_delete_attachment ) {
-			$comment->delete_attachments_files();
+			$this->comment_service->delete_comment_attachments( $comment_id );
 		} else {
-			$comment->detach_attachments();
+			$this->comment_service->detach_comment_attachments( $comment_id );
 		}
 
-		$comment->save();
-
-		$this->handle_success( $comment );
+		$this->handle_success( $comment_id );
 	}
 
 	/**
@@ -167,7 +150,7 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$comment = $this->comment_service->get_comment_instance( $comment_id );
 
-		$this->process_undo_delete_attachment_action_checks( $comment, $undo_attachment_ids );
+		$this->process_undo_delete_attachment_action_checks( $comment_id, $undo_attachment_ids );
 
 		$comment->set_attachment_ids( $undo_attachment_ids );
 
@@ -188,6 +171,32 @@ final class DeleteCommentAttachmentAdminAction {
 		}
 
 		require_once ABSPATH . 'wp-admin/includes/comment.php';
+	}
+
+	private function get_action_link_url( CommentEntity $comment, string $nonce ): string {
+
+		return add_query_arg(
+			[
+				'action'   => self::ACTION_NAME,
+				'c'        => $comment->id,
+				'_wpnonce' => $nonce,
+			],
+			'comment.php'
+		);
+	}
+
+	private function get_action_link_attachment_ids_attribute( CommentEntity $comment ): string {
+
+		if ( $this->is_delete_attachment ) {
+			return '';
+		}
+
+		$attachment_ids_list = implode( ',', wp_list_pluck( $comment->get_attachments(), 'id' ) );
+
+		return sprintf(
+			' data-attachment-ids="%s"',
+			esc_attr( $attachment_ids_list )
+		);
 	}
 
 	/**
@@ -222,12 +231,11 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return int Comment ID from the request, or 0 if not available.
+	 * @return int|null Comment ID from the request, or null if not available.
 	 */
-	private function get_request_comment_id(): int {
+	private function get_request_comment_id(): ?int {
 
-		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
-		return intval( $_REQUEST['c'] ?? 0 );
+		return $this->request_helper->get_int_field( self::COMMENT_ID_FIELD_NAME );
 	}
 
 	/**
@@ -235,25 +243,19 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Attachment IDs from the request,
-	 *               or empty array if not available.
+	 * @return array Attachment IDs from the request, or null if not available.
 	 */
-	private function get_request_undo_attachment_ids(): array {
+	private function get_request_undo_attachment_ids(): ?array {
 
-		// phpcs:disable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
-
-		$field_name = 'undo_attachment_ids';
-
-		if ( ! isset( $_POST[ $field_name ] ) || ! is_array( $_POST[ $field_name ] ) ) {
-			return [];
+		$undo_attachment_ids = $this->request_helper->get_array_field( self::UNDO_ATTACHMENT_IDS_FIELD_NAME );
+		if ( ! $undo_attachment_ids ) {
+			return null;
 		}
 
 		return array_map(
 			intval( ... ),
-			$_POST[ $field_name ]
+			$undo_attachment_ids
 		);
-
-		// phpcs:enable WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.NonceVerification.Missing
 	}
 
 	/**
@@ -275,28 +277,6 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Checks prerequisites for a delete comment attachment action.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param CommentEntity|null $comment The comment entity to check.
-	 */
-	private function process_delete_attachment_action_checks( ?CommentEntity $comment ): void {
-
-		$this->check_comment_exist( $comment );
-
-		$this->check_edit_comment_capability( $comment );
-
-		if ( ! $comment->has_attachments() ) {
-
-			$this->error(
-				'comment_without_attachments',
-				__( 'The comment has no attachments to delete or detach.', 'dco-comment-attachment' )
-			);
-		}
-	}
-
-	/**
 	 * Checks prerequisites for undoing a delete comment attachment action.
 	 *
 	 * @since 3.0.0
@@ -304,25 +284,13 @@ final class DeleteCommentAttachmentAdminAction {
 	 * @param CommentEntity|null $comment The comment entity to check.
 	 * @param array              $undo_attachment_ids The attachment IDs to reattach.
 	 */
-	private function process_undo_delete_attachment_action_checks( ?CommentEntity $comment, array $undo_attachment_ids ): void {
+	private function process_undo_delete_attachment_action_checks( int $comment_id, array $undo_attachment_ids ): void {
 
 		if ( $this->is_delete_attachment ) {
 
 			$this->error(
 				'detaching_comment_attachment_disabled',
 				__( 'Detaching comment attachments is disabled in the plugin settings.', 'dco-comment-attachment' )
-			);
-		}
-
-		$this->check_comment_exist( $comment );
-
-		$this->check_edit_comment_capability( $comment );
-
-		if ( $comment->has_attachments() ) {
-
-			$this->error(
-				'comment_with_attachments',
-				__( 'The comment already has attachments.', 'dco-comment-attachment' )
 			);
 		}
 
@@ -333,22 +301,14 @@ final class DeleteCommentAttachmentAdminAction {
 				__( 'The undo attachment ids are empty.', 'dco-comment-attachment' )
 			);
 		}
-	}
 
-	/**
-	 * Ensures the comment exists.
-	 *
-	 * @since 3.0.0
-	 *
-	 * @param CommentEntity|null $comment The comment entity to check.
-	 */
-	private function check_comment_exist( ?CommentEntity $comment ): void {
+		$this->check_edit_comment_capability( $comment_id );
 
-		if ( ! $comment ) {
+		if ( $comment->has_attachments() ) {
 
 			$this->error(
-				'comment_not_exist',
-				__( 'Comment does not exist.', 'dco-comment-attachment' )
+				'comment_with_attachments',
+				__( 'The comment already has attachments.', 'dco-comment-attachment' )
 			);
 		}
 	}
@@ -360,9 +320,9 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @param CommentEntity|null $comment The comment entity to check.
 	 */
-	private function check_edit_comment_capability( ?CommentEntity $comment ): void {
+	private function check_edit_comment_capability( int $comment_id ): void {
 
-		if ( ! current_user_can( 'edit_comment', $comment?->id ) ) {
+		if ( ! current_user_can( 'edit_comment', $comment_id ) ) {
 
 			$this->error(
 				'invalid_capability',
@@ -381,17 +341,19 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @param CommentEntity $comment The comment entity.
 	 */
-	private function handle_success( CommentEntity $comment ): never {
+	private function handle_success( int $comment_id ): never {
 
 		if ( wp_doing_ajax() ) {
 
 			wp_send_json_success();
 		}
 
-		$redirect_url = admin_url( 'edit-comments.php?p=' . $comment->post_id );
+		$post_id = $this->comment_service->get_comment_post_id( $comment_id );
+
+		$redirect_url = admin_url( "edit-comments.php?p={$post_id}" );
 		$redirect_url = add_query_arg( 'attachmentdeleted', 1, $redirect_url );
 
-		wp_safe_redirect( $redirect_url . "#comment-{$comment->id}" );
+		wp_safe_redirect( $redirect_url . "#comment-{$comment_id}" );
 		exit();
 	}
 

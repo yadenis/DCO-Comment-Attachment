@@ -18,24 +18,24 @@ final class OptionsHelper {
 		$this->options = $this->get_options();
 	}
 
-	public function get_int_option( string $name ): ?int {
+	public function get_int_option( string $option_name ): ?int {
 
-		return $this->get_option( $name, OptionType::INT );
+		return $this->get_option( $option_name, OptionType::INT );
 	}
 
-	public function get_bool_option( string $name ): ?bool {
+	public function get_bool_option( string $option_name ): ?bool {
 
-		return $this->get_option( $name, OptionType::BOOL );
+		return $this->get_option( $option_name, OptionType::BOOL );
 	}
 
-	public function get_string_option( string $name ): ?string {
+	public function get_string_option( string $option_name ): ?string {
 
-		return $this->get_option( $name, OptionType::STRING );
+		return $this->get_option( $option_name, OptionType::STRING );
 	}
 
-	public function get_array_option( string $name ): ?array {
+	public function get_array_option( string $option_name ): ?array {
 
-		return $this->get_option( $name, OptionType::ARRAY );
+		return $this->get_option( $option_name, OptionType::ARRAY );
 	}
 
 	private function get_options(): array {
@@ -45,24 +45,24 @@ final class OptionsHelper {
 		return is_array( $options ) ? $options : [];
 	}
 
-	private function get_option( string $name, OptionType $type ): mixed {
+	private function get_option( string $option_name, OptionType $type ): mixed {
 
-		if ( ! isset( $this->options[ $name ] ) ) {
+		if ( ! isset( $this->options[ $option_name ] ) ) {
 			return null;
 		}
 
-		$value = $this->options[ $name ];
+		$value = $this->options[ $option_name ];
 
 		/**
 		 * Filters the value of the plugin option.
 		 *
-		 * The dynamic portion of the hook name, `$name`, refers to the option name.
+		 * The dynamic portion of the hook name, `$option_name`, refers to the option name.
 		 *
 		 * @since 2.0.0
 		 *
 		 * @param mixed $value Value of the option.
 		 */
-		$value = apply_filters( "dco_ca_get_option_{$name}", $value );
+		$value = apply_filters( "dco_ca_get_option_{$option_name}", $value );
 
 		return match ( $type ) {
 			OptionType::INT => (int) $value,

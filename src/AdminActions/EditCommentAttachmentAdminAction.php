@@ -1,4 +1,14 @@
 <?php
+/**
+ * Admin Actions: Edit Comment Attachment
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -10,12 +20,27 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to managing comment attachments
+ * on the Edit Comment admin screen.
+ *
+ * @since 3.0.0
+ */
 final class EditCommentAttachmentAdminAction {
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService   $plugin_service Service functions for the plugin.
+	 * @param CommentService  $comment_service Service functions for comments.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
-		private SettingsService $settings_service,
 		private CommentService $comment_service,
+		private SettingsService $settings_service,
 	) {
 
 		add_action( 'add_meta_boxes_comment', $this->add_edit_attachment_action_metabox( ... ) );
@@ -26,6 +51,11 @@ final class EditCommentAttachmentAdminAction {
 		add_action( 'delete_comment', $this->delete_comment_attachments( ... ) );
 	}
 
+	/**
+	 * Adds a meta box for managing comment attachments on the Edit Comment admin screen.
+	 *
+	 * @since 3.0.0
+	 */
 	public function add_edit_attachment_action_metabox(): void {
 
 		add_meta_box(
@@ -37,11 +67,23 @@ final class EditCommentAttachmentAdminAction {
 		);
 	}
 
+	/**
+	 * Renders the content of the comment attachments meta box.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render_edit_attachment_action_metabox(): void {
 
 		echo '<div class="dco-comment-attachment-editors"></div>';
 	}
 
+	/**
+	 * Adds a template for the comment attachment editor.
+	 *
+	 * This template used to render comment attachment editors via JavaScript.
+	 *
+	 * @since 3.0.0
+	 */
 	public function add_comment_attachment_editor_template(): void {
 
 		?>
@@ -80,6 +122,13 @@ final class EditCommentAttachmentAdminAction {
 		<?php
 	}
 
+	/**
+	 * Updates comment attachments after comment is updated.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id The ID of the updated commment.
+	 */
 	public function update_comment_attachments( int $comment_id ): void {
 
 		check_admin_referer( "update-comment_{$comment_id}" );
@@ -101,6 +150,15 @@ final class EditCommentAttachmentAdminAction {
 		$this->comment_service->attach_attachments_to_comment( $comment_id, $attachment_ids );
 	}
 
+	/**
+	 * Deletes comment attachments when the comment is deleted.
+	 *
+	 * Deletes or skips deleting comment attachments based on plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id The ID of the deleted comment.
+	 */
 	public function delete_comment_attachments( int $comment_id ): void {
 
 		if ( ! $this->settings_service->is_delete_attachments_with_comment() ) {

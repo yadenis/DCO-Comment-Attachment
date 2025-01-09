@@ -11,6 +11,8 @@ defined( 'ABSPATH' ) || die;
 
 final class CommentService {
 
+	private array $instances = [];
+
 	public function __construct(
 		private PluginService $plugin_service,
 		private AttachmentService $attachment_service,
@@ -20,27 +22,61 @@ final class CommentService {
 
 	public function get_comment_instance( int|WP_Comment $comment_id ): ?CommentEntity {
 
+		if ( isset( $this->instances[ $comment_id ] ) ) {
+			return $this->instances[ $comment_id ];
+		}
+
 		$comment = get_comment( $comment_id );
 		if ( ! $comment ) {
 			return null;
 		}
 
-		return new CommentEntity(
+		$this->instances[ $comment_id ] = new CommentEntity(
 			$this->plugin_service,
 			$this->settings_service,
 			$this->attachment_service,
 			$comment
 		);
+
+		return $this->instances[ $comment_id ];
 	}
 
 	public function get_current_comment_instance(): ?CommentEntity {
 
-		$current_wp_comment = get_comment();
-		if ( ! $current_wp_comment ) {
+		$current_comment_id = (int) get_comment_ID();
+		if ( ! $current_comment_id ) {
 			return null;
 		}
 
-		return $this->get_comment_instance( $current_wp_comment );
+		if ( isset( $this->instances[ $current_comment_id ] ) ) {
+			return $this->instances[ $current_comment_id ];
+		}
+
+		$this->instances[ $current_comment_id ] = $this->get_comment_instance( $current_comment_id );
+
+		return $this->instances[ $current_comment_id ];
+	}
+
+	public function get_post_comments_with_attachments( int $post_id ): array {
+
+		$args = [
+			'post_id'  => $post_id,
+			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
+			'meta_key' => PluginService::ATTACHMENT_ID_META_KEY,
+			'status'   => 'approve',
+		];
+
+		$comments = get_comments( $args );
+
+		return array_map(
+			$this->get_comment_instance( ... ),
+			$comments
+		);
+	}
+
+	public function get_comment_post_id( int $comment_id ): ?int {
+
+		return $this->get_comment_instance( $comment_id )?->post_id;
 	}
 
 	public function attach_attachments_to_comment( int $comment_id, array $attachment_ids ): void {
@@ -62,26 +98,20 @@ final class CommentService {
 			return;
 		}
 
-		$comment->delete_attachments_files();
+		$comment->delete_attachments();
 
 		$comment->save();
 	}
 
+	public function detach_comment_attachments( int $comment_id ): void {
 
-	public function get_post_comments_with_attachments( int $post_id ): array {
+		$comment = $this->get_comment_instance( $comment_id );
+		if ( ! $comment ) {
+			return;
+		}
 
-		$args = [
-			'post_id'  => $post_id,
-			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-			'meta_key' => PluginService::ATTACHMENT_ID_META_KEY,
-			'status'   => 'approve',
-		];
+		$comment->detach_attachments();
 
-		$comments = get_comments( $args );
-
-		return array_map(
-			$this->get_comment_instance( ... ),
-			$comments
-		);
+		$comment->save();
 	}
 }
