@@ -21,12 +21,14 @@ defined( 'ABSPATH' ) || die;
 
 /**
  * Represents the details of a setting field.
+ *
+ * @since 3.0.0
  */
 final class SettingFieldDTO {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @since 3.0.0
 	 *
 	 * @param string          $id        The unique name of the setting field.

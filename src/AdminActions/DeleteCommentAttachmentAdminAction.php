@@ -50,13 +50,13 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param CommentService  $comment_service   Service functions for comments.
 	 * @param SettingsService $settings_service  Service functions for settings.
+	 * @param CommentService  $comment_service   Service functions for comments.
 	 * @param RequestHelper   $request_helper    Helper functions for request.
 	 */
 	public function __construct(
-		private CommentService $comment_service,
 		private SettingsService $settings_service,
+		private CommentService $comment_service,
 		private RequestHelper $request_helper,
 	) {
 
@@ -81,7 +81,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 * @since 3.0.0
 	 *
 	 * @param array      $actions The actions for the comment row.
-	 * @param WP_Comment $wp_comment The comment for which the actions are displayed.
+	 * @param WP_Comment $wp_comment The WordPress comment for which the actions are displayed.
 	 *
 	 * @return array Modified actions with the delete/detach link.
 	 */

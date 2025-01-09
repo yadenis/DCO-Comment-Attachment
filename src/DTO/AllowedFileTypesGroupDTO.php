@@ -18,12 +18,14 @@ defined( 'ABSPATH' ) || die;
 
 /**
  * Represents the details of an allowed file type group.
+ *
+ * @since 3.0.0
  */
 final class AllowedFileTypesGroupDTO {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @since 3.0.0
 	 *
 	 * @param string $name       The unique name of the file types group (e.g., 'image', 'video').

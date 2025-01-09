@@ -23,7 +23,8 @@ final class RequestHelper {
 		return $this->get_field( $field_name, OptionType::INT );
 	}
 
-	/*public function get_bool_option( string $option_name ): ?bool {
+	/*
+	public function get_bool_option( string $option_name ): ?bool {
 
 		return $this->get_option( $option_name, OptionType::BOOL );
 	}
@@ -44,7 +45,7 @@ final class RequestHelper {
 			return null;
 		}
 
-		$value = $this->fields[ $field_name ];
+		$value = wp_unslash( $this->fields[ $field_name ] );
 
 		return match ( $type ) {
 			OptionType::INT => (int) $value,

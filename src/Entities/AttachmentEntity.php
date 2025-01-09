@@ -22,7 +22,9 @@ use RuntimeException;
 defined( 'ABSPATH' ) || die;
 
 /**
- * Represents an attachment and provides functionality to render its markup.
+ * Represents an attachment entity and provides functionality to render its markup.
+ *
+ * @since 3.0.0
  */
 final class AttachmentEntity {
 

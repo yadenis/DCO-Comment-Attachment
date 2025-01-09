@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace DCO_CA\AdminActions;
 
-use DCO_CA\Entities\CommentEntity;
 use DCO_CA\Helpers\RequestHelper;
 use DCO_CA\Services\CommentService;
 use DCO_CA\Services\SettingsService;
@@ -47,13 +46,13 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param CommentService  $comment_service   Service functions for comments.
 	 * @param SettingsService $settings_service  Service functions for settings.
+	 * @param CommentService  $comment_service   Service functions for comments.
 	 * @param RequestHelper   $request_helper    Helper functions for request.
 	 */
 	public function __construct(
-		private CommentService $comment_service,
 		private SettingsService $settings_service,
+		private CommentService $comment_service,
 		private RequestHelper $request_helper,
 	) {
 

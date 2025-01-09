@@ -18,6 +18,8 @@ defined( 'ABSPATH' ) || die;
 
 /**
  * Represents the details of an allowed file type extension.
+ *
+ * @since 3.0.0
  */
 final class AllowedFileTypesExtensionDTO {
 
