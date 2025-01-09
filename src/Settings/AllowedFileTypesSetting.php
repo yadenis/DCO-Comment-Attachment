@@ -173,12 +173,12 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private function get_extension_dto( string $extension ): AllowedFileTypesExtensionDTO {
 
-		$is_allowed = in_array( $extension, $this->setting_value, true );
+		$is_allowed_to_upload = in_array( $extension, $this->setting_value, true );
 
 		return new AllowedFileTypesExtensionDTO(
 			extension: $extension,
 			group: $this->get_extension_group( $extension ),
-			is_allowed: $is_allowed,
+			is_allowed_to_upload: $is_allowed_to_upload,
 			is_embedded: $this->is_embedded_extension( $extension ),
 			is_for_administrators: $this->is_administrator_extension( $extension ),
 		);

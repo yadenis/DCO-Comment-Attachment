@@ -102,7 +102,7 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 			esc_attr( $this->name ),
 			esc_attr( $ext ),
 			checked(
-				checked: $extension->is_allowed,
+				checked: $extension->is_allowed_to_upload,
 				current: true,
 				display: false
 			),
