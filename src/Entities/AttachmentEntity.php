@@ -288,7 +288,8 @@ final class AttachmentEntity {
 	 * @param string   $image_size The image thumbnail size (optional).
 	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
 	 *
-	 * @return string The HTML img tag attachment markup, wrapped with a link if available, or the plain img tag.
+	 * @return string The HTML img tag attachment markup, wrapped with a link if available, 
+	 *                or the plain img tag.
 	 */
 	private function generate_img_tag_markup( string $image_size = '', ?int $gallery_id = null ): string {
 
@@ -316,7 +317,8 @@ final class AttachmentEntity {
 	 * @param string   $img_tag    The img tag attachment markup.
 	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
 	 *
-	 * @return string The img tag attachment markup wrapped in a link, or the plain img tag if wrapping is not possible.
+	 * @return string The img tag attachment markup wrapped in a link,
+	 *                or the plain img tag if wrapping is not possible.
 	 */
 	private function wrap_img_tag_with_link( string $img_tag, ?int $gallery_id = null ): string {
 
@@ -385,9 +387,13 @@ final class AttachmentEntity {
 	 */
 	private function init_embed_type(): void {
 
-		$this->embed_type = AttachmentEmbedType::MISC->value;
+		// The $this->embed_type property is read-only,
+		// so the $embed_type variable is used to store the default value.
+		$embed_type = AttachmentEmbedType::MISC->value;
 
 		if ( ! $this->settings_service->is_embeded_attachment() ) {
+
+			$this->embed_type = $embed_type;
 			return;
 		}
 
@@ -401,9 +407,11 @@ final class AttachmentEntity {
 
 			if ( in_array( $this->extension, $extensions, true ) ) {
 				$this->embed_type = $name;
-				break;
+				return;
 			}
 		}
+
+		$this->embed_type = $embed_type;
 	}
 
 	/**

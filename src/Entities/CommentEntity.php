@@ -146,18 +146,13 @@ final class CommentEntity {
 	 */
 	public function set_attachment_ids( array $attachment_ids ): void {
 
-		$this->attachments = [];
-
-		foreach ( $attachment_ids as $attachment_id ) {
-
-			$attachment = $this->attachment_service->get_attachment_instance( (int) $attachment_id );
-
-			if ( ! $attachment ) {
-				continue;
-			}
-
-			$this->attachments[] = $attachment;
-		}
+		$this->attachments = array_filter(
+			array_map(
+				fn( mixed $attachment_id ): ?AttachmentEntity => $this->attachment_service->get_attachment_instance( (int) $attachment_id ),
+				$attachment_ids
+			),
+			fn( ?AttachmentEntity $attachment ): bool => null !== $attachment
+		);
 	}
 
 	/**
@@ -201,31 +196,17 @@ final class CommentEntity {
 
 		$this->handle_attachments_to_delete();
 
-		if ( ! $this->has_attachments() ) {
-			$attachments = '';
-		} else {
+		$attachments = $this->has_attachments() ? wp_list_pluck( $this->attachments, 'id' ) : '';
 
-			$attachments = wp_list_pluck( $this->attachments, 'id' );
-
-			// Compatibility with 1.x version.
-			if ( $this->has_one_attachment() ) {
-				$attachments = current( $attachments );
-			}
+		// Compatibility with 1.x version.
+		if ( $this->has_one_attachment() ) {
+			$attachments = current( $attachments );
 		}
 
 		if ( $attachments ) {
-
-			update_comment_meta(
-				$this->id,
-				PluginService::ATTACHMENT_ID_META_KEY,
-				$attachments
-			);
+			update_comment_meta( $this->id, PluginService::ATTACHMENT_ID_META_KEY, $attachments );
 		} else {
-
-			delete_comment_meta(
-				$this->id,
-				PluginService::ATTACHMENT_ID_META_KEY
-			);
+			delete_comment_meta( $this->id, PluginService::ATTACHMENT_ID_META_KEY );
 		}
 	}
 

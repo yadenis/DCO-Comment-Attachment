@@ -72,7 +72,9 @@
 			function ( event ) {
 				event.preventDefault();
 
-				$editor = $( this ).closest( editorClass ).remove();
+				$editor = $( this ).closest( editorClass );
+
+				$editor.fadeOut(400, () => $editor.remove());
 			}
 		);
 
