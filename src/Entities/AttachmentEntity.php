@@ -100,7 +100,14 @@ final class AttachmentEntity {
 		$this->file_path = (string) get_attached_file( $this->id );
 
 		if ( empty( $this->file_path ) ) {
-			throw new RuntimeException( esc_html( "File path for attachment ID {$this->id} is invalid." ) );
+
+			throw new RuntimeException(
+				sprintf(
+					/* translators: %d: the attachment id */
+					esc_html__( 'File path for attachment ID %d is invalid.', 'dco-comment-attachment' ),
+					intval( $this->id )
+				)
+			);
 		}
 
 		$this->file_url  = (string) wp_get_attachment_url( $this->id );
@@ -173,11 +180,9 @@ final class AttachmentEntity {
 			return '';
 		}
 
-		$img_tag = $this->generate_img_tag_markup( $image_size, $gallery_id );
-
 		$attachment_content = sprintf(
 			'<p class="dco-attachment dco-image-attachment">%s</p>',
-			$img_tag
+			$this->generate_img_tag_markup( $image_size, $gallery_id )
 		);
 
 		/**
@@ -208,11 +213,14 @@ final class AttachmentEntity {
 			return '';
 		}
 
+		$video_shortcode = sprintf(
+			'[video src="%s"]',
+			esc_url( $this->link )
+		);
+
 		return sprintf(
 			'<div class="dco-attachment dco-video-attachment">%s</div>',
-			do_shortcode(
-				'[video src="' . esc_url( $this->link ) . '"]'
-			)
+			do_shortcode( $video_shortcode )
 		);
 	}
 
@@ -229,11 +237,14 @@ final class AttachmentEntity {
 			return '';
 		}
 
+		$audio_shortcode = sprintf(
+			'[audio src="%s"]',
+			esc_url( $this->link )
+		);
+
 		return sprintf(
 			'<div class="dco-attachment dco-audio-attachment">%s</div>',
-			do_shortcode(
-				'[audio src="' . esc_url( $this->link ) . '"]'
-			)
+			do_shortcode( $audio_shortcode )
 		);
 	}
 
@@ -257,12 +268,12 @@ final class AttachmentEntity {
 		*
 		* @param bool $force_download Whether to force download misc attachments.
 		*/
-		$download = apply_filters( 'dco_ca_force_download_misc_attachments', false ) ? ' download' : '';
+		$force_download = (bool) apply_filters( 'dco_ca_force_download_misc_attachments', false );
 
 		return sprintf(
 			'<p class="dco-attachment dco-misc-attachment"><a href="%s"%s>%s</a></p>',
 			esc_url( $this->link ),
-			$download,
+			$force_download ? ' download' : '',
 			esc_html( $this->title )
 		);
 	}
@@ -285,7 +296,7 @@ final class AttachmentEntity {
 			return '';
 		}
 
-		$image_size = ! empty( $image_size ) ? $image_size : $this->settings_service->get_thumbnail_image_size();
+		$image_size = $image_size ?: $this->settings_service->get_thumbnail_image_size();
 
 		$img_tag = wp_get_attachment_image( $this->id, $image_size );
 
@@ -341,23 +352,23 @@ final class AttachmentEntity {
 	 */
 	private function add_lightbox_attributes( string $linked_img_tag, ?int $gallery_id = null ): string {
 
-		if ( ! $gallery_id ) {
-			$gallery_id = $this->id;
-		}
+		$gallery_id ??= $this->id;
 
 		// Simple Lightbox.
 		if ( function_exists( 'slb_activate' ) ) {
-			$linked_img_tag = slb_activate( $linked_img_tag, $gallery_id );
-			// Responsive Lightbox & Gallery.
-		} elseif ( function_exists( 'Responsive_Lightbox' ) ) {
-			$selector       = Responsive_Lightbox()->options['settings']['selector'];
-			$rel            = $selector . '-gallery-' . $gallery_id;
-			$linked_img_tag = str_replace( '<a', '<a data-rel="' . $rel . '"', $linked_img_tag );
-			// Other lightbox plugins.
-		} else {
-			$rel            = 'dco-ca-gallery-' . $gallery_id;
-			$linked_img_tag = str_replace( '<a', '<a rel="' . $rel . '"', $linked_img_tag );
+			return slb_activate( $linked_img_tag, $gallery_id );
 		}
+
+		// Responsive Lightbox & Gallery.
+		if ( function_exists( 'Responsive_Lightbox' ) ) {
+			$selector = Responsive_Lightbox()->options['settings']['selector'];
+			$rel      = "{$selector}-gallery-{$gallery_id}";
+			return str_replace( '<a', '<a data-rel="' . $rel . '"', $linked_img_tag );
+		}
+
+		// Other lightbox plugins.
+		$rel            = "dco-ca-gallery-{$gallery_id}";
+		$linked_img_tag = str_replace( '<a', '<a rel="' . $rel . '"', $linked_img_tag );
 
 		// FooBox Image Lightbox.
 		if ( class_exists( 'FooBox' ) ) {
@@ -374,11 +385,9 @@ final class AttachmentEntity {
 	 */
 	private function init_embed_type(): void {
 
-		$embed_type = AttachmentEmbedType::MISC->value;
+		$this->embed_type = AttachmentEmbedType::MISC->value;
 
 		if ( ! $this->settings_service->is_embeded_attachment() ) {
-
-			$this->embed_type = $embed_type;
 			return;
 		}
 
@@ -391,11 +400,10 @@ final class AttachmentEntity {
 		foreach ( $types as $name => $extensions ) {
 
 			if ( in_array( $this->extension, $extensions, true ) ) {
-				$embed_type = $name;
+				$this->embed_type = $name;
+				break;
 			}
 		}
-
-		$this->embed_type = $embed_type;
 	}
 
 	/**
@@ -413,7 +421,7 @@ final class AttachmentEntity {
 
 			$this->link = match ( $link_thumbnail_type ) {
 				LinkThumbnailType::NO_LINK->value         => '',
-				LinkThumbnailType::IMAGE_LIGHTBOX->value  => $attachment_image_url,
+				LinkThumbnailType::IMAGE_LIGHTBOX->value,
 				LinkThumbnailType::IMAGE_NEW_TAB->value   => $attachment_image_url,
 				LinkThumbnailType::ATTACHMENT_PAGE->value => get_attachment_link( $this->id ),
 			};
