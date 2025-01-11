@@ -33,7 +33,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var string $file_path
+	 * @var string
 	 */
 	public readonly string $file_path;
 
@@ -42,7 +42,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var string $file_url
+	 * @var string
 	 */
 	public readonly string $file_url;
 
@@ -51,7 +51,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var string $extension
+	 * @var string
 	 */
 	public readonly string $extension;
 
@@ -60,7 +60,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var string $title
+	 * @var string
 	 */
 	public readonly string $title;
 
@@ -69,7 +69,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var string $link
+	 * @var string
 	 */
 	public readonly string $link;
 
@@ -78,7 +78,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var string $embed_type
+	 * @var string
 	 */
 	public readonly string $embed_type;
 

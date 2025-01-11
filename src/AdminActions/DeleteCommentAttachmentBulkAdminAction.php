@@ -37,7 +37,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var bool $is_delete_attachment True for deletion, false for detachment.
+	 * @var bool True for deletion, false for detachment.
 	 */
 	protected bool $is_delete_attachment;
 

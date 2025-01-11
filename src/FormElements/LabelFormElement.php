@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Elements: Label
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -10,14 +20,57 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to render the label form element.
+ *
+ * @since 3.0.0
+ */
 final class LabelFormElement implements FormElement {
 
+	/**
+	 * Whether attachment is required.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool
+	 */
 	private bool $is_required_attachment;
+
+	/**
+	 * Whether multiple upload is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool
+	 */
 	private bool $is_enabled_multiple_upload;
 
+	/**
+	 * The text displayed when a single file can be uploaded.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $singular_text;
+
+	/**
+	 * The text displayed when multiple files can be uploaded.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $plural_text;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService   $plugin_service   Service functions for the plugin.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
 		private SettingsService $settings_service,
@@ -30,6 +83,11 @@ final class LabelFormElement implements FormElement {
 		$this->plural_text   = __( 'Attachments', 'dco-comment-attachment' );
 	}
 
+	/**
+	 * Renders the label form element.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render(): void {
 
 		$markup = sprintf(
@@ -55,6 +113,16 @@ final class LabelFormElement implements FormElement {
 		);
 	}
 
+	/**
+	 * Retrieves the text for the label.
+	 *
+	 * Determines whether to use the singular or plural text based on whether
+	 * multiple the file upload is enabled. If required, a `*` is added to the label.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The text to display in the label.
+	 */
 	private function get_label_text(): string {
 
 		$label = $this->is_enabled_multiple_upload ? $this->plural_text : $this->singular_text;

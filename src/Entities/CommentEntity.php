@@ -33,7 +33,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array $attachments
+	 * @var array
 	 */
 	private array $attachments;
 
@@ -42,7 +42,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array $attachments_to_delete
+	 * @var array
 	 */
 	private array $attachments_to_delete = [];
 
@@ -51,7 +51,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var int $id
+	 * @var int
 	 */
 	public readonly int $id;
 
@@ -60,7 +60,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var int $post_id
+	 * @var int
 	 */
 	public readonly int $post_id;
 

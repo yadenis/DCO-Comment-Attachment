@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Elements: Input
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -10,11 +20,39 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to render the input form element.
+ *
+ * @since 3.0.0
+ */
 final class InputFormElement implements FormElement {
 
+	/**
+	 * Whether multiple upload is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool
+	 */
 	private bool $is_enabled_multiple_upload;
+
+	/**
+	 * List of allowed file types for upload.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var array
+	 */
 	private array $allowed_file_types;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService   $plugin_service   Service functions for the plugin.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
 		private SettingsService $settings_service,
@@ -24,14 +62,19 @@ final class InputFormElement implements FormElement {
 		$this->allowed_file_types         = $this->settings_service->get_allowed_file_types();
 	}
 
+	/**
+	 * Renders the input form element.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render(): void {
 
-		$field_name = $this->get_field_name();
-		$multiple   = $this->get_multiple_attribute();
-		$accept     = $this->get_accept_attribute();
+		$field_name = $this->generates_field_name();
+		$multiple   = $this->generates_multiple_attribute();
+		$accept     = $this->generates_accept_attribute();
 
 		$markup = sprintf(
-			'<input class="comment-form-attachment__input" id="%s" name="%s" type="file" accept="%s" %s />',
+			'<input type="file" class="comment-form-attachment__input" id="%s" name="%s" accept="%s" %s />',
 			esc_attr( $field_name ),
 			esc_attr( $field_name ),
 			esc_attr( $accept ),
@@ -57,17 +100,42 @@ final class InputFormElement implements FormElement {
 		);
 	}
 
-	private function get_field_name(): string {
+	/**
+	 * Generates the name attribute for the input field.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The name attribute value.
+	 */
+	private function generates_field_name(): string {
 
 		return PluginService::UPLOAD_FIELD_NAME . ( $this->is_enabled_multiple_upload ? '[]' : '' );
 	}
 
-	private function get_multiple_attribute(): string {
+	/**
+	 * Generates the multiple attribute for the input field.
+	 *
+	 * The attribute is included only if the multiple upload is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The multiple attribute,
+	 *                or an empty string if the multiple upload is disabled.
+	 */
+	private function generates_multiple_attribute(): string {
 
 		return $this->is_enabled_multiple_upload ? 'multiple' : '';
 	}
 
-	private function get_accept_attribute(): string {
+	/**
+	 * Generates the accept attribute for the input field based on plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The accept attribute value,
+	 *                or an empty string if the allowed file types list is empty.
+	 */
+	private function generates_accept_attribute(): string {
 
 		if ( ! $this->allowed_file_types ) {
 			return '';

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Elements: Attachment Area
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -9,8 +19,26 @@ use DCO_CA\Services\PluginService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to render the attachment area form element.
+ *
+ * @since 3.0.0
+ */
 final class AttachmentAreaFormElement implements FormElement {
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService             $plugin_service    Service functions for the plugin.
+	 * @param LabelFormElement          $label             Label form element.
+	 * @param InputFormElement          $input             Input form element.
+	 * @param UploadSizeFormElement     $upload_size       Upload Size form element.
+	 * @param FileTypesFormElement      $file_types        File Types form element.
+	 * @param AutoembedLinksFormElement $autoembed_links   Autoembed Links form element.
+	 * @param DropAreaFormElement       $drop_area         Drop Area form element.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
 		private LabelFormElement $label,
@@ -22,6 +50,9 @@ final class AttachmentAreaFormElement implements FormElement {
 	) {
 	}
 
+	/**
+	 * Renders the attachment area form element.
+	 */
 	public function render(): void {
 
 		ob_start();

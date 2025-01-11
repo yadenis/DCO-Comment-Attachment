@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Elements: Upload Size
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -10,12 +20,39 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to render the upload size form element.
+ *
+ * @since 3.0.0
+ */
 final class UploadSizeFormElement implements FormElement {
 
+	/**
+	 * The formatted maximum upload file size.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $max_upload_size;
 
+	/**
+	 * The text displayed for the upload size notice.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $text;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService   $plugin_service   Service functions for the plugin.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
 		private SettingsService $settings_service,
@@ -27,6 +64,11 @@ final class UploadSizeFormElement implements FormElement {
 		$this->text = __( 'The maximum upload file size: %s.', 'dco-comment-attachment' );
 	}
 
+	/**
+	 * Renders the upload size form element.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render(): void {
 
 		$markup = sprintf(

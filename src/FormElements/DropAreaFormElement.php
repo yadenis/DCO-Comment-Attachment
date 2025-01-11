@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Elements: Drop Area
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -10,13 +20,48 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to render the drop area form element.
+ *
+ * @since 3.0.0
+ */
 final class DropAreaFormElement implements FormElement {
 
+	/**
+	 * Whether multiple upload is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool
+	 */
 	private bool $is_enabled_multiple_upload;
 
+	/**
+	 * The text displayed when a single file can be uploaded.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $singular_text;
+
+	/**
+	 * The text displayed when multiple files can be uploaded.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $plural_text;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService   $plugin_service   Service functions for the plugin.
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
 		private SettingsService $settings_service,
@@ -28,6 +73,11 @@ final class DropAreaFormElement implements FormElement {
 		$this->plural_text   = esc_html__( 'Drop files here', 'dco-comment-attachment' );
 	}
 
+	/**
+	 * Renders the drop area form element.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render(): void {
 
 		$text = $this->get_drop_area_text();
@@ -58,6 +108,16 @@ final class DropAreaFormElement implements FormElement {
 		);
 	}
 
+	/**
+	 * Retrieves the appropriate text for the drop area.
+	 *
+	 * Determines whether to use the singular or plural text based on whether
+	 * multiple the file upload is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The text for the drop area.
+	 */
 	private function get_drop_area_text(): string {
 
 		$text = $this->is_enabled_multiple_upload ? $this->plural_text : $this->singular_text;
