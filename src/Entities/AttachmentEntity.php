@@ -288,7 +288,7 @@ final class AttachmentEntity {
 	 * @param string   $image_size The image thumbnail size (optional).
 	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
 	 *
-	 * @return string The HTML img tag attachment markup, wrapped with a link if available, 
+	 * @return string The HTML img tag attachment markup, wrapped with a link if available,
 	 *                or the plain img tag.
 	 */
 	private function generate_img_tag_markup( string $image_size = '', ?int $gallery_id = null ): string {

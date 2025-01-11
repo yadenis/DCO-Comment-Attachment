@@ -104,6 +104,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		$comment_ids = $this->get_request_comment_ids();
 
 		$count = 0;
+
 		foreach ( $comment_ids as $comment_id ) {
 
 			if ( ! $this->process_bulk_action_checks( $comment_id ) ) {
@@ -246,6 +247,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 		$redirect_to = add_query_arg( 'approved', $count_processed_comments, $redirect_to );
 
 		wp_safe_redirect( $redirect_to );
+
 		exit;
 	}
 }

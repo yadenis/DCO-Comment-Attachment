@@ -34,6 +34,9 @@ final class DeleteCommentAttachmentAdminAction {
 	protected const ACTION_NAME = 'delete_comment_attachment';
 
 	protected const COMMENT_ID_FIELD_NAME          = 'c';
+	protected const POST_ID_FIELD_NAME             = 'p';
+	protected const ACTION_FIELD_NAME              = 'action';
+	protected const NONCE_FIELD_NAME               = '_wpnonce';
 	protected const UNDO_ATTACHMENT_IDS_FIELD_NAME = 'undo_attachment_ids';
 
 	/**
@@ -88,23 +91,23 @@ final class DeleteCommentAttachmentAdminAction {
 	public function add_delete_comment_attachment_action_link( array $actions, WP_Comment $wp_comment ): array {
 
 		$comment = $this->comment_service->get_comment_instance( $wp_comment );
-		if ( ! $comment ) {
+
+		if ( ! $comment || ! $comment->has_attachments() ) {
 			return $actions;
 		}
 
-		if ( ! $comment->has_attachments() ) {
-			return $actions;
-		}
-
-		$nonce = wp_create_nonce( "delete-comment-attachment_{$comment->id}" );
+		$nonce          = wp_create_nonce( $this->get_nonce_action( $comment->id ) );
+		$url            = $this->generate_action_link_url( $comment, $nonce );
+		$data_attribute = $this->generate_action_link_attachment_ids_data_attribute( $comment );
+		$text           = $this->generate_action_link_text( $comment );
 
 		$actions[ self::ACTION_NAME ] = sprintf(
 			'<a href="%s" class="dco-delete-attachment" data-comment-id="%d" data-nonce="%s"%s>%s</a>',
-			esc_url( $this->generate_action_link_url( $comment, $nonce ) ),
+			esc_url( $url ),
 			intval( $comment->id ),
 			esc_attr( $nonce ),
-			$this->generate_action_link_attachment_ids_attribute( $comment ),
-			esc_html( $this->generate_action_link_text( $comment ) )
+			$data_attribute,
+			esc_html( $text )
 		);
 
 		return $actions;
@@ -179,25 +182,26 @@ final class DeleteCommentAttachmentAdminAction {
 
 		return add_query_arg(
 			[
-				'action'   => self::ACTION_NAME,
-				'c'        => $comment->id,
-				'_wpnonce' => $nonce,
+				self::ACTION_FIELD_NAME     => self::ACTION_NAME,
+				self::COMMENT_ID_FIELD_NAME => $comment->id,
+				self::NONCE_FIELD_NAME      => $nonce,
 			],
-			'comment.php'
+			admin_url( 'comment.php' )
 		);
 	}
 
 	/**
-	 * Generates the attachment ids attribute for the delete/detach attachment action link.
+	 * Generates the attachment ids data attribute for the delete/detach attachment action link.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param CommentEntity $comment The comment entity.
 	 *
-	 * @return string The action link attachment ids attribute.
+	 * @return string The action link attachment ids data attribute.
 	 */
-	private function generate_action_link_attachment_ids_attribute( CommentEntity $comment ): string {
+	private function generate_action_link_attachment_ids_data_attribute( CommentEntity $comment ): string {
 
+		// The data attribute is used only for the detach attachment action.
 		if ( $this->is_delete_attachment ) {
 			return '';
 		}
@@ -229,10 +233,7 @@ final class DeleteCommentAttachmentAdminAction {
 			$plural_text   = __( 'Delete Attachments', 'dco-comment-attachment' );
 		}
 
-		$text = $plural_text;
-		if ( $comment->has_one_attachment() ) {
-			$text = $singular_text;
-		}
+		$text = $comment->has_one_attachment() ? $singular_text : $plural_text;
 
 		return $text;
 	}
@@ -305,6 +306,7 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$this->check_referer( $comment_id );
 
+		// Undo operation is only available for the detach comment attachment action.
 		if ( $this->is_delete_attachment ) {
 
 			$this->error(
@@ -341,7 +343,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 */
 	private function check_referer( int $comment_id ): void {
 
-		$action = "delete-comment-attachment_{$comment_id}";
+		$action = $this->get_nonce_action( $comment_id );
 
 		if ( wp_doing_ajax() ) {
 			check_ajax_referer( $action );
@@ -405,10 +407,15 @@ final class DeleteCommentAttachmentAdminAction {
 
 		$post_id = $this->comment_service->get_comment_post_id( $comment_id );
 
-		$redirect_url = admin_url( "edit-comments.php?p={$post_id}" );
-		$redirect_url = add_query_arg( 'attachmentdeleted', 1, $redirect_url );
+		$query_args = [
+			self::POST_ID_FIELD_NAME => $post_id,
+			self::ACTION_NAME        => 1,
+		];
+
+		$redirect_url = add_query_arg( $query_args, admin_url( 'edit-comments.php' ) );
 
 		wp_safe_redirect( $redirect_url . "#comment-{$comment_id}" );
+
 		exit();
 	}
 
@@ -434,10 +441,25 @@ final class DeleteCommentAttachmentAdminAction {
 
 		comment_footer_die(
 			sprintf(
-				'%s <a href="edit-comments.php">%s</a>.',
+				'%s <a href="%s">%s</a>.',
 				esc_html( $message ),
+				esc_url( admin_url( 'edit-comments.php' ) ),
 				esc_html__( 'Go back', 'dco-comment-attachment' )
 			)
 		);
+	}
+
+	/**
+	 * Generates a nonce action for the given comment ID.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id The comment ID associated with the request.
+	 *
+	 * @return string The generated nonce action.
+	 */
+	private function get_nonce_action( int $comment_id ): string {
+
+		return self::ACTION_NAME . "_{$comment_id}";
 	}
 }
