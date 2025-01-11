@@ -142,7 +142,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $attachment_ids The list of attachment IDs.
+	 * @param array $attachment_ids The list of attachment ids.
 	 */
 	public function set_attachment_ids( array $attachment_ids ): void {
 

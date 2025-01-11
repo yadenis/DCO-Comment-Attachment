@@ -239,11 +239,11 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Retrieves the comment ID from the request.
+	 * Retrieves the comment id from the request.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return int|null Comment ID from the request, or null if not available.
+	 * @return int|null Comment id from the request, or null if not available.
 	 */
 	private function get_request_comment_id(): ?int {
 
@@ -251,11 +251,11 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Retrieves attachment IDs for undo action from the request.
+	 * Retrieves attachment ids for undo action from the request.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Attachment IDs from the request, or null if not available.
+	 * @return array Attachment ids from the request, or null if not available.
 	 */
 	private function get_request_undo_attachment_ids(): ?array {
 
@@ -300,7 +300,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 * @since 3.0.0
 	 *
 	 * @param int   $comment_id The comment id to check.
-	 * @param array $undo_attachment_ids The attachment IDs to reattach.
+	 * @param array $undo_attachment_ids The attachment ids to reattach.
 	 */
 	private function process_undo_delete_comment_attachment_action_checks( int $comment_id, array $undo_attachment_ids ): void {
 
@@ -339,7 +339,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $comment_id The comment ID associated with the request.
+	 * @param int $comment_id The comment id associated with the request.
 	 */
 	private function check_referer( int $comment_id ): void {
 
@@ -450,11 +450,11 @@ final class DeleteCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Generates a nonce action for the given comment ID.
+	 * Generates a nonce action for the given comment id.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $comment_id The comment ID associated with the request.
+	 * @param int $comment_id The comment id associated with the request.
 	 *
 	 * @return string The generated nonce action.
 	 */

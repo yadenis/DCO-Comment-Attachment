@@ -132,7 +132,7 @@ final class EditCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $comment_id The ID of the updated commment.
+	 * @param int $comment_id The id of the updated commment.
 	 */
 	public function update_comment_attachments( int $comment_id ): void {
 
@@ -157,7 +157,7 @@ final class EditCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $comment_id The ID of the deleted comment.
+	 * @param int $comment_id The id of the deleted comment.
 	 */
 	public function delete_comment_attachments( int $comment_id ): void {
 
@@ -169,11 +169,11 @@ final class EditCommentAttachmentAdminAction {
 	}
 
 	/**
-	 * Retrieves attachment IDs from the request.
+	 * Retrieves attachment ids from the request.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Attachment IDs from the request,
+	 * @return array Attachment ids from the request,
 	 *               or null if not available.
 	 */
 	private function get_request_attachment_ids(): ?array {

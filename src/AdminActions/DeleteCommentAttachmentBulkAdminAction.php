@@ -186,11 +186,11 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	}
 
 	/**
-	 * Retrieves comment IDs from the request.
+	 * Retrieves comment ids from the request.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Comment IDs from the request,
+	 * @return array Comment ids from the request,
 	 *               or null if not available.
 	 */
 	private function get_request_comment_ids(): ?array {

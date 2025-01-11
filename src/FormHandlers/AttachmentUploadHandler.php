@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Handlers: Attachment Upload Handler
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -9,13 +19,35 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Handles the process of uploading attachments to comments.
+ *
+ * @since 3.0.0
+ */
 final class AttachmentUploadHandler {
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param SettingsService $settings_service Service functions for settings.
+	 */
 	public function __construct(
 		private SettingsService $settings_service,
 	) {
 	}
 
+	/**
+	 * Handles the attachments upload process.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $uploaded_attachments List of uploaded attachments.
+	 * @param int   $comment_post_id The comment post id.
+	 *
+	 * @return array List of attachment ids.
+	 */
 	public function handle( array $uploaded_attachments, int $comment_post_id ): array {
 
 		if ( ! $uploaded_attachments ) {
@@ -26,7 +58,7 @@ final class AttachmentUploadHandler {
 
 		$field_name        = PluginService::UPLOAD_FIELD_NAME;
 		$split_attachments = $this->split_attachments( $uploaded_attachments );
-		$comment_post_id   = $this->filter_comment_post_id( $comment_post_id );
+		$post_id           = $this->determine_post_id_for_attachment( $comment_post_id );
 
 		$attachment_ids = [];
 
@@ -38,7 +70,7 @@ final class AttachmentUploadHandler {
 				media_handle_upload( ... ),
 				[
 					$field_name,
-					$comment_post_id,
+					$post_id,
 				]
 			);
 
@@ -55,6 +87,8 @@ final class AttachmentUploadHandler {
 	/**
 	 * The `media_handle_upload` function is only loaded by default in the WordPress admin area,
 	 * so let's make sure it's available on the frontend.
+	 *
+	 * @since 3.0.0
 	 */
 	private function load_dependencies(): void {
 
@@ -103,6 +137,8 @@ final class AttachmentUploadHandler {
 	 * ]
 	 * ```
 	 *
+	 * @since 3.0.0
+	 *
 	 * @param array $attachments Attachments to split as a `$_FILES`-like array.
 	 *
 	 * @return array $attachments_for_upload An array of attachments, where each attachment
@@ -136,7 +172,18 @@ final class AttachmentUploadHandler {
 		return $attachments_for_upload;
 	}
 
-	private function filter_comment_post_id( int $comment_post_id ): int {
+	/**
+	 * Defines whether the attachment will be attached to the post.
+	 *
+	 * If post_id is 0, it will not be attached.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $post_id The post id.
+	 *
+	 * @return int The filtered post id.
+	 */
+	private function determine_post_id_for_attachment( int $post_id ): int {
 
 		/**
 		 * Filters whether to attach the attachment to the commented post.
@@ -145,6 +192,6 @@ final class AttachmentUploadHandler {
 		 *
 		 * @param bool $attach_to_post Whether to attach the attachment to the commented post.
 		 */
-		return (int) apply_filters( 'dco_ca_attach_to_post', true ) ? $comment_post_id : 0;
+		return (int) apply_filters( 'dco_ca_attach_to_post', true ) ? $post_id : 0;
 	}
 }

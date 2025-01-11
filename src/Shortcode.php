@@ -31,7 +31,7 @@ final class Shortcode {
 	 * @param array $atts {
 	 *     An array of shortcode attributes.
 	 *
-	 *     @type int $post_id Optional. The post ID. Default current post ID.
+	 *     @type int $post_id Optional. The post id. Default current post id.
 	 *     @type string $type Optional. Attachment types separated by comma.
 	 *                                  Accepts: all, image, video, audio, misc.
 	 *                                  Default: all.

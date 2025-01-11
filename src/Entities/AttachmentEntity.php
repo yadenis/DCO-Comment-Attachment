@@ -88,7 +88,7 @@ final class AttachmentEntity {
 	 * @since 3.0.0
 	 *
 	 * @param SettingsService $settings_service  Service functions for settings.
-	 * @param int             $id                The attachment ID.
+	 * @param int             $id                The attachment id.
 	 *
 	 * @throws RuntimeException If the file path for the attachment is invalid.
 	 */
@@ -104,7 +104,7 @@ final class AttachmentEntity {
 			throw new RuntimeException(
 				sprintf(
 					/* translators: %d: the attachment id */
-					esc_html__( 'File path for attachment ID %d is invalid.', 'dco-comment-attachment' ),
+					esc_html__( 'File path for attachment id %d is invalid.', 'dco-comment-attachment' ),
 					intval( $this->id )
 				)
 			);
@@ -140,7 +140,7 @@ final class AttachmentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param int $gallery_id The gallery ID the image attachment belongs to.
+	 * @param int $gallery_id The gallery id the image attachment belongs to.
 	 *
 	 * @return string The HTML image attachment markup for a gallery view.
 	 */
@@ -170,7 +170,7 @@ final class AttachmentEntity {
 	 * @since 3.0.0
 	 *
 	 * @param string   $image_size The image thumbnail size (optional).
-	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
+	 * @param int|null $gallery_id The gallery id the image attachment belongs to (optional).
 	 *
 	 * @return string The HTML image attachment markup.
 	 */
@@ -191,7 +191,7 @@ final class AttachmentEntity {
 		* @since 2.1.1
 		*
 		* @param string $attachment_content HTML markup for the attachment.
-		* @param int $attachment_id The attachment ID.
+		* @param int $attachment_id The attachment id.
 		*/
 		return apply_filters(
 			'dco_ca_get_attachment_preview_image',
@@ -286,7 +286,7 @@ final class AttachmentEntity {
 	 * @since 3.0.0
 	 *
 	 * @param string   $image_size The image thumbnail size (optional).
-	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
+	 * @param int|null $gallery_id The gallery id the image attachment belongs to (optional).
 	 *
 	 * @return string The HTML img tag attachment markup, wrapped with a link if available,
 	 *                or the plain img tag.
@@ -315,7 +315,7 @@ final class AttachmentEntity {
 	 * @since 3.0.0
 	 *
 	 * @param string   $img_tag    The img tag attachment markup.
-	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
+	 * @param int|null $gallery_id The gallery id the image attachment belongs to (optional).
 	 *
 	 * @return string The img tag attachment markup wrapped in a link,
 	 *                or the plain img tag if wrapping is not possible.
@@ -348,7 +348,7 @@ final class AttachmentEntity {
 	 * @since 3.0.0
 	 *
 	 * @param string   $linked_img_tag The linked img tag attachment markup.
-	 * @param int|null $gallery_id The gallery ID the image attachment belongs to (optional).
+	 * @param int|null $gallery_id The gallery id the image attachment belongs to (optional).
 	 *
 	 * @return string The img tag attachment markup with lightbox attributes.
 	 */
