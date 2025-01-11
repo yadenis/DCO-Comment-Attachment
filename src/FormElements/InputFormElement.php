@@ -128,7 +128,7 @@ final class InputFormElement implements FormElement {
 	}
 
 	/**
-	 * Generates the accept attribute for the input field based on plugin settings.
+	 * Generates the accept attribute for the input field based on the plugin settings.
 	 *
 	 * @since 3.0.0
 	 *

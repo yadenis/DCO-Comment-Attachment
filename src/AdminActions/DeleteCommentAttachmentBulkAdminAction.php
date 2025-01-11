@@ -70,7 +70,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	/**
 	 * Adds a delete/detach attachment bulk action to the comments bulk actions dropdown.
 	 *
-	 * Deletes or detaches comment attachments based on plugin settings.
+	 * Deletes or detaches comment attachments based on the plugin settings.
 	 *
 	 * @since 3.0.0
 	 *
@@ -93,7 +93,7 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	/**
 	 * Handles the delete comment attachment bulk action.
 	 *
-	 * Deletes or detaches comment attachments based on plugin settings.
+	 * Deletes or detaches comment attachments based on the plugin settings.
 	 *
 	 * @since 3.0.0
 	 */

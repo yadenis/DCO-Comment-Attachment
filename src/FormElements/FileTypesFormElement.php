@@ -28,7 +28,7 @@ defined( 'ABSPATH' ) || die;
 final class FileTypesFormElement implements FormElement {
 
 	/**
-	 * Grouped allowed file types from plugin settings.
+	 * Grouped allowed file types from the plugin settings.
 	 *
 	 * @since 3.0.0
 	 *
@@ -88,7 +88,7 @@ final class FileTypesFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return string The generated HTML markup, 
+	 * @return string The generated HTML markup,
 	 *                or an empty string if the file types list is empty.
 	 */
 	private function generate_markup(): string {

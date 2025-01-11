@@ -79,7 +79,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 * Adds a delete/detach attachment action link in the comment row actions.
 	 *
 	 * The action link is displayed only for comments with attachments.
-	 * Deletes or detaches comment attachments based on plugin settings.
+	 * Deletes or detaches comment attachments based on the plugin settings.
 	 *
 	 * @since 3.0.0
 	 *
@@ -116,7 +116,7 @@ final class DeleteCommentAttachmentAdminAction {
 	/**
 	 * Handles the delete comment attachment action.
 	 *
-	 * Deletes or detaches comment attachments based on plugin settings.
+	 * Deletes or detaches comment attachments based on the plugin settings.
 	 *
 	 * @since 3.0.0
 	 */

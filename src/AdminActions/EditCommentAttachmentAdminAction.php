@@ -153,7 +153,7 @@ final class EditCommentAttachmentAdminAction {
 	/**
 	 * Deletes comment attachments when the comment is deleted.
 	 *
-	 * Deletes or skips deleting comment attachments based on plugin settings.
+	 * Deletes or skips deleting comment attachments based on the plugin settings.
 	 *
 	 * @since 3.0.0
 	 *
