@@ -1,4 +1,14 @@
 <?php
+/**
+ * Services: Settings
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -24,8 +34,35 @@ use DCO_CA\Settings\WhoCanUploadSetting;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Service for handling settings-related operations.
+ *
+ * @since 3.0.0
+ */
 final class SettingsService {
 
+	/**
+	 * Constructor
+	 *
+	 * Initializes all settings instances.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param MaxUploadSizeSetting          $max_upload_size_setting          The max upload size setting.
+	 * @param RequiredAttachmentSetting     $required_attachment_setting      The required attachment setting.
+	 * @param EmbedAttachmentSetting        $embed_attachment_setting         The embed attachment setting.
+	 * @param AutoembedLinksSetting         $autoembed_links_setting          The autoembed links setting.
+	 * @param ThumbnailSizeSetting          $thumbnail_size_setting           The thumbnail size setting.
+	 * @param LinkThumbnailSetting          $link_thumbnail_setting           The link thumbnail setting.
+	 * @param EnableMultipleUploadSetting   $enable_multiple_upload_setting   The enable multiple upload setting.
+	 * @param CombineImagesSetting          $combine_images_setting           The combine images setting.
+	 * @param GallerySizeSetting            $gallery_size_setting             The gallery size setting.
+	 * @param AllowedFileTypesSetting       $allowed_file_types_setting       The allowed file types setting.
+	 * @param WhoCanUploadSetting           $who_can_upload_setting           The who can upload setting.
+	 * @param ManuallyModerationSetting     $manually_moderation_setting      The manually moderation setting.
+	 * @param DeleteWithCommentSetting      $delete_with_comment_setting      The delete with comment setting.
+	 * @param DeleteAttachmentActionSetting $delete_attachment_action_setting The delete attachment action setting.
+	 */
 	public function __construct(
 		private MaxUploadSizeSetting $max_upload_size_setting,
 		private RequiredAttachmentSetting $required_attachment_setting,
@@ -46,38 +83,74 @@ final class SettingsService {
 		new Settings( $this->get_all_settings_instances() );
 	}
 
+	/**
+	 * Retrieves the formatted maximum upload size.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The formatted maximum upload size (e.g., '10 MB').
+	 */
 	public function get_formatted_max_upload_size(): string {
 
 		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
 	}
 
+	/**
+	 * Retrieves the maximum upload size in bytes.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return int The maximum upload size in bytes.
+	 */
 	public function get_max_upload_size_in_bytes(): int {
 
 		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
 	}
 
+	/**
+	 * Checks if an attachment is required for comment submission.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if an attachment is required, false otherwise.
+	 */
 	public function is_required_attachment(): bool {
 
 		return $this->required_attachment_setting->get_value();
 	}
 
+	/**
+	 * Checks if an attachment can be embedded.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if the attachment can be embedded, false otherwise.
+	 */
 	public function is_embeded_attachment(): bool {
 
 		return $this->embed_attachment_setting->get_value();
 	}
 
+	/**
+	 * Checks if auto-embedding of links is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if auto-embedding of links is enabled, false otherwise.
+	 */
 	public function is_autoembed_links(): bool {
 
-		if ( is_admin() ) {
-			return false;
-		}
-
-		return $this->autoembed_links_setting->get_value();
+		return is_admin() ? false : $this->autoembed_links_setting->get_value();
 	}
 
+	/**
+	 * Retrieves the thumbnail size for images.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The thumbnail size (e.g., 'medium', 'large').
+	 */
 	public function get_thumbnail_image_size(): string {
-
-		$thumbnail_size = $this->thumbnail_size_setting->get_value();
 
 		if ( is_admin() ) {
 			/**
@@ -87,76 +160,167 @@ final class SettingsService {
 			 *
 			 * @param string $size The thumbnail size of the attachment image.
 			 */
-			$thumbnail_size = apply_filters( 'dco_ca_admin_thumbnail_size', 'medium' );
+			return apply_filters( 'dco_ca_admin_thumbnail_size', 'medium' );
+		} else {
+			return $this->thumbnail_size_setting->get_value();
 		}
-
-		return $thumbnail_size;
 	}
 
+	/**
+	 * Retrieves the type of the link for the thumbnail.
+	 *
+	 * Returns one of the predefined link types for thumbnails based on the setting value.
+	 *
+	 * @see \DCO_CA\Settings\LinkThumbnailSetting
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The type of the link for the thumbnail.
+	 */
 	public function get_link_thumbnail_type(): string {
 
 		return $this->link_thumbnail_setting->get_value();
 	}
 
+	/**
+	 * Checks if multiple upload is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if multiple upload is enabled, false otherwise.
+	 */
 	public function is_enabled_multiple_upload(): bool {
 
 		return $this->enable_multiple_upload_setting->get_value();
 	}
 
+	/**
+	 * Checks if images should be combined into a gallery.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if images should be combined, false otherwise.
+	 */
 	public function is_combined_images(): bool {
 
-		if ( is_admin() ) {
-			return true;
-		}
-
-		return $this->combine_images_setting->get_value();
+		return is_admin() ? true : $this->combine_images_setting->get_value();
 	}
 
+	/**
+	 * Retrieves the gallery size for images.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The gallery image size (e.g., 'medium', 'large').
+	 */
 	public function get_gallery_image_size(): string {
 
 		return $this->gallery_size_setting->get_value();
 	}
 
+	/**
+	 * Retrieves the allowed file types for upload.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array The list of allowed file types.
+	 */
 	public function get_allowed_file_types(): array {
 
 		return $this->allowed_file_types_setting->get_value();
 	}
 
+	/**
+	 * Retrieves the allowed file types, organized into groups.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array<string, \DCO_CA\DTO\AllowedFileTypesGroupDTO> The grouped list of allowed file types.
+	 */
 	public function get_grouped_allowed_file_types(): array {
 
 		return $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
 	}
 
+	/**
+	 * Retrieves the image extensions.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array The image extensions (e.g., 'jpg', 'png').
+	 */
 	public function get_image_extensions(): array {
 
 		return AllowedFileTypesSetting::IMAGE_EXTENSIONS;
 	}
 
+	/**
+	 * Checks if all users can upload attachments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if all users can upload attachments, false otherwise.
+	 */
 	public function is_can_upload_all_users(): bool {
 
 		return $this->who_can_upload_setting->is_can_upload_all_users();
 	}
 
+	/**
+	 * Checks if only logged-in users can upload attachments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if only logged-in users can upload attachments, false otherwise.
+	 */
 	public function is_can_upload_only_logged_users(): bool {
 
 		return $this->who_can_upload_setting->is_can_upload_only_logged_users();
 	}
 
+	/**
+	 * Checks if manual moderation is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if manual moderation is enabled, false otherwise.
+	 */
 	public function is_manually_moderation_enabled(): bool {
 
 		return $this->manually_moderation_setting->get_value();
 	}
 
+	/**
+	 * Checks if attachments should be deleted along with the associated comment.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if attachments are deleted with the comment, false otherwise.
+	 */
 	public function is_delete_attachments_with_comment(): bool {
 
 		return $this->delete_with_comment_setting->get_value();
 	}
 
+	/**
+	 * Checks if attachments should be deleted from the media library.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if attachments should bе deleted, false otherwise.
+	 */
 	public function is_delete_attachment_from_media_library(): bool {
 
 		return $this->delete_attachment_action_setting->is_delete_attachment_from_media_library();
 	}
 
+	/**
+	 * Retrieves all settings instances.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Setting[] The list of all settings instances.
+	 */
 	public function get_all_settings_instances(): array {
 
 		return [
@@ -177,13 +341,28 @@ final class SettingsService {
 		];
 	}
 
+	/**
+	 * Applies the file types filter to a given function.
+	 *
+	 * Adds the file types filter and calls the provided callback with the given arguments.
+	 * The filter is removed after the callback execution.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param callable $callback The function to be called after applying the filter.
+	 * @param array    $arguments The arguments to pass to the callback function.
+	 *
+	 * @return mixed The result of the callback function.
+	 */
 	public function apply_file_types_filter_to_function( callable $callback, array $arguments ): mixed {
 
-		add_filter( 'upload_mimes', $this->allowed_file_types_setting->filter_upload_mimes( ... ), 999 );
+		$filter = $this->allowed_file_types_setting->filter_upload_mimes( ... );
+
+		add_filter( 'upload_mimes', $filter, 999 );
 
 		$result = call_user_func_array( $callback, $arguments );
 
-		remove_filter( 'upload_mimes', $this->allowed_file_types_setting->filter_upload_mimes( ... ), 999 );
+		remove_filter( 'upload_mimes', $filter, 999 );
 
 		return $result;
 	}
