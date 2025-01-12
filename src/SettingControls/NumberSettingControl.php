@@ -1,4 +1,14 @@
 <?php
+/**
+ * SettingControls: Number
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -8,8 +18,23 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Renders the number setting control in the admin panel.
+ *
+ * @since 3.0.0
+ */
 final class NumberSettingControl implements SettingControl {
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $name  The setting name.
+	 * @param string $id    The setting id.
+	 * @param int    $value The input value.
+	 * @param int    $max   The input max attribute value.
+	 */
 	public function __construct(
 		private string $name,
 		private string $id,
@@ -18,6 +43,11 @@ final class NumberSettingControl implements SettingControl {
 	) {
 	}
 
+	/**
+	 * Renders the number setting control.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render(): void {
 
 		printf(

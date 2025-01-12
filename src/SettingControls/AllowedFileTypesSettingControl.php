@@ -21,7 +21,7 @@ use DCO_CA\Interfaces\SettingControl;
 defined( 'ABSPATH' ) || die;
 
 /**
- * Rendering the allowed file types setting control in the admin panel.
+ * Renders the allowed file types setting control in the admin panel.
  *
  * @since 3.0.0
  */
@@ -38,6 +38,8 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 
 	/**
 	 * Constructor.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @param string                     $name   The the setting name.
 	 * @param AllowedFileTypesGroupDTO[] $groups The allowed file types groups.
@@ -176,6 +178,8 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 
 	/**
 	 * Returns a special mark for extension based on certain conditions.
+	 *
+	 * @since 3.0.0
 	 *
 	 * @param AllowedFileTypesExtensionDTO $extension The extension to check.
 	 *

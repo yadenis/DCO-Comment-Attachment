@@ -1,4 +1,14 @@
 <?php
+/**
+ * SettingControls: Radio Choice
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -8,8 +18,24 @@ use DCO_CA\Interfaces\SettingControl;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Renders the radio choice setting control in the admin panel.
+ *
+ * @since 3.0.0
+ */
 final class RadioChoiceSettingControl implements SettingControl {
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $name    The setting name.
+	 * @param string $value   The input value.
+	 * @param string $text    The text label to be displayed next to the radio button.
+	 * @param bool   $checked The initial checked state of the radio choice (optional).
+	 *                        Default is false.
+	 */
 	public function __construct(
 		private string $name,
 		private string $value,
@@ -18,6 +44,11 @@ final class RadioChoiceSettingControl implements SettingControl {
 	) {
 	}
 
+	/**
+	 * Renders the radio choice setting control.
+	 *
+	 * @since 3.0.0
+	 */
 	public function render(): void {
 
 		printf(

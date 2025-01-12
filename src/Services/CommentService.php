@@ -156,7 +156,7 @@ final class CommentService {
 	 * @since 3.0.0
 	 *
 	 * @param int   $comment_id The comment id.
-	 * @param array $attachment_ids The list of attachment ids to associate with the comment.
+	 * @param int[] $attachment_ids The list of attachment ids to associate with the comment.
 	 */
 	public function attach_attachments_to_comment( int $comment_id, array $attachment_ids ): void {
 

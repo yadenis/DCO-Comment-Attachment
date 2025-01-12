@@ -203,7 +203,7 @@ final class AttachmentService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $attachments The list of attachments to render.
+	 * @param AttachmentEntity[] $attachments The list of attachments to render.
 	 *
 	 * @return bool True if attachments should be rendered as a gallery, false otherwise.
 	 */
@@ -217,9 +217,9 @@ final class AttachmentService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $images The list of image attachment HTML markup to be wrapped.
+	 * @param string[] $images The list of image attachment HTML markup to be wrapped.
 	 *
-	 * @return array The list of images wrapped inside a gallery container.
+	 * @return string[] The list of images wrapped inside a gallery container.
 	 */
 	private function wrap_images_in_gallery( array $images ): array {
 

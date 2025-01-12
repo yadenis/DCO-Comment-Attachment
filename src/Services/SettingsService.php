@@ -223,7 +223,7 @@ final class SettingsService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array The list of allowed file types.
+	 * @return string[] The list of allowed file types.
 	 */
 	public function get_allowed_file_types(): array {
 
@@ -247,7 +247,7 @@ final class SettingsService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array The image extensions (e.g., 'jpg', 'png').
+	 * @return string[] The image extensions (e.g., 'jpg', 'png').
 	 */
 	public function get_image_extensions(): array {
 

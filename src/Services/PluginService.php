@@ -64,8 +64,8 @@ final class PluginService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $script_name The script name to enqueue.
-	 * @param array  $script_data Data to be localized with the script (optional).
+	 * @param string               $script_name The script name to enqueue.
+	 * @param array<string, mixed> $script_data Data to be localized with the script (optional).
 	 */
 	public function enqueue_script( string $script_name, array $script_data = [] ): void {
 
