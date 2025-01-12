@@ -69,7 +69,7 @@ final class FileTypesFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_element(): void {
 
 		$this->plugin_service->the_kses_post(
 			apply_filters(

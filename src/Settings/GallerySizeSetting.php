@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\DescriptionSettingControl;
-use DCO_CA\SettingControls\ImageSizeControl;
+use DCO_CA\SettingsControls\DescriptionSettingsControl;
+use DCO_CA\SettingsControls\ImageSizeSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -22,7 +22,7 @@ final class GallerySizeSetting implements Setting {
 	private string $description;
 
 	public function __construct(
-		private OptionsHelper $options,
+		private OptionsHelper $options_helper,
 	) {
 
 		$this->title = __( 'Gallery image size', 'dco-comment-attachment' );
@@ -33,33 +33,33 @@ final class GallerySizeSetting implements Setting {
 		);
 	}
 
-	public function get_value(): string {
+	public function get_settings_value(): string {
 
-		return $this->options->get_string_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
+		return $this->options_helper->get_string_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
 	}
 
-	public function get_setting_field_dto(): SettingFieldDTO {
+	public function get_settings_field_dto(): SettingsFieldDTO {
 
-		return new SettingFieldDTO(
+		return new SettingsFieldDTO(
 			id: self::OPTION_NAME,
 			title: $this->title,
-			callback: $this->render_setting_field( ... ),
+			callback: $this->render_settings_field( ... ),
 			section: SettingsSection::MULTIPLE_UPLOAD,
 		);
 	}
 
-	public function render_setting_field( array $args ): void {
+	public function render_settings_field( array $args ): void {
 
 		(
-			new ImageSizeControl(
+			new ImageSizeSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
-				selected_size: $this->get_value(),
+				selected_size: $this->get_settings_value(),
 			)
 		)->render();
 
 		(
-			new DescriptionSettingControl(
+			new DescriptionSettingsControl(
 				text: $this->description,
 			)
 		)->render();

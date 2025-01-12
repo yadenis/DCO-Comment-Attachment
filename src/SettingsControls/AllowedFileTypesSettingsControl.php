@@ -1,6 +1,6 @@
 <?php
 /**
- * SettingControls: Allowed File Types
+ * SettingsControls: Allowed File Types
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -12,20 +12,20 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\SettingControls;
+namespace DCO_CA\SettingsControls;
 
 use DCO_CA\DTO\AllowedFileTypesExtensionDTO;
 use DCO_CA\DTO\AllowedFileTypesGroupDTO;
-use DCO_CA\Interfaces\SettingControl;
+use DCO_CA\Interfaces\SettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
 /**
- * Renders the allowed file types setting control in the admin panel.
+ * Renders the allowed file types settings control in the admin panel.
  *
  * @since 3.0.0
  */
-final class AllowedFileTypesSettingControl implements SettingControl {
+final class AllowedFileTypesSettingsControl implements SettingsControl {
 
 	/**
 	 * The width of the group columns in the settings interface.
@@ -61,11 +61,11 @@ final class AllowedFileTypesSettingControl implements SettingControl {
 	}
 
 	/**
-	 * Renders the allowed file types setting control.
+	 * Renders the allowed file types settings control.
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_control(): void {
 
 		echo '<div class="dco-file-types">';
 

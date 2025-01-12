@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\CheckboxSettingControl;
-use DCO_CA\SettingControls\DescriptionSettingControl;
+use DCO_CA\SettingsControls\CheckboxSettingsControl;
+use DCO_CA\SettingsControls\DescriptionSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -22,7 +22,7 @@ final class EmbedAttachmentSetting implements Setting {
 	private string $description;
 
 	public function __construct(
-		private OptionsHelper $options,
+		private OptionsHelper $options_helper,
 	) {
 
 		$this->title = __( 'Embed attachment?', 'dco-comment-attachment' );
@@ -33,33 +33,33 @@ final class EmbedAttachmentSetting implements Setting {
 		);
 	}
 
-	public function get_value(): bool {
+	public function get_settings_value(): bool {
 
-		return $this->options->get_bool_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
+		return $this->options_helper->get_bool_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
 	}
 
-	public function get_setting_field_dto(): SettingFieldDTO {
+	public function get_settings_field_dto(): SettingsFieldDTO {
 
-		return new SettingFieldDTO(
+		return new SettingsFieldDTO(
 			id: self::OPTION_NAME,
 			title: $this->title,
-			callback: $this->render_setting_field( ... ),
+			callback: $this->render_settings_field( ... ),
 			section: SettingsSection::GENERAL
 		);
 	}
 
-	public function render_setting_field( array $args ): void {
+	public function render_settings_field( array $args ): void {
 
 		(
-			new CheckboxSettingControl(
+			new CheckboxSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
-				checked: $this->get_value(),
+				checked: $this->get_settings_value(),
 			)
 		)->render();
 
 		(
-			new DescriptionSettingControl(
+			new DescriptionSettingsControl(
 				text: $this->description,
 			)
 		)->render();

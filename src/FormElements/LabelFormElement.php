@@ -88,7 +88,7 @@ final class LabelFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_element(): void {
 
 		$markup = sprintf(
 			'<label class="comment-form-attachment__label" for="attachment">%s</label>',

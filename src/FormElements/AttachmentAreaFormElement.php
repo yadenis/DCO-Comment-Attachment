@@ -53,18 +53,18 @@ final class AttachmentAreaFormElement implements FormElement {
 	/**
 	 * Renders the attachment area form element.
 	 */
-	public function render(): void {
+	public function render_element(): void {
 
 		ob_start();
 		?>
 		<p class="comment-form-attachment">
 			<?php
-			$this->label->render();
-			$this->input->render();
-			$this->upload_size->render();
-			$this->file_types->render();
-			$this->autoembed_links->render();
-			$this->drop_area->render();
+			$this->label->render_element();
+			$this->input->render_element();
+			$this->upload_size->render_element();
+			$this->file_types->render_element();
+			$this->autoembed_links->render_element();
+			$this->drop_area->render_element();
 			?>
 		</p>
 		<?php

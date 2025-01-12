@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace DCO_CA;
 
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\Services\PluginService;
@@ -83,7 +83,7 @@ final class Settings {
 	private function get_fields(): array {
 
 		return array_map(
-			static fn( Setting $setting ): SettingFieldDTO => $setting->get_setting_field_dto(),
+			static fn( Setting $setting ): SettingsFieldDTO => $setting->get_settings_field_dto(),
 			$this->settings
 		);
 	}
@@ -98,7 +98,7 @@ final class Settings {
 		);
 	}
 
-	private function add_field( SettingFieldDTO $field ): void {
+	private function add_field( SettingsFieldDTO $field ): void {
 
 		add_settings_field(
 			id: $field->id,

@@ -69,7 +69,7 @@ final class UploadSizeFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_element(): void {
 
 		$markup = sprintf(
 			'<span class="comment-form-attachment__file-size-notice">%s</span>',

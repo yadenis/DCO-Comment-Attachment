@@ -1,6 +1,6 @@
 <?php
 /**
- * SettingControls: Number
+ * SettingsControls: Number
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -12,18 +12,18 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\SettingControls;
+namespace DCO_CA\SettingsControls;
 
-use DCO_CA\Interfaces\SettingControl;
+use DCO_CA\Interfaces\SettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
 /**
- * Renders the number setting control in the admin panel.
+ * Renders the number settings control in the admin panel.
  *
  * @since 3.0.0
  */
-final class NumberSettingControl implements SettingControl {
+final class NumberSettingsControl implements SettingsControl {
 
 	/**
 	 * Constructor.
@@ -44,11 +44,11 @@ final class NumberSettingControl implements SettingControl {
 	}
 
 	/**
-	 * Renders the number setting control.
+	 * Renders the number settings control.
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_control(): void {
 
 		printf(
 			'<input type="number" name="%s" class="regular-text" id="%s" value="%d" min="1" max="%d">',

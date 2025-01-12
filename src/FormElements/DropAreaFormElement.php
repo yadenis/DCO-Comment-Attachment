@@ -78,7 +78,7 @@ final class DropAreaFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_element(): void {
 
 		$text = $this->get_drop_area_text();
 

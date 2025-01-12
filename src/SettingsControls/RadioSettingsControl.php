@@ -1,6 +1,6 @@
 <?php
 /**
- * SettingControls: Radio
+ * SettingsControls: Radio
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -12,25 +12,25 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\SettingControls;
+namespace DCO_CA\SettingsControls;
 
-use DCO_CA\Interfaces\SettingControl;
+use DCO_CA\Interfaces\SettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
 /**
- * Renders the radio setting control in the admin panel.
+ * Renders the radio settings control in the admin panel.
  *
  * @since 3.0.0
  */
-final class RadioSettingControl implements SettingControl {
+final class RadioSettingsControl implements SettingsControl {
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param RadioChoiceSettingControl[] $choices The list of radio choices.
+	 * @param RadioChoiceSettingsControl[] $choices The list of radio choices.
 	 */
 	public function __construct(
 		private array $choices,
@@ -38,11 +38,11 @@ final class RadioSettingControl implements SettingControl {
 	}
 
 	/**
-	 * Renders the radio setting control.
+	 * Renders the radio settings control.
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_control(): void {
 
 		echo '<fieldset>';
 
@@ -50,13 +50,13 @@ final class RadioSettingControl implements SettingControl {
 
 		foreach ( $this->choices as $choice ) {
 
-			if ( ! $choice instanceof RadioChoiceSettingControl ) {
+			if ( ! $choice instanceof RadioChoiceSettingsControl ) {
 				continue;
 			}
 
 			ob_start();
 
-			$choice->render();
+			$choice->render_control();
 
 			$choices[] = ob_get_clean();
 		}

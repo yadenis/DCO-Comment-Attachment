@@ -19,5 +19,5 @@ defined( 'ABSPATH' ) || die;
 enum AllowedFileTypesFormat {
 
 	case ARRAY;
-	case GROUPED_ARRAY;
+	case GROUPED_BY_TYPE;
 }

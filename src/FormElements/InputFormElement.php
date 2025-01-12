@@ -67,7 +67,7 @@ final class InputFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_element(): void {
 
 		$field_name = $this->generates_field_name();
 		$multiple   = $this->generates_multiple_attribute();

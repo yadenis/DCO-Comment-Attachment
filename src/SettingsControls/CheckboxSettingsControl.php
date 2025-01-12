@@ -1,6 +1,6 @@
 <?php
 /**
- * SettingControls: Checkbox
+ * SettingsControls: Checkbox
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -12,18 +12,18 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\SettingControls;
+namespace DCO_CA\SettingsControls;
 
-use DCO_CA\Interfaces\SettingControl;
+use DCO_CA\Interfaces\SettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
 /**
- * Renders the checkbox setting control in the admin panel.
+ * Renders the checkbox settings control in the admin panel.
  *
  * @since 3.0.0
  */
-final class CheckboxSettingControl implements SettingControl {
+final class CheckboxSettingsControl implements SettingsControl {
 
 	/**
 	 * Constructor.
@@ -33,7 +33,7 @@ final class CheckboxSettingControl implements SettingControl {
 	 * @param string $name    The setting name.
 	 * @param string $id      The setting id.
 	 * @param bool   $checked The initial checked state of the checkbox (optional).
-	 *                        Default is false.
+	 *                        Default false.
 	 */
 	public function __construct(
 		private string $name,
@@ -43,11 +43,11 @@ final class CheckboxSettingControl implements SettingControl {
 	}
 
 	/**
-	 * Renders the checkbox setting control.
+	 * Renders the checkbox settings control.
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_control(): void {
 
 		printf(
 			'<input type="hidden" name="%s" value="0">',

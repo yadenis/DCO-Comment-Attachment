@@ -1,6 +1,6 @@
 <?php
 /**
- * Interfaces: Setting Control
+ * Interfaces: Settings Control
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -16,12 +16,12 @@ namespace DCO_CA\Interfaces;
 
 defined( 'ABSPATH' ) || die;
 
-interface SettingControl {
+interface SettingsControl {
 
 	/**
-	 * Renders the setting control.
+	 * Renders the settings control.
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void;
+	public function render_control(): void;
 }

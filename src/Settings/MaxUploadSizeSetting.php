@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace DCO_CA\Settings;
 
 use DCO_CA\Helpers\OptionsHelper;
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\MaxUploadSizeFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\DescriptionSettingControl;
-use DCO_CA\SettingControls\NumberSettingControl;
+use DCO_CA\SettingsControls\DescriptionSettingsControl;
+use DCO_CA\SettingsControls\NumberSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -22,7 +22,7 @@ final class MaxUploadSizeSetting implements Setting {
 	private string $description;
 
 	public function __construct(
-		private OptionsHelper $options,
+		private OptionsHelper $options_helper,
 	) {
 
 		$this->title = __( 'Maximum upload file size', 'dco-comment-attachment' );
@@ -37,9 +37,9 @@ final class MaxUploadSizeSetting implements Setting {
 		);
 	}
 
-	public function get_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
+	public function get_settings_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
-		$value = $this->options->get_int_option( self::OPTION_NAME );
+		$value = $this->options_helper->get_int_option( self::OPTION_NAME );
 		if ( null === $value ) {
 			return $this->get_system_value( $format );
 		}
@@ -51,29 +51,29 @@ final class MaxUploadSizeSetting implements Setting {
 		};
 	}
 
-	public function get_setting_field_dto(): SettingFieldDTO {
+	public function get_settings_field_dto(): SettingsFieldDTO {
 
-		return new SettingFieldDTO(
+		return new SettingsFieldDTO(
 			id: self::OPTION_NAME,
 			title: $this->title,
-			callback: $this->render_setting_field( ... ),
+			callback: $this->render_settings_field( ... ),
 			section: SettingsSection::GENERAL
 		);
 	}
 
-	public function render_setting_field( array $args ): void {
+	public function render_settings_field( array $args ): void {
 
 		(
-			new NumberSettingControl(
+			new NumberSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
-				value:  $this->get_value( MaxUploadSizeFormat::IN_MEGABYTES ),
+				value:  $this->get_settings_value( MaxUploadSizeFormat::IN_MEGABYTES ),
 				max: $this->get_system_value( MaxUploadSizeFormat::IN_MEGABYTES ),
 			)
 		)->render();
 
 		(
-			new DescriptionSettingControl(
+			new DescriptionSettingsControl(
 				text: $this->description,
 			)
 		)->render();

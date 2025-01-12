@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\LinkThumbnailType;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\RadioSettingControl;
-use DCO_CA\SettingControls\RadioChoiceSettingControl;
+use DCO_CA\SettingsControls\RadioSettingsControl;
+use DCO_CA\SettingsControls\RadioChoiceSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -31,7 +31,7 @@ final class LinkThumbnailSetting implements Setting {
 	private array $types;
 
 	public function __construct(
-		private OptionsHelper $options,
+		private OptionsHelper $options_helper,
 	) {
 
 		$this->title = __( 'Link thumbnail?', 'dco-comment-attachment' );
@@ -39,27 +39,27 @@ final class LinkThumbnailSetting implements Setting {
 		$this->init_types();
 	}
 
-	public function get_value(): string {
+	public function get_settings_value(): string {
 
-		$value = $this->options->get_string_option( self::OPTION_NAME );
+		$value = $this->options_helper->get_string_option( self::OPTION_NAME );
 
 		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
-	public function get_setting_field_dto(): SettingFieldDTO {
+	public function get_settings_field_dto(): SettingsFieldDTO {
 
-		return new SettingFieldDTO(
+		return new SettingsFieldDTO(
 			id: self::OPTION_NAME,
 			title: $this->title,
-			callback: $this->render_setting_field( ... ),
+			callback: $this->render_settings_field( ... ),
 			section: SettingsSection::IMAGES
 		);
 	}
 
-	public function render_setting_field( array $args ): void {
+	public function render_settings_field( array $args ): void {
 
 		(
-			new RadioSettingControl(
+			new RadioSettingsControl(
 				choices: $this->build_choices( $args ),
 			)
 		)->render();
@@ -68,11 +68,11 @@ final class LinkThumbnailSetting implements Setting {
 	private function build_choices( array $args ): array {
 
 		return array_map(
-			fn( string $value, string $text ): RadioChoiceSettingControl => new RadioChoiceSettingControl(
+			fn( string $value, string $text ): RadioChoiceSettingsControl => new RadioChoiceSettingsControl(
 				name: $args['name'],
 				value: $value,
 				text: $text,
-				checked: $value === $this->get_value(),
+				checked: $value === $this->get_settings_value(),
 			),
 			array_keys( $this->types ),
 			$this->types

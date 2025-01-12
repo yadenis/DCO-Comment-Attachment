@@ -1,6 +1,6 @@
 <?php
 /**
- * SettingControls: Description
+ * SettingsControls: Description
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -12,18 +12,18 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\SettingControls;
+namespace DCO_CA\SettingsControls;
 
-use DCO_CA\Interfaces\SettingControl;
+use DCO_CA\Interfaces\SettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
 /**
- * Renders the description setting control in the admin panel.
+ * Renders the description settings control in the admin panel.
  *
  * @since 3.0.0
  */
-final class DescriptionSettingControl implements SettingControl {
+final class DescriptionSettingsControl implements SettingsControl {
 
 	/**
 	 * Constructor.
@@ -38,7 +38,7 @@ final class DescriptionSettingControl implements SettingControl {
 	}
 
 	/**
-	 * Renders the description setting control.
+	 * Renders the description settings control.
 	 *
 	 * @since 3.0.0
 	 */

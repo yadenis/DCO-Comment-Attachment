@@ -1,6 +1,6 @@
 <?php
 /**
- * DTO: Setting Field
+ * DTO: Settings field
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -20,21 +20,21 @@ use DCO_CA\Enums\SettingsSection;
 defined( 'ABSPATH' ) || die;
 
 /**
- * Represents the details of a setting field.
+ * Represents the details of a settings field.
  *
  * @since 3.0.0
  */
-final class SettingFieldDTO {
+final class SettingsFieldDTO {
 
 	/**
 	 * Constructor.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string          $id        The unique name of the setting field.
-	 * @param string          $title     The display title of the setting field.
+	 * @param string          $id        The unique name of the settings field.
+	 * @param string          $title     The display title of the settings field.
 	 * @param Closure         $callback  The callback function to render the field.
-	 * @param SettingsSection $section   The section the field belongs to, as defined in the `SettingsSection` enum.
+	 * @param SettingsSection $section   The section the field belongs to.
 	 */
 	public function __construct(
 		public readonly string $id,

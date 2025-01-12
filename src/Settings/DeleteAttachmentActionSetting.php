@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace DCO_CA\Settings;
 
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\DeleteAttachmentActionType;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\RadioChoiceSettingControl;
-use DCO_CA\SettingControls\RadioSettingControl;
+use DCO_CA\SettingsControls\RadioChoiceSettingsControl;
+use DCO_CA\SettingsControls\RadioSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -28,7 +28,7 @@ final class DeleteAttachmentActionSetting implements Setting {
 	private array $types;
 
 	public function __construct(
-		private OptionsHelper $options,
+		private OptionsHelper $options_helper,
 	) {
 
 		$this->title = __( 'Delete Attachment action on Edit Comments page', 'dco-comment-attachment' );
@@ -45,36 +45,36 @@ final class DeleteAttachmentActionSetting implements Setting {
 		];
 	}
 
-	public function get_value(): string {
+	public function get_settings_value(): string {
 
-		$value = $this->options->get_string_option( self::OPTION_NAME );
+		$value = $this->options_helper->get_string_option( self::OPTION_NAME );
 
 		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
 	public function is_delete_attachment_from_media_library(): bool {
 
-		if ( DeleteAttachmentActionType::DELETE->value === $this->get_value() ) {
+		if ( DeleteAttachmentActionType::DELETE->value === $this->get_settings_value() ) {
 			return true;
 		}
 
 		return false;
 	}
 
-	public function get_setting_field_dto(): SettingFieldDTO {
+	public function get_settings_field_dto(): SettingsFieldDTO {
 
-		return new SettingFieldDTO(
+		return new SettingsFieldDTO(
 			id: self::OPTION_NAME,
 			title: $this->title,
-			callback: $this->render_setting_field( ... ),
+			callback: $this->render_settings_field( ... ),
 			section: SettingsSection::IN_ADMIN
 		);
 	}
 
-	public function render_setting_field( array $args ): void {
+	public function render_settings_field( array $args ): void {
 
 		(
-			new RadioSettingControl(
+			new RadioSettingsControl(
 				choices: $this->build_choices( $args ),
 			)
 		)->render();
@@ -86,11 +86,11 @@ final class DeleteAttachmentActionSetting implements Setting {
 
 		foreach ( $this->types as $value => $text ) {
 
-			$choices[] = new RadioChoiceSettingControl(
+			$choices[] = new RadioChoiceSettingsControl(
 				name: $args['name'],
 				value: $value,
 				text: $text,
-				checked: $value === $this->get_value(),
+				checked: $value === $this->get_settings_value(),
 			);
 		}
 

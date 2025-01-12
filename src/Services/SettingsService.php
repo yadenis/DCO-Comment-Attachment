@@ -239,7 +239,7 @@ final class SettingsService {
 	 */
 	public function get_grouped_allowed_file_types(): array {
 
-		return $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_ARRAY );
+		return $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_BY_TYPE );
 	}
 
 	/**

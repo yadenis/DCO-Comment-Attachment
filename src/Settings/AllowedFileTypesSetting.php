@@ -1,4 +1,14 @@
 <?php
+/**
+ * Settings: Allowed File Types
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -6,13 +16,13 @@ namespace DCO_CA\Settings;
 
 use DCO_CA\DTO\AllowedFileTypesExtensionDTO;
 use DCO_CA\DTO\AllowedFileTypesGroupDTO;
-use DCO_CA\DTO\SettingFieldDTO;
+use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Helpers\OptionsHelper;
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
-use DCO_CA\SettingControls\AllowedFileTypesSettingControl;
-use DCO_CA\SettingControls\DescriptionSettingControl;
+use DCO_CA\SettingsControls\AllowedFileTypesSettingsControl;
+use DCO_CA\SettingsControls\DescriptionSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
@@ -20,63 +30,86 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private const OPTION_NAME = 'allowed_file_types';
 
-	public const IMAGE_EXTENSIONS          = [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+	public const IMAGE_EXTENSIONS = [ 'jpg', 'jpeg', 'jpe', 'gif', 'png', 'bmp' ];
+
 	private const ADMINISTRATOR_EXTENSIONS = [ 'htm', 'html', 'js' ];
 
 	private string $title;
 	private string $description;
 
-	private array $setting_value;
-	private array $system_value;
+	private array $wp_value;
+	private array $settings_value;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param OptionsHelper $options_helper Helper functions for options.
+	 */
 	public function __construct(
-		private OptionsHelper $options,
+		private OptionsHelper $options_helper,
 	) {
 
 		$this->title = __( 'Allowed File Types', 'dco-comment-attachment' );
 
-		$this->setting_value = $this->options->get_array_option( self::OPTION_NAME ) ?? $this->get_system_value();
-
+		$this->init_wp_value();
+		$this->init_settings_value();
 		$this->init_description();
 	}
 
-	public function get_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
+	/**
+	 * Retrieves the file extensions allowed for upload from the plugin settings in the specified format.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param AllowedFileTypesFormat $format The format for the output value (optional).
+	 *                                       Default ARRAY.
+	 *
+	 * @return array The formatted array of allowed for upload file extensions.
+	 */
+	public function get_settings_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
 
-		$value = array_map( $this->get_extension_dto( ... ), $this->setting_value );
+		$value = array_map( $this->get_extension_dto( ... ), $this->settings_value );
 
 		return $this->format_value( $value, $format );
 	}
 
-	public function get_all_extensions( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
+	/**
+	 * Returns the settings field DTO for rendering setting.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return SettingsFieldDTO The settings field DTO.
+	 */
+	public function get_settings_field_dto(): SettingsFieldDTO {
 
-		$system_value = $this->get_system_value();
-
-		$value = array_map( $this->get_extension_dto( ... ), $system_value );
-
-		return $this->format_value( $value, $format );
-	}
-
-	public function get_setting_field_dto(): SettingFieldDTO {
-
-		return new SettingFieldDTO(
+		return new SettingsFieldDTO(
 			id: self::OPTION_NAME,
 			title: $this->title,
-			callback: $this->render_setting_field( ... ),
+			callback: $this->render_settings_field( ... ),
 			section: SettingsSection::PERMISSIONS
 		);
 	}
 
-	public function render_setting_field( array $args ): void {
+	/**
+	 * Renders the settings field in the plugin settings page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args The arguments list for rendering.
+	 */
+	public function render_settings_field( array $args ): void {
 
 		(
-			new AllowedFileTypesSettingControl(
+			new AllowedFileTypesSettingsControl(
 				name: $args['name'],
-				groups: $this->get_all_extensions( AllowedFileTypesFormat::GROUPED_ARRAY ),
+				groups: $this->get_allowed_wp_extension_groups(),
 			)
 		)->render();
 
 		(
-			new DescriptionSettingControl(
+			new DescriptionSettingsControl(
 				text: $this->description,
 			)
 		)->render();
@@ -87,29 +120,8 @@ final class AllowedFileTypesSetting implements Setting {
 		return match ( $format ) {
 
 			AllowedFileTypesFormat::ARRAY => $value,
-			AllowedFileTypesFormat::GROUPED_ARRAY => $this->format_grouped_value( $value ),
+			AllowedFileTypesFormat::GROUPED_BY_TYPE => $this->format_grouped_value( $value ),
 		};
-	}
-
-	private function get_system_value(): array {
-
-		if ( isset( $this->system_value ) ) {
-			return $this->system_value;
-		}
-
-		$this->system_value = [];
-
-		$raw_extensions = array_keys( get_allowed_mime_types() );
-
-		foreach ( $raw_extensions as $extension ) {
-
-			$this->system_value = array_merge(
-				$this->system_value,
-				explode( '|', $extension )
-			);
-		}
-
-		return $this->system_value;
 	}
 
 	private function format_grouped_value( array $value ): array {
@@ -134,6 +146,20 @@ final class AllowedFileTypesSetting implements Setting {
 		);
 
 		return $groups;
+	}
+
+	/**
+	 * Retrieves the allowed file types from WordPress in the specified format.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array The formatted list of allowed extensions.
+	 */
+	private function get_allowed_wp_extension_groups(): array {
+
+		$value = array_map( $this->get_extension_dto( ... ), $this->wp_value );
+
+		return $this->format_value( $value, AllowedFileTypesFormat::GROUPED_BY_TYPE );
 	}
 
 	private function get_plugin_groups(): array {
@@ -173,7 +199,7 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private function get_extension_dto( string $extension ): AllowedFileTypesExtensionDTO {
 
-		$is_allowed_to_upload = in_array( $extension, $this->setting_value, true );
+		$is_allowed_to_upload = in_array( $extension, $this->settings_value, true );
 
 		return new AllowedFileTypesExtensionDTO(
 			extension: $extension,
@@ -230,6 +256,26 @@ final class AllowedFileTypesSetting implements Setting {
 		);
 	}
 
+	private function init_wp_value(): void {
+
+		$this->wp_value = [];
+
+		$raw_extensions = array_keys( get_allowed_mime_types() );
+
+		foreach ( $raw_extensions as $extension ) {
+
+			$this->wp_value = array_merge(
+				$this->wp_value,
+				explode( '|', $extension )
+			);
+		}
+	}
+
+	private function init_settings_value(): void {
+
+		$this->settings_value = $this->options_helper->get_array_option( self::OPTION_NAME ) ?? $this->wp_value;
+	}
+
 	private function init_description(): void {
 
 		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
@@ -255,7 +301,7 @@ final class AllowedFileTypesSetting implements Setting {
 
 	public function filter_upload_mimes( array $mimes ): array {
 
-		$allowed_extensions = wp_list_pluck( $this->get_value(), 'extension' );
+		$allowed_extensions = wp_list_pluck( $this->get_settings_value(), 'extension' );
 
 		$filtered_mimes = [];
 

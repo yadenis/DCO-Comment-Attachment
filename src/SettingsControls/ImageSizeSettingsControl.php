@@ -1,6 +1,6 @@
 <?php
 /**
- * SettingControls: Image Size
+ * SettingsControls: Image Size
  *
  * @package DCO_Comment_Attachment
  * @author Denis Yanchevskiy
@@ -12,18 +12,18 @@
 
 declare(strict_types=1);
 
-namespace DCO_CA\SettingControls;
+namespace DCO_CA\SettingsControls;
 
-use DCO_CA\Interfaces\SettingControl;
+use DCO_CA\Interfaces\SettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
 /**
- * Renders the image size setting control in the admin panel.
+ * Renders the image size settings control in the admin panel.
  *
  * @since 3.0.0
  */
-final class ImageSizeControl implements SettingControl {
+final class ImageSizeSettingsControl implements SettingsControl {
 
 	/**
 	 * Constructor.
@@ -42,11 +42,11 @@ final class ImageSizeControl implements SettingControl {
 	}
 
 	/**
-	 * Renders the image size setting control.
+	 * Renders the image size settings control.
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_control(): void {
 
 		printf(
 			'<select name="%s" id="%s">',
