@@ -32,7 +32,7 @@ final class FileTypesFormElement implements FormElement {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var array<string, \DCO_CA\DTO\AllowedFileTypesGroupDTO>
 	 */
 	private array $file_types_groups;
 

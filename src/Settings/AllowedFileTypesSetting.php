@@ -240,7 +240,7 @@ final class AllowedFileTypesSetting implements Setting {
 			'dco-comment-attachment'
 		);
 		$note2 = __(
-			'Clicking on the name of a file type group (e.g. image) will select or deselect all extensions in that group.',
+			'Clicking on the name of a file type group (e.g., image) will select or deselect all extensions in that group.',
 			'dco-comment-attachment'
 		);
 

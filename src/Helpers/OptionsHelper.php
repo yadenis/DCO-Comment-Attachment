@@ -28,10 +28,10 @@ final class OptionsHelper {
 
 	/**
 	 * The plugin options from the database.
-	 * 
+	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var mixed[]
 	 */
 	private array $options;
 

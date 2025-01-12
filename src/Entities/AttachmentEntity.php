@@ -176,10 +176,6 @@ final class AttachmentEntity {
 	 */
 	private function generate_image_markup( string $image_size = '', ?int $gallery_id = null ): string {
 
-		if ( ! $this->is_image() ) {
-			return '';
-		}
-
 		$attachment_content = sprintf(
 			'<p class="dco-attachment dco-image-attachment">%s</p>',
 			$this->generate_img_tag_markup( $image_size, $gallery_id )
@@ -209,10 +205,6 @@ final class AttachmentEntity {
 	 */
 	private function generate_video_markup(): string {
 
-		if ( AttachmentEmbedType::VIDEO->value !== $this->embed_type ) {
-			return '';
-		}
-
 		$video_shortcode = sprintf(
 			'[video src="%s"]',
 			esc_url( $this->link )
@@ -233,10 +225,6 @@ final class AttachmentEntity {
 	 */
 	private function generate_audio_markup(): string {
 
-		if ( AttachmentEmbedType::AUDIO->value !== $this->embed_type ) {
-			return '';
-		}
-
 		$audio_shortcode = sprintf(
 			'[audio src="%s"]',
 			esc_url( $this->link )
@@ -256,10 +244,6 @@ final class AttachmentEntity {
 	 * @return string The HTML misc attachment markup.
 	 */
 	private function generate_misc_markup(): string {
-
-		if ( AttachmentEmbedType::MISC->value !== $this->embed_type ) {
-			return '';
-		}
 
 		/**
 		* Filters whether to force download misc attachments.
@@ -292,10 +276,6 @@ final class AttachmentEntity {
 	 *                or the plain img tag.
 	 */
 	private function generate_img_tag_markup( string $image_size = '', ?int $gallery_id = null ): string {
-
-		if ( ! $this->is_image() ) {
-			return '';
-		}
 
 		$image_size = $image_size ?: $this->settings_service->get_thumbnail_image_size();
 

@@ -83,10 +83,11 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array      $actions The actions for the comment row.
-	 * @param WP_Comment $wp_comment The WordPress comment for which the actions are displayed.
+	 * @param array<string, string> $actions The actions for the comment row.
+	 * @param WP_Comment            $wp_comment The WordPress comment
+	 *                                          for which the actions are displayed.
 	 *
-	 * @return array Modified actions with the delete/detach link.
+	 * @return array<string, string> Modified actions with the delete/detach link.
 	 */
 	public function add_delete_comment_attachment_action_link( array $actions, WP_Comment $wp_comment ): array {
 
@@ -255,7 +256,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Attachment ids from the request, or null if not available.
+	 * @return int[]|null Attachment ids from the request, or null if not available.
 	 */
 	private function get_request_undo_attachment_ids(): ?array {
 
@@ -300,7 +301,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 * @since 3.0.0
 	 *
 	 * @param int   $comment_id The comment id to check.
-	 * @param array $undo_attachment_ids The attachment ids to reattach.
+	 * @param int[] $undo_attachment_ids The attachment ids to reattach.
 	 */
 	private function process_undo_delete_comment_attachment_action_checks( int $comment_id, array $undo_attachment_ids ): void {
 

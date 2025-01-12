@@ -31,7 +31,7 @@ defined( 'ABSPATH' ) || die;
 final class AttachmentUploadValidator {
 
 	/**
-	 * List of uploaded attachments.
+	 * The `$_FILES`-like array of uploaded attachments.
 	 *
 	 * @since 3.0.0
 	 *
@@ -80,7 +80,7 @@ final class AttachmentUploadValidator {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var array<int, string>
 	 */
 	private array $upload_errors;
 
@@ -108,7 +108,7 @@ final class AttachmentUploadValidator {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $uploaded_attachments List of uploaded attachments.
+	 * @param array $uploaded_attachments The `$_FILES`-like array of uploaded attachments.
 	 *
 	 * @return null|bool|WP_Error Null if validation is not needed,
 	 *                            true on success, WP_Error on failure.

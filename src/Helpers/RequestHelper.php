@@ -31,7 +31,7 @@ final class RequestHelper {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var mixed[]
 	 */
 	private array $fields;
 

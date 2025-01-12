@@ -37,11 +37,11 @@ final class InputFormElement implements FormElement {
 	private bool $is_enabled_multiple_upload;
 
 	/**
-	 * List of allowed file types for upload.
+	 * The list of allowed file types for upload.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var \DCO_CA\DTO\AllowedFileTypesExtensionDTO[]
 	 */
 	private array $allowed_file_types;
 

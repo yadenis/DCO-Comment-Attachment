@@ -173,8 +173,8 @@ final class EditCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Attachment ids from the request,
-	 *               or null if not available.
+	 * @return int[]|null Attachment ids from the request,
+	 *                    or null if not available.
 	 */
 	private function get_request_attachment_ids(): ?array {
 

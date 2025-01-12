@@ -33,7 +33,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var AttachmentEntity[]
 	 */
 	private array $attachments;
 
@@ -42,7 +42,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var array
+	 * @var AttachmentEntity[]
 	 */
 	private array $attachments_to_delete = [];
 
@@ -92,7 +92,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array The list of comment attachments.
+	 * @return \DCO_CA\Entities\AttachmentEntity[] The list of comment attachments.
 	 */
 	public function get_attachments(): array {
 
@@ -142,7 +142,7 @@ final class CommentEntity {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $attachment_ids The list of attachment ids.
+	 * @param int[] $attachment_ids The list of attachment ids.
 	 */
 	public function set_attachment_ids( array $attachment_ids ): void {
 
@@ -151,7 +151,7 @@ final class CommentEntity {
 				fn( mixed $attachment_id ): ?AttachmentEntity => $this->attachment_service->get_attachment_instance( (int) $attachment_id ),
 				$attachment_ids
 			),
-			fn( ?AttachmentEntity $attachment ): bool => null !== $attachment
+			static fn( ?AttachmentEntity $attachment ): bool => null !== $attachment
 		);
 	}
 

@@ -83,7 +83,7 @@ final class Settings {
 	private function get_fields(): array {
 
 		return array_map(
-			fn( Setting $setting ): SettingFieldDTO => $setting->get_setting_field_dto(),
+			static fn( Setting $setting ): SettingFieldDTO => $setting->get_setting_field_dto(),
 			$this->settings
 		);
 	}

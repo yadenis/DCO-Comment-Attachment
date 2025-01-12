@@ -74,9 +74,9 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $actions Bulk actions.
+	 * @param array<string, string> $actions Bulk actions.
 	 *
-	 * @return array Modified bulk actions with the delete/detach action.
+	 * @return array<string, string> Modified bulk actions with the delete/detach action.
 	 */
 	public function add_bulk_action( array $actions ): array {
 
@@ -173,10 +173,10 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $removable_query_args Removable query arguments.
+	 * @param string[] $removable_query_args Removable query arguments.
 	 *
-	 * @return array Modified removable query arguments with
-	 *               the delete comment attachment bulk action name.
+	 * @return string[] Modified removable query arguments with
+	 *                  the delete comment attachment bulk action name.
 	 */
 	public function add_bulk_action_name_to_removable_query_args( array $removable_query_args ): array {
 
@@ -190,8 +190,8 @@ final class DeleteCommentAttachmentBulkAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array Comment ids from the request,
-	 *               or null if not available.
+	 * @return int[]|null Comment ids from the request,
+	 *                    or null if not available.
 	 */
 	private function get_request_comment_ids(): ?array {
 

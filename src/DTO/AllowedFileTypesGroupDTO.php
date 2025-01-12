@@ -28,9 +28,9 @@ final class AllowedFileTypesGroupDTO {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $name       The unique name of the file types group (e.g., 'image', 'video').
-	 * @param string $title      The display title of the file types group (e.g., 'Images', 'Videos').
-	 * @param array  $extensions The list of file extensions in this group (e.g., ['jpg', 'png', 'gif']).
+	 * @param string   $name       The unique name of the file types group (e.g., 'image', 'video').
+	 * @param string   $title      The display title of the file types group (e.g., 'Images', 'Videos').
+	 * @param string[] $extensions The list of file extensions in this group (e.g., ['jpg', 'png', 'gif']).
 	 */
 	public function __construct(
 		public readonly string $name,

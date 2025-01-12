@@ -43,10 +43,10 @@ final class AttachmentUploadHandler {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param array $uploaded_attachments List of uploaded attachments.
+	 * @param array $uploaded_attachments The `$_FILES`-like array of uploaded attachments.
 	 * @param int   $comment_post_id The comment post id.
 	 *
-	 * @return array List of attachment ids.
+	 * @return int[] List of attachment ids.
 	 */
 	public function handle( array $uploaded_attachments, int $comment_post_id ): array {
 
@@ -141,7 +141,7 @@ final class AttachmentUploadHandler {
 	 *
 	 * @param array $attachments Attachments to split as a `$_FILES`-like array.
 	 *
-	 * @return array $attachments_for_upload An array of attachments, where each attachment
+	 * @return array $attachments_for_upload The list of attachments, where each attachment
 	 *                                       is an associative array.
 	 */
 	private function split_attachments( array $attachments ): array {
@@ -155,7 +155,7 @@ final class AttachmentUploadHandler {
 		array_walk(
 			$attachments,
 			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-			fn( int|string|array &$value ): array => $value = (array) $value
+			static fn( int|string|array &$value ): array => $value = (array) $value
 		);
 
 		$keys  = array_keys( $attachments );
