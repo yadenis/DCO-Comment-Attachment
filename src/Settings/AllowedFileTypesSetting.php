@@ -26,6 +26,11 @@ use DCO_CA\SettingsControls\DescriptionSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality to Allowed File Types plugin setting.
+ *
+ * @since 3.0.0
+ */
 final class AllowedFileTypesSetting implements Setting {
 
 	private const OPTION_NAME = 'allowed_file_types';
@@ -34,13 +39,58 @@ final class AllowedFileTypesSetting implements Setting {
 
 	private const ADMINISTRATOR_EXTENSIONS = [ 'htm', 'html', 'js' ];
 
+	/**
+	 * The settings field title.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $title;
+
+	/**
+	 * The settings field description.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $description;
 
+	/**
+	 * The list of extension groups.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var array<string, string>
+	 */
 	private array $extension_groups;
+
+	/**
+	 * The list of embedded extensions.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string[]
+	 */
 	private array $embedded_extensions;
 
+	/**
+	 * The list of file extensions allowed for upload in WordPress.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string[]
+	 */
 	private array $wp_extensions;
+
+	/**
+	 * The list of file extensions allowed for upload in the plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string[]
+	 */
 	private array $setting_extensions;
 
 	/**
@@ -81,7 +131,7 @@ final class AllowedFileTypesSetting implements Setting {
 	}
 
 	/**
-	 * Returns the settings field DTO for rendering setting.
+	 * Returns the settings field DTO for rendering Allowed File Types setting.
 	 *
 	 * @since 3.0.0
 	 *
@@ -98,13 +148,17 @@ final class AllowedFileTypesSetting implements Setting {
 	}
 
 	/**
-	 * Renders the settings field in the plugin settings page.
+	 * Renders the Allowed File Types settings field in the plugin settings page.
 	 *
 	 * @since 3.0.0
 	 *
 	 * @param array $args The arguments list for rendering.
 	 */
 	public function render_settings_field( array $args ): void {
+
+		if ( empty( $args['name'] ) ) {
+			return;
+		}
 
 		(
 			new AllowedFileTypesSettingsControl(
@@ -162,13 +216,11 @@ final class AllowedFileTypesSetting implements Setting {
 			$groups[ $group ][] = $extension;
 		}
 
-		array_walk(
+		return array_map(
+			fn( array $extensions, string $group ): AllowedFileTypesGroupDTO => $this->get_extensions_group_dto( $group, $extensions ),
 			$groups,
-			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-			fn( array &$extensions, string $group ): AllowedFileTypesGroupDTO => $extensions = $this->get_extensions_group_dto( $group, $extensions )
+			array_keys( $groups )
 		);
-
-		return $groups;
 	}
 
 	/**
@@ -186,7 +238,7 @@ final class AllowedFileTypesSetting implements Setting {
 	}
 
 	/**
-	 * Creates the allowed file extension DTO.
+	 * Returns the allowed file extension DTO.
 	 *
 	 * @since 3.0.0
 	 *
@@ -208,7 +260,7 @@ final class AllowedFileTypesSetting implements Setting {
 	}
 
 	/**
-	 * Creates the allowed file extensions group DTO.
+	 * Returns the allowed file extensions group DTO.
 	 *
 	 * @since 3.0.0
 	 *
@@ -237,15 +289,9 @@ final class AllowedFileTypesSetting implements Setting {
 	 */
 	private function get_extension_group_name( string $extension ): string {
 
-		$groups = $this->extension_groups;
-
 		$group = wp_ext2type( $extension );
 
-		if ( ! isset( $groups[ $group ] ) ) {
-			$group = 'other';
-		}
-
-		return $group;
+		return $this->extension_groups[ $group ] ?? 'other';
 	}
 
 	/**
@@ -379,6 +425,8 @@ final class AllowedFileTypesSetting implements Setting {
 				explode( '|', $extension )
 			);
 		}
+
+		$this->wp_extensions = array_unique( $this->wp_extensions );
 	}
 
 	/**
