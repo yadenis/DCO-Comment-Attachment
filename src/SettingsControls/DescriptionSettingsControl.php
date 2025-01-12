@@ -42,7 +42,7 @@ final class DescriptionSettingsControl implements SettingsControl {
 	 *
 	 * @since 3.0.0
 	 */
-	public function render(): void {
+	public function render_control(): void {
 
 		printf(
 			'<p class="dco-description">%s</p>',

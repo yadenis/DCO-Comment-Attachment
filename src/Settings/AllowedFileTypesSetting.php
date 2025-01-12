@@ -37,8 +37,11 @@ final class AllowedFileTypesSetting implements Setting {
 	private string $title;
 	private string $description;
 
-	private array $wp_value;
-	private array $settings_value;
+	private array $extension_groups;
+	private array $embedded_extensions;
+
+	private array $wp_extensions;
+	private array $setting_extensions;
 
 	/**
 	 * Constructor.
@@ -53,9 +56,11 @@ final class AllowedFileTypesSetting implements Setting {
 
 		$this->title = __( 'Allowed File Types', 'dco-comment-attachment' );
 
-		$this->init_wp_value();
-		$this->init_settings_value();
 		$this->init_description();
+		$this->init_extension_groups();
+		$this->init_embedded_extensions();
+		$this->init_wp_extensions();
+		$this->init_setting_extensions();
 	}
 
 	/**
@@ -68,11 +73,11 @@ final class AllowedFileTypesSetting implements Setting {
 	 *
 	 * @return array The formatted array of allowed for upload file extensions.
 	 */
-	public function get_settings_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
+	public function get_setting_value( AllowedFileTypesFormat $format = AllowedFileTypesFormat::ARRAY ): array {
 
-		$value = array_map( $this->get_extension_dto( ... ), $this->settings_value );
+		$extensions = array_map( $this->get_extension_dto( ... ), $this->setting_extensions );
 
-		return $this->format_value( $value, $format );
+		return $this->format_extensions_list( $extensions, $format );
 	}
 
 	/**
@@ -106,29 +111,47 @@ final class AllowedFileTypesSetting implements Setting {
 				name: $args['name'],
 				groups: $this->get_allowed_wp_extension_groups(),
 			)
-		)->render();
+		)->render_control();
 
 		(
 			new DescriptionSettingsControl(
 				text: $this->description,
 			)
-		)->render();
+		)->render_control();
 	}
 
-	private function format_value( array $value, AllowedFileTypesFormat $format ) {
+	/**
+	 * Formats the extensions into the specified format.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array                  $extensions The extensions to format.
+	 * @param AllowedFileTypesFormat $format The format type.
+	 *
+	 * @return array The formatted extensions.
+	 */
+	private function format_extensions_list( array $extensions, AllowedFileTypesFormat $format ) {
 
 		return match ( $format ) {
-
-			AllowedFileTypesFormat::ARRAY => $value,
-			AllowedFileTypesFormat::GROUPED_BY_TYPE => $this->format_grouped_value( $value ),
+			AllowedFileTypesFormat::ARRAY => $extensions,
+			AllowedFileTypesFormat::GROUPED_BY_TYPE => $this->group_extensions_by_type( $extensions ),
 		};
 	}
 
-	private function format_grouped_value( array $value ): array {
+	/**
+	 * Groups the file extensions by their type.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $extensions The array of file extensions to be grouped.
+	 *
+	 * @return AllowedFileTypesGroupDTO[] The grouped file extensions.
+	 */
+	private function group_extensions_by_type( array $extensions ): array {
 
-		$groups = $this->get_groups();
+		$groups = $this->extension_groups;
 
-		foreach ( $value as $extension ) {
+		foreach ( $extensions as $extension ) {
 
 			$group = $extension->group;
 
@@ -142,75 +165,59 @@ final class AllowedFileTypesSetting implements Setting {
 		array_walk(
 			$groups,
 			// phpcs:ignore Squiz.PHP.DisallowMultipleAssignments.Found
-			fn( array &$extensions, string $group ): AllowedFileTypesGroupDTO => $extensions = $this->get_group_dto( $group, $extensions )
+			fn( array &$extensions, string $group ): AllowedFileTypesGroupDTO => $extensions = $this->get_extensions_group_dto( $group, $extensions )
 		);
 
 		return $groups;
 	}
 
 	/**
-	 * Retrieves the allowed file types from WordPress in the specified format.
+	 * Retrieves the allowed file extension groups for upload from WordPress.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array The formatted list of allowed extensions.
+	 * @return AllowedFileTypesGroupDTO[] The list of file extension groups allowed for upload.
 	 */
 	private function get_allowed_wp_extension_groups(): array {
 
-		$value = array_map( $this->get_extension_dto( ... ), $this->wp_value );
+		$value = array_map( $this->get_extension_dto( ... ), $this->wp_extensions );
 
-		return $this->format_value( $value, AllowedFileTypesFormat::GROUPED_BY_TYPE );
+		return $this->format_extensions_list( $value, AllowedFileTypesFormat::GROUPED_BY_TYPE );
 	}
 
-	private function get_plugin_groups(): array {
-
-		return [
-			'image'       => __( 'image', 'dco-comment-attachment' ),
-			'audio'       => __( 'audio', 'dco-comment-attachment' ),
-			'video'       => __( 'video', 'dco-comment-attachment' ),
-			'document'    => __( 'document', 'dco-comment-attachment' ),
-			'spreadsheet' => __( 'spreadsheet', 'dco-comment-attachment' ),
-			'interactive' => __( 'interactive', 'dco-comment-attachment' ),
-			'text'        => __( 'text', 'dco-comment-attachment' ),
-			'archive'     => __( 'archive', 'dco-comment-attachment' ),
-			'code'        => __( 'code', 'dco-comment-attachment' ),
-			'other'       => __( 'other', 'dco-comment-attachment' ),
-		];
-	}
-
-	private function get_system_groups(): array {
-
-		$system_groups      = wp_get_ext_types();
-		$system_groups_list = array_keys( $system_groups );
-
-		return array_combine(
-			$system_groups_list,
-			$system_groups_list
-		);
-	}
-
-	private function get_groups(): array {
-
-		return array_merge(
-			$this->get_system_groups(),
-			$this->get_plugin_groups()
-		);
-	}
-
+	/**
+	 * Creates the allowed file extension DTO.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $extension The file extension.
+	 *
+	 * @return AllowedFileTypesExtensionDTO The allowed file extension DTO.
+	 */
 	private function get_extension_dto( string $extension ): AllowedFileTypesExtensionDTO {
 
-		$is_allowed_to_upload = in_array( $extension, $this->settings_value, true );
+		$is_allowed_to_upload = in_array( $extension, $this->setting_extensions, true );
 
 		return new AllowedFileTypesExtensionDTO(
 			extension: $extension,
-			group: $this->get_extension_group( $extension ),
+			group: $this->get_extension_group_name( $extension ),
 			is_allowed_to_upload: $is_allowed_to_upload,
 			is_embedded: $this->is_embedded_extension( $extension ),
 			is_for_administrators: $this->is_administrator_extension( $extension ),
 		);
 	}
 
-	private function get_group_dto( string $group, array $extensions ): AllowedFileTypesGroupDTO {
+	/**
+	 * Creates the allowed file extensions group DTO.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string                         $group The group name.
+	 * @param AllowedFileTypesExtensionDTO[] $extensions The list of extensions.
+	 *
+	 * @return AllowedFileTypesGroupDTO The allowed file extensions group DTO.
+	 */
+	private function get_extensions_group_dto( string $group, array $extensions ): AllowedFileTypesGroupDTO {
 
 		return new AllowedFileTypesGroupDTO(
 			name: $group,
@@ -219,9 +226,18 @@ final class AllowedFileTypesSetting implements Setting {
 		);
 	}
 
-	private function get_extension_group( string $extension ): string {
+	/**
+	 * Retrieves the group name for a file extension.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $extension The file extension.
+	 *
+	 * @return string The group name.
+	 */
+	private function get_extension_group_name( string $extension ): string {
 
-		$groups = $this->get_groups();
+		$groups = $this->extension_groups;
 
 		$group = wp_ext2type( $extension );
 
@@ -232,50 +248,53 @@ final class AllowedFileTypesSetting implements Setting {
 		return $group;
 	}
 
+	/**
+	 * Retrieves the group title by its name.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $name The group name.
+	 *
+	 * @return string The group title.
+	 */
 	private function get_group_title_by_name( string $name ): string {
 
-		return $this->get_groups()[ $name ] ?? '';
+		return $this->extension_groups[ $name ] ?? '';
 	}
 
+	/**
+	 * Checks if the extension is for administrators use only.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $extension The file extension.
+	 *
+	 * @return bool True if the extension is for administrators, false otherwise.
+	 */
 	private function is_administrator_extension( string $extension ): bool {
 
 		return in_array( $extension, self::ADMINISTRATOR_EXTENSIONS, true );
 	}
 
+	/**
+	 * Checks if the extension is an embedded extension.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $extension The file extension.
+	 *
+	 * @return bool True if the extension is embedded, false otherwise.
+	 */
 	private function is_embedded_extension( string $extension ): bool {
 
-		return in_array( $extension, $this->get_embedded_extensions(), true );
+		return in_array( $extension, $this->embedded_extensions, true );
 	}
 
-	private function get_embedded_extensions(): array {
-
-		return array_merge(
-			wp_get_video_extensions(),
-			wp_get_audio_extensions(),
-			self::IMAGE_EXTENSIONS,
-		);
-	}
-
-	private function init_wp_value(): void {
-
-		$this->wp_value = [];
-
-		$raw_extensions = array_keys( get_allowed_mime_types() );
-
-		foreach ( $raw_extensions as $extension ) {
-
-			$this->wp_value = array_merge(
-				$this->wp_value,
-				explode( '|', $extension )
-			);
-		}
-	}
-
-	private function init_settings_value(): void {
-
-		$this->settings_value = $this->options_helper->get_array_option( self::OPTION_NAME ) ?? $this->wp_value;
-	}
-
+	/**
+	 * Initializes the setting description.
+	 *
+	 * @since 3.0.0
+	 */
 	private function init_description(): void {
 
 		$mark1 = __( 'available for embedding.', 'dco-comment-attachment' );
@@ -299,9 +318,91 @@ final class AllowedFileTypesSetting implements Setting {
 		);
 	}
 
+	/**
+	 * Initializes the extension groups.
+	 *
+	 * @since 3.0.0
+	 */
+	private function init_extension_groups(): void {
+
+		$wp_groups = array_keys( wp_get_ext_types() );
+
+		$this->extension_groups = array_merge(
+			array_combine(
+				$wp_groups,
+				$wp_groups
+			),
+			[
+				'image'       => __( 'image', 'dco-comment-attachment' ),
+				'audio'       => __( 'audio', 'dco-comment-attachment' ),
+				'video'       => __( 'video', 'dco-comment-attachment' ),
+				'document'    => __( 'document', 'dco-comment-attachment' ),
+				'spreadsheet' => __( 'spreadsheet', 'dco-comment-attachment' ),
+				'interactive' => __( 'interactive', 'dco-comment-attachment' ),
+				'text'        => __( 'text', 'dco-comment-attachment' ),
+				'archive'     => __( 'archive', 'dco-comment-attachment' ),
+				'code'        => __( 'code', 'dco-comment-attachment' ),
+				'other'       => __( 'other', 'dco-comment-attachment' ),
+			]
+		);
+	}
+
+	/**
+	 * Initializes the embedded extensions.
+	 *
+	 * @since 3.0.0
+	 */
+	private function init_embedded_extensions(): void {
+
+		$this->embedded_extensions = array_merge(
+			wp_get_video_extensions(),
+			wp_get_audio_extensions(),
+			self::IMAGE_EXTENSIONS,
+		);
+	}
+
+	/**
+	 * Initializes the WordPress extensions.
+	 *
+	 * @since 3.0.0
+	 */
+	private function init_wp_extensions(): void {
+
+		$this->wp_extensions = [];
+
+		$raw_extensions = array_keys( get_allowed_mime_types() );
+
+		foreach ( $raw_extensions as $extension ) {
+
+			$this->wp_extensions = array_merge(
+				$this->wp_extensions,
+				explode( '|', $extension )
+			);
+		}
+	}
+
+	/**
+	 * Initializes the setting extensions.
+	 *
+	 * @since 3.0.0
+	 */
+	private function init_setting_extensions(): void {
+
+		$this->setting_extensions = $this->options_helper->get_array_option( self::OPTION_NAME ) ?? $this->wp_extensions;
+	}
+
+	/**
+	 * Filters the allowed MIME types and file extensions for upload based on the plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array<string, string> $mimes The MIME types to filter.
+	 *
+	 * @return array<string, string> The filtered MIME types.
+	 */
 	public function filter_upload_mimes( array $mimes ): array {
 
-		$allowed_extensions = wp_list_pluck( $this->get_settings_value(), 'extension' );
+		$allowed_extensions = wp_list_pluck( $this->get_setting_value(), 'extension' );
 
 		$filtered_mimes = [];
 

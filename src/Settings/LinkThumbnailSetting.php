@@ -39,7 +39,7 @@ final class LinkThumbnailSetting implements Setting {
 		$this->init_types();
 	}
 
-	public function get_settings_value(): string {
+	public function get_setting_value(): string {
 
 		$value = $this->options_helper->get_string_option( self::OPTION_NAME );
 
@@ -62,7 +62,7 @@ final class LinkThumbnailSetting implements Setting {
 			new RadioSettingsControl(
 				choices: $this->build_choices( $args ),
 			)
-		)->render();
+		)->render_control();
 	}
 
 	private function build_choices( array $args ): array {
@@ -72,7 +72,7 @@ final class LinkThumbnailSetting implements Setting {
 				name: $args['name'],
 				value: $value,
 				text: $text,
-				checked: $value === $this->get_settings_value(),
+				checked: $value === $this->get_setting_value(),
 			),
 			array_keys( $this->types ),
 			$this->types

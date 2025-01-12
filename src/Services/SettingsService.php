@@ -92,7 +92,7 @@ final class SettingsService {
 	 */
 	public function get_formatted_max_upload_size(): string {
 
-		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::FORMATTED );
+		return $this->max_upload_size_setting->get_setting_value( MaxUploadSizeFormat::FORMATTED );
 	}
 
 	/**
@@ -104,7 +104,7 @@ final class SettingsService {
 	 */
 	public function get_max_upload_size_in_bytes(): int {
 
-		return $this->max_upload_size_setting->get_value( MaxUploadSizeFormat::IN_BYTES );
+		return $this->max_upload_size_setting->get_setting_value( MaxUploadSizeFormat::IN_BYTES );
 	}
 
 	/**
@@ -116,7 +116,7 @@ final class SettingsService {
 	 */
 	public function is_required_attachment(): bool {
 
-		return $this->required_attachment_setting->get_value();
+		return $this->required_attachment_setting->get_setting_value();
 	}
 
 	/**
@@ -128,7 +128,7 @@ final class SettingsService {
 	 */
 	public function is_embeded_attachment(): bool {
 
-		return $this->embed_attachment_setting->get_value();
+		return $this->embed_attachment_setting->get_setting_value();
 	}
 
 	/**
@@ -140,7 +140,7 @@ final class SettingsService {
 	 */
 	public function is_autoembed_links(): bool {
 
-		return is_admin() ? false : $this->autoembed_links_setting->get_value();
+		return is_admin() ? false : $this->autoembed_links_setting->get_setting_value();
 	}
 
 	/**
@@ -162,7 +162,7 @@ final class SettingsService {
 			 */
 			return apply_filters( 'dco_ca_admin_thumbnail_size', 'medium' );
 		} else {
-			return $this->thumbnail_size_setting->get_value();
+			return $this->thumbnail_size_setting->get_setting_value();
 		}
 	}
 
@@ -179,7 +179,7 @@ final class SettingsService {
 	 */
 	public function get_link_thumbnail_type(): string {
 
-		return $this->link_thumbnail_setting->get_value();
+		return $this->link_thumbnail_setting->get_setting_value();
 	}
 
 	/**
@@ -191,7 +191,7 @@ final class SettingsService {
 	 */
 	public function is_enabled_multiple_upload(): bool {
 
-		return $this->enable_multiple_upload_setting->get_value();
+		return $this->enable_multiple_upload_setting->get_setting_value();
 	}
 
 	/**
@@ -203,7 +203,7 @@ final class SettingsService {
 	 */
 	public function is_combined_images(): bool {
 
-		return is_admin() ? true : $this->combine_images_setting->get_value();
+		return is_admin() ? true : $this->combine_images_setting->get_setting_value();
 	}
 
 	/**
@@ -215,7 +215,7 @@ final class SettingsService {
 	 */
 	public function get_gallery_image_size(): string {
 
-		return $this->gallery_size_setting->get_value();
+		return $this->gallery_size_setting->get_setting_value();
 	}
 
 	/**
@@ -227,7 +227,7 @@ final class SettingsService {
 	 */
 	public function get_allowed_file_types(): array {
 
-		return $this->allowed_file_types_setting->get_value();
+		return $this->allowed_file_types_setting->get_setting_value();
 	}
 
 	/**
@@ -239,7 +239,7 @@ final class SettingsService {
 	 */
 	public function get_grouped_allowed_file_types(): array {
 
-		return $this->allowed_file_types_setting->get_value( AllowedFileTypesFormat::GROUPED_BY_TYPE );
+		return $this->allowed_file_types_setting->get_setting_value( AllowedFileTypesFormat::GROUPED_BY_TYPE );
 	}
 
 	/**
@@ -287,7 +287,7 @@ final class SettingsService {
 	 */
 	public function is_manually_moderation_enabled(): bool {
 
-		return $this->manually_moderation_setting->get_value();
+		return $this->manually_moderation_setting->get_setting_value();
 	}
 
 	/**
@@ -299,7 +299,7 @@ final class SettingsService {
 	 */
 	public function is_delete_attachments_with_comment(): bool {
 
-		return $this->delete_with_comment_setting->get_value();
+		return $this->delete_with_comment_setting->get_setting_value();
 	}
 
 	/**

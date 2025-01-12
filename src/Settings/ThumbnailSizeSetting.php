@@ -33,7 +33,7 @@ final class ThumbnailSizeSetting implements Setting {
 		);
 	}
 
-	public function get_settings_value(): string {
+	public function get_setting_value(): string {
 
 		return $this->options_helper->get_string_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
 	}
@@ -54,14 +54,14 @@ final class ThumbnailSizeSetting implements Setting {
 			new ImageSizeSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
-				selected_size: $this->get_settings_value(),
+				selected_size: $this->get_setting_value(),
 			)
-		)->render();
+		)->render_control();
 
 		(
 			new DescriptionSettingsControl(
 				text: $this->description,
 			)
-		)->render();
+		)->render_control();
 	}
 }

@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || die;
 
 interface Setting {
 
-	public function get_settings_value(): mixed;
+	public function get_setting_value(): mixed;
 
 	public function get_settings_field_dto(): SettingsFieldDTO;
 

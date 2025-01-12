@@ -33,7 +33,7 @@ final class AutoembedLinksSetting implements Setting {
 		);
 	}
 
-	public function get_settings_value(): bool {
+	public function get_setting_value(): bool {
 
 		return $this->options_helper->get_bool_option( self::OPTION_NAME ) ?? self::DEFAULT_VALUE;
 	}
@@ -54,14 +54,14 @@ final class AutoembedLinksSetting implements Setting {
 			new CheckboxSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
-				checked: $this->get_settings_value(),
+				checked: $this->get_setting_value(),
 			)
-		)->render();
+		)->render_control();
 
 		(
 			new DescriptionSettingsControl(
 				text: $this->description
 			)
-		)->render();
+		)->render_control();
 	}
 }

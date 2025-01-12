@@ -39,7 +39,7 @@ final class WhoCanUploadSetting implements Setting {
 		];
 	}
 
-	public function get_settings_value(): string {
+	public function get_setting_value(): string {
 
 		$value = $this->options_helper->get_string_option( self::OPTION_NAME );
 
@@ -48,7 +48,7 @@ final class WhoCanUploadSetting implements Setting {
 
 	public function is_can_upload_all_users(): bool {
 
-		if ( WhoCanUploadType::ALL_USERS->value === $this->get_settings_value() ) {
+		if ( WhoCanUploadType::ALL_USERS->value === $this->get_setting_value() ) {
 			return true;
 		}
 
@@ -57,7 +57,7 @@ final class WhoCanUploadSetting implements Setting {
 
 	public function is_can_upload_only_logged_users(): bool {
 
-		if ( WhoCanUploadType::ONLY_LOGGED_USERS->value === $this->get_settings_value() ) {
+		if ( WhoCanUploadType::ONLY_LOGGED_USERS->value === $this->get_setting_value() ) {
 			return true;
 		}
 
@@ -80,7 +80,7 @@ final class WhoCanUploadSetting implements Setting {
 			new RadioSettingsControl(
 				choices: $this->build_choices( $args ),
 			)
-		)->render();
+		)->render_control();
 	}
 
 	private function build_choices( array $args ): array {
@@ -93,7 +93,7 @@ final class WhoCanUploadSetting implements Setting {
 				name: $args['name'],
 				value: $value,
 				text: $text,
-				checked: $value === $this->get_settings_value(),
+				checked: $value === $this->get_setting_value(),
 			);
 		}
 

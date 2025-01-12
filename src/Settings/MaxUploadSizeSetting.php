@@ -37,7 +37,7 @@ final class MaxUploadSizeSetting implements Setting {
 		);
 	}
 
-	public function get_settings_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
+	public function get_setting_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
 		$value = $this->options_helper->get_int_option( self::OPTION_NAME );
 		if ( null === $value ) {
@@ -67,16 +67,16 @@ final class MaxUploadSizeSetting implements Setting {
 			new NumberSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
-				value:  $this->get_settings_value( MaxUploadSizeFormat::IN_MEGABYTES ),
+				value:  $this->get_setting_value( MaxUploadSizeFormat::IN_MEGABYTES ),
 				max: $this->get_system_value( MaxUploadSizeFormat::IN_MEGABYTES ),
 			)
-		)->render();
+		)->render_control();
 
 		(
 			new DescriptionSettingsControl(
 				text: $this->description,
 			)
-		)->render();
+		)->render_control();
 	}
 
 	private function get_system_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
