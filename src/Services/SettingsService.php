@@ -108,7 +108,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if an attachment is required for comment submission.
+	 * Whether an attachment is required for comment submission.
 	 *
 	 * @since 3.0.0
 	 *
@@ -120,11 +120,11 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if an attachment can be embedded.
+	 * Whether the attachments should be embedded.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return bool True if the attachment can be embedded, false otherwise.
+	 * @return bool True if the attachments should be embedded, false otherwise.
 	 */
 	public function is_embeded_attachment(): bool {
 
@@ -132,7 +132,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if auto-embedding of links is enabled.
+	 * Whether auto-embedding of links is enabled.
 	 *
 	 * @since 3.0.0
 	 *
@@ -148,7 +148,8 @@ final class SettingsService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return string The thumbnail size (e.g., 'medium', 'large').
+	 * @return string The thumbnail size (e.g., 'medium', 'large') from the plugin settings, 
+	 *                except for the admin panel, where the size is forced to 'medium'.
 	 */
 	public function get_thumbnail_image_size(): string {
 
@@ -183,7 +184,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if multiple upload is enabled.
+	 * Whether multiple upload is enabled.
 	 *
 	 * @since 3.0.0
 	 *
@@ -195,7 +196,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if images should be combined into a gallery.
+	 * Whether images should be combined into a gallery.
 	 *
 	 * @since 3.0.0
 	 *
@@ -255,7 +256,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if all users can upload attachments.
+	 * Whether all users can upload attachments.
 	 *
 	 * @since 3.0.0
 	 *
@@ -267,7 +268,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if only logged-in users can upload attachments.
+	 * Whether only logged-in users can upload attachments.
 	 *
 	 * @since 3.0.0
 	 *
@@ -279,7 +280,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if manual moderation is enabled.
+	 * Whether manual moderation is enabled.
 	 *
 	 * @since 3.0.0
 	 *
@@ -291,11 +292,11 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if attachments should be deleted along with the associated comment.
+	 * Whether attachments should be deleted along with the associated comment.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return bool True if attachments are deleted with the comment, false otherwise.
+	 * @return bool True if attachments should bе deleted with the comment, false otherwise.
 	 */
 	public function is_delete_attachments_with_comment(): bool {
 
@@ -303,7 +304,7 @@ final class SettingsService {
 	}
 
 	/**
-	 * Checks if attachments should be deleted from the media library.
+	 * Whether attachments should be deleted from the media library.
 	 *
 	 * @since 3.0.0
 	 *

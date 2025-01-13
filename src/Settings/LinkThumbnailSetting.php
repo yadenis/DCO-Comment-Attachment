@@ -1,4 +1,14 @@
 <?php
+/**
+ * Settings: Link Thumbnail
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -14,6 +24,11 @@ use DCO_CA\SettingsControls\RadioChoiceSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality for the Link Thumbnail plugin setting.
+ *
+ * @since 3.0.0
+ */
 final class LinkThumbnailSetting implements Setting {
 
 	private const OPTION_NAME   = 'link_thumbnail';
@@ -27,9 +42,31 @@ final class LinkThumbnailSetting implements Setting {
 		'3' => LinkThumbnailType::ATTACHMENT_PAGE,
 	];
 
+	/**
+	 * The settings field title.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $title;
+
+	/**
+	 * The list of link thumbnail types.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var array<string, string>
+	 */
 	private array $types;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param OptionsHelper $options_helper Helper functions for options.
+	 */
 	public function __construct(
 		private OptionsHelper $options_helper,
 	) {
@@ -39,6 +76,13 @@ final class LinkThumbnailSetting implements Setting {
 		$this->init_types();
 	}
 
+	/**
+	 * Retrieves the type of the link for the thumbnail.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The type of the link for the thumbnail.
+	 */
 	public function get_setting_value(): string {
 
 		$value = $this->options_helper->get_string_option( self::OPTION_NAME );
@@ -46,6 +90,13 @@ final class LinkThumbnailSetting implements Setting {
 		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
+	/**
+	 * Returns the settings field DTO for rendering the Link Thumbnail setting.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return SettingsFieldDTO The settings field DTO.
+	 */
 	public function get_settings_field_dto(): SettingsFieldDTO {
 
 		return new SettingsFieldDTO(
@@ -56,6 +107,13 @@ final class LinkThumbnailSetting implements Setting {
 		);
 	}
 
+	/**
+	 * Renders the Link Thumbnail settings field in the plugin settings page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args The arguments list for rendering.
+	 */
 	public function render_settings_field( array $args ): void {
 
 		(
@@ -65,7 +123,20 @@ final class LinkThumbnailSetting implements Setting {
 		)->render_control();
 	}
 
+	/**
+	 * Builds the choices for the radio button control.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args The arguments list for rendering.
+	 *
+	 * @return RadioChoiceSettingsControl[] The list of radio choice controls.
+	 */
 	private function build_choices( array $args ): array {
+
+		if ( empty( $args['name'] ) ) {
+			return [];
+		}
 
 		return array_map(
 			fn( string $value, string $text ): RadioChoiceSettingsControl => new RadioChoiceSettingsControl(
@@ -79,11 +150,25 @@ final class LinkThumbnailSetting implements Setting {
 		);
 	}
 
+	/**
+	 * Ensures backward compatibility with legacy values for the plugin setting.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string|null $value The old setting value.
+	 *
+	 * @return string|null The converted value, or null if not compatible.
+	 */
 	private function ensure_backward_compatibility( ?string $value ): ?string {
 
 		return self::LEGACY_VALUES_MAP[ $value ]->value ?? $value;
 	}
 
+	/**
+	 * Initializes the link thumbnail types.
+	 *
+	 * @since 3.0.0
+	 */
 	private function init_types(): void {
 
 		$this->types[ LinkThumbnailType::NO_LINK->value ] = __(

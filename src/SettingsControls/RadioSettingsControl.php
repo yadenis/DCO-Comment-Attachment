@@ -35,6 +35,11 @@ final class RadioSettingsControl implements SettingsControl {
 	public function __construct(
 		private array $choices,
 	) {
+
+		$this->choices = array_filter(
+			$this->choices,
+			static fn( mixed $choice ): bool => $choice instanceof RadioChoiceSettingsControl
+		);
 	}
 
 	/**
@@ -44,15 +49,15 @@ final class RadioSettingsControl implements SettingsControl {
 	 */
 	public function render_control(): void {
 
+		if ( ! $this->choices ) {
+			return;
+		}
+
 		echo '<fieldset>';
 
 		$choices = [];
 
 		foreach ( $this->choices as $choice ) {
-
-			if ( ! $choice instanceof RadioChoiceSettingsControl ) {
-				continue;
-			}
 
 			ob_start();
 

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Settings: Max Upload Size
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -14,13 +24,40 @@ use DCO_CA\SettingsControls\NumberSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality for the Max Upload Size plugin setting.
+ *
+ * @since 3.0.0
+ */
 final class MaxUploadSizeSetting implements Setting {
 
 	private const OPTION_NAME = 'max_upload_size';
 
+	/**
+	 * The settings field title.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $title;
+
+	/**
+	 * The settings field description.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $description;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param OptionsHelper $options_helper Helper functions for options.
+	 */
 	public function __construct(
 		private OptionsHelper $options_helper,
 	) {
@@ -33,15 +70,25 @@ final class MaxUploadSizeSetting implements Setting {
 				'Set the value in megabytes. Currently your server allows you to upload files up to %s.',
 				'dco-comment-attachment'
 			),
-			$this->get_system_value( MaxUploadSizeFormat::FORMATTED )
+			$this->get_wp_value( MaxUploadSizeFormat::FORMATTED )
 		);
 	}
 
+	/**
+	 * Retrieves the max upload size from the plugin settings in the specified format.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param MaxUploadSizeFormat $format The format for the output value (optional).
+	 *                                    Default IN_MEGABYTES.
+	 *
+	 * @return int|string The formatted max upload size.
+	 */
 	public function get_setting_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
 		$value = $this->options_helper->get_int_option( self::OPTION_NAME );
 		if ( null === $value ) {
-			return $this->get_system_value( $format );
+			return $this->get_wp_value( $format );
 		}
 
 		return match ( $format ) {
@@ -51,6 +98,13 @@ final class MaxUploadSizeSetting implements Setting {
 		};
 	}
 
+	/**
+	 * Returns the settings field DTO for rendering the Max Upload Size setting.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return SettingsFieldDTO The settings field DTO.
+	 */
 	public function get_settings_field_dto(): SettingsFieldDTO {
 
 		return new SettingsFieldDTO(
@@ -61,14 +115,25 @@ final class MaxUploadSizeSetting implements Setting {
 		);
 	}
 
+	/**
+	 * Renders the Max Upload Size settings field in the plugin settings page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args The arguments list for rendering.
+	 */
 	public function render_settings_field( array $args ): void {
+
+		if ( empty( $args['name'] ) || empty( $args['id'] ) ) {
+			return;
+		}
 
 		(
 			new NumberSettingsControl(
 				name: $args['name'],
 				id: $args['id'],
 				value:  $this->get_setting_value( MaxUploadSizeFormat::IN_MEGABYTES ),
-				max: $this->get_system_value( MaxUploadSizeFormat::IN_MEGABYTES ),
+				max: $this->get_wp_value( MaxUploadSizeFormat::IN_MEGABYTES ),
 			)
 		)->render_control();
 
@@ -79,7 +144,17 @@ final class MaxUploadSizeSetting implements Setting {
 		)->render_control();
 	}
 
-	private function get_system_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
+	/**
+	 * Retrieves the max upload size from WordPress in the specified format.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param MaxUploadSizeFormat $format The format for the output value (optional).
+	 *                                    Default IN_MEGABYTES.
+	 *
+	 * @return int|string The formatted max upload size.
+	 */
+	private function get_wp_value( MaxUploadSizeFormat $format = MaxUploadSizeFormat::IN_MEGABYTES ): int|string {
 
 		$value = wp_max_upload_size();
 

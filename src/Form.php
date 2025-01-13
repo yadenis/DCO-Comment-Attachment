@@ -28,7 +28,7 @@ final class Form {
 
 		ob_start();
 
-		$this->attachment_area->render();
+		$this->attachment_area->render_element();
 
 		return ob_get_clean() . $submit_field;
 	}

@@ -27,7 +27,7 @@ use DCO_CA\SettingsControls\DescriptionSettingsControl;
 defined( 'ABSPATH' ) || die;
 
 /**
- * Provides functionality to Allowed File Types plugin setting.
+ * Provides functionality for the Allowed File Types plugin setting.
  *
  * @since 3.0.0
  */
@@ -131,7 +131,7 @@ final class AllowedFileTypesSetting implements Setting {
 	}
 
 	/**
-	 * Returns the settings field DTO for rendering Allowed File Types setting.
+	 * Returns the settings field DTO for rendering the Allowed File Types setting.
 	 *
 	 * @since 3.0.0
 	 *

@@ -1,4 +1,14 @@
 <?php
+/**
+ * Settings: Who Can Upload
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -14,6 +24,11 @@ use DCO_CA\SettingsControls\RadioSettingsControl;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Provides functionality for the Who Can Upload plugin setting.
+ *
+ * @since 3.0.0
+ */
 final class WhoCanUploadSetting implements Setting {
 
 	private const OPTION_NAME   = 'who_can_upload';
@@ -24,9 +39,31 @@ final class WhoCanUploadSetting implements Setting {
 		'2' => WhoCanUploadType::ONLY_LOGGED_USERS,
 	];
 
+	/**
+	 * The settings field title.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var string
+	 */
 	private string $title;
+
+	/**
+	 * The list of who can upload types.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var array<string, string>
+	 */
 	private array $types;
 
+	/**
+	 * Constructor.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param OptionsHelper $options_helper Helper functions for options.
+	 */
 	public function __construct(
 		private OptionsHelper $options_helper,
 	) {
@@ -39,6 +76,13 @@ final class WhoCanUploadSetting implements Setting {
 		];
 	}
 
+	/**
+	 * Retrieves the who can upload type from the plugin settings.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The who can upload type.
+	 */
 	public function get_setting_value(): string {
 
 		$value = $this->options_helper->get_string_option( self::OPTION_NAME );
@@ -46,6 +90,13 @@ final class WhoCanUploadSetting implements Setting {
 		return $this->ensure_backward_compatibility( $value ) ?? self::DEFAULT_VALUE->value;
 	}
 
+	/**
+	 * Whether all users can upload attachments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if all users can upload attachments, false otherwise.
+	 */
 	public function is_can_upload_all_users(): bool {
 
 		if ( WhoCanUploadType::ALL_USERS->value === $this->get_setting_value() ) {
@@ -55,6 +106,13 @@ final class WhoCanUploadSetting implements Setting {
 		return false;
 	}
 
+	/**
+	 * Whether only logged-in users can upload attachments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return bool True if only logged-in users can upload attachments, false otherwise.
+	 */
 	public function is_can_upload_only_logged_users(): bool {
 
 		if ( WhoCanUploadType::ONLY_LOGGED_USERS->value === $this->get_setting_value() ) {
@@ -64,6 +122,13 @@ final class WhoCanUploadSetting implements Setting {
 		return false;
 	}
 
+	/**
+	 * Returns the settings field DTO for rendering the Who Can Upload setting.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return SettingsFieldDTO The settings field DTO.
+	 */
 	public function get_settings_field_dto(): SettingsFieldDTO {
 
 		return new SettingsFieldDTO(
@@ -74,6 +139,13 @@ final class WhoCanUploadSetting implements Setting {
 		);
 	}
 
+	/**
+	 * Renders the Who Can Upload settings field in the plugin settings page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args The arguments list for rendering.
+	 */
 	public function render_settings_field( array $args ): void {
 
 		(
@@ -83,23 +155,42 @@ final class WhoCanUploadSetting implements Setting {
 		)->render_control();
 	}
 
+	/**
+	 * Builds the choices for the radio button control.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $args The arguments list for rendering.
+	 *
+	 * @return RadioChoiceSettingsControl[] The list of radio choice controls.
+	 */
 	private function build_choices( array $args ): array {
 
-		$choices = [];
+		if ( empty( $args['name'] ) ) {
+			return [];
+		}
 
-		foreach ( $this->types as $value => $text ) {
-
-			$choices[] = new RadioChoiceSettingsControl(
+		return array_map(
+			fn( string $value, string $text ): RadioChoiceSettingsControl => new RadioChoiceSettingsControl(
 				name: $args['name'],
 				value: $value,
 				text: $text,
 				checked: $value === $this->get_setting_value(),
-			);
-		}
-
-		return $choices;
+			),
+			array_keys( $this->types ),
+			$this->types
+		);
 	}
 
+	/**
+	 * Ensures backward compatibility with legacy values for the plugin setting.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string|null $value The old setting value.
+	 *
+	 * @return string|null The converted value, or null if not compatible.
+	 */
 	private function ensure_backward_compatibility( ?string $value ): ?string {
 
 		return self::LEGACY_VALUES_MAP[ $value ]->value ?? $value;
