@@ -16,7 +16,6 @@ namespace DCO_CA\Services;
 
 use DCO_CA\Enums\AllowedFileTypesFormat;
 use DCO_CA\Enums\MaxUploadSizeFormat;
-use DCO_CA\Settings;
 use DCO_CA\Settings\AllowedFileTypesSetting;
 use DCO_CA\Settings\AutoembedLinksSetting;
 use DCO_CA\Settings\CombineImagesSetting;
@@ -79,8 +78,6 @@ final class SettingsService {
 		private DeleteWithCommentSetting $delete_with_comment_setting,
 		private DeleteAttachmentActionSetting $delete_attachment_action_setting,
 	) {
-
-		new Settings( $this->get_all_settings_instances() );
 	}
 
 	/**
@@ -148,7 +145,7 @@ final class SettingsService {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return string The thumbnail size (e.g., 'medium', 'large') from the plugin settings, 
+	 * @return string The thumbnail size (e.g., 'medium', 'large') from the plugin settings,
 	 *                except for the admin panel, where the size is forced to 'medium'.
 	 */
 	public function get_thumbnail_image_size(): string {

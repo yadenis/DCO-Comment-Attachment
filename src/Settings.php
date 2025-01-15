@@ -8,18 +8,19 @@ use DCO_CA\DTO\SettingsFieldDTO;
 use DCO_CA\Enums\SettingsSection;
 use DCO_CA\Interfaces\Setting;
 use DCO_CA\Services\PluginService;
+use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
 final class Settings {
 
-	private string $settings_id;
+	private array $settings;
 
 	public function __construct(
-		private array $settings
+		private SettingsService $settings_service,
 	) {
 
-		$this->settings_id = PluginService::SETTINGS_ID;
+		$this->settings = $this->settings_service->get_all_settings_instances();
 
 		add_action( 'admin_menu', $this->add_settings_page( ... ) );
 		add_action( 'admin_init', $this->add_settings_fields( ... ) );
@@ -43,8 +44,8 @@ final class Settings {
 			<h1><?php esc_html_e( 'DCO Comment Attachment Settings', 'dco-comment-attachment' ); ?></h1>
 			<form action="options.php" method="post">
 				<?php
-				settings_fields( $this->settings_id );
-				do_settings_sections( $this->settings_id );
+				settings_fields( PluginService::SETTINGS_ID );
+				do_settings_sections( PluginService::SETTINGS_ID );
 				submit_button();
 				?>
 			</form>
@@ -54,7 +55,7 @@ final class Settings {
 
 	public function add_settings_fields(): void {
 
-		register_setting( $this->settings_id, $this->settings_id );
+		register_setting( PluginService::SETTINGS_ID, PluginService::SETTINGS_ID );
 
 		foreach ( $this->get_sections() as $id => $title ) {
 
@@ -94,7 +95,7 @@ final class Settings {
 			id: $id,
 			title: esc_html( $title ),
 			callback: $this->render_section( ... ),
-			page: $this->settings_id
+			page: PluginService::SETTINGS_ID
 		);
 	}
 
@@ -104,10 +105,10 @@ final class Settings {
 			id: $field->id,
 			title: esc_html( $field->title ),
 			callback: $field->callback,
-			page: $this->settings_id,
+			page: PluginService::SETTINGS_ID,
 			section: esc_html( $field->section->value ),
 			args: [
-				'name'      => $this->settings_id . "[{$field->id}]",
+				'name'      => PluginService::SETTINGS_ID . "[{$field->id}]",
 				'id'        => $field->id,
 				'label_for' => $field->id,
 			]

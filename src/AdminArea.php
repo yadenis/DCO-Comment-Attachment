@@ -1,4 +1,14 @@
 <?php
+/**
+ * Admin Area
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -13,7 +23,12 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
-final class Admin {
+/**
+ * Handles the admin functionality.
+ *
+ * @since 3.0.0
+ */
+final class AdminArea {
 
 	protected const ADMIN_PAGES = [
 		'edit-comments.php',
@@ -21,10 +36,22 @@ final class Admin {
 		'settings_page_dco-comment-attachment',
 	];
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService                          $plugin_service                              Service functions for the plugin.
+	 * @param SettingsService                        $settings_service                            Service functions for settings.
+	 * @param CommentService                         $comment_service                             Service functions for comments.
+	 * @param DeleteCommentAttachmentAdminAction     $delete_attachment_admin_action              Delete Comment Attachment admin action.
+	 * @param DeleteCommentAttachmentBulkAdminAction $delete_comment_attachment_bulk_admin_action Delete Comment Attachment Bulk admin action.
+	 * @param EditCommentAttachmentAdminAction       $edit_comment_attachment_admin_action        Edit Comment Attachment admin action.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
-		private CommentService $comment_service,
 		private SettingsService $settings_service,
+		private CommentService $comment_service,
 		private DeleteCommentAttachmentAdminAction $delete_attachment_admin_action,
 		private DeleteCommentAttachmentBulkAdminAction $delete_comment_attachment_bulk_admin_action,
 		private EditCommentAttachmentAdminAction $edit_comment_attachment_admin_action,
@@ -32,12 +59,19 @@ final class Admin {
 
 		add_action( 'admin_enqueue_scripts', $this->enqueue_scripts( ... ) );
 
-		add_filter( 'plugin_action_links_' . PluginService::BASENAME, $this->add_plugin_action_links( ... ) );
+		add_filter( 'plugin_action_links_' . PluginService::BASENAME, $this->add_settings_plugin_action_link( ... ) );
 
 		add_filter( 'comment_notification_text', $this->add_attachment_links_to_new_comment_email( ... ), 10, 2 );
 		add_filter( 'comment_moderation_text', $this->add_attachment_links_to_new_comment_email( ... ), 10, 2 );
 	}
 
+	/**
+	 * Enqueues scripts and styles for the admin pages.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $hook_suffix The current admin page id.
+	 */
 	public function enqueue_scripts( string $hook_suffix ): void {
 
 		if ( $this->is_admin_page( $hook_suffix ) ) {
@@ -48,8 +82,8 @@ final class Admin {
 			$this->enqueue_edit_comments_page_scripts();
 		}
 
-		if ( $this->is_comment_page( $hook_suffix ) ) {
-			$this->enqueue_comment_page_scripts();
+		if ( $this->is_edit_comment_page( $hook_suffix ) ) {
+			$this->enqueue_edit_comment_page_scripts();
 		}
 
 		if ( $this->is_plugin_settings_page( $hook_suffix ) ) {
@@ -57,7 +91,16 @@ final class Admin {
 		}
 	}
 
-	public function add_plugin_action_links( array $actions ): array {
+	/**
+	 * Adds a "Settings" link to the plugin action links on the Plugins page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $actions The list of existing action links.
+	 *
+	 * @return array The updated list of action links.
+	 */
+	public function add_settings_plugin_action_link( array $actions ): array {
 
 		array_unshift(
 			$actions,
@@ -71,14 +114,21 @@ final class Admin {
 		return $actions;
 	}
 
+	/**
+	 * Appends the attachment links to the email notification text for new comments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $notification_text The original notification text.
+	 * @param int    $comment_id        The ID of the comment.
+	 *
+	 * @return string The updated notification text with attachment links.
+	 */
 	public function add_attachment_links_to_new_comment_email( string $notification_text, int $comment_id ): string {
 
 		$comment = $this->comment_service->get_comment_instance( $comment_id );
-		if ( ! $comment ) {
-			return $notification_text;
-		}
 
-		if ( ! $comment->has_attachments() ) {
+		if ( ! $comment || ! $comment->has_attachments() ) {
 			return $notification_text;
 		}
 
@@ -90,6 +140,11 @@ final class Admin {
 		return $notification_text . implode( "\r\n- ", $attachment_links );
 	}
 
+	/**
+	 * Enqueues scripts for the edit comments page.
+	 *
+	 * @since 3.0.0
+	 */
 	private function enqueue_edit_comments_page_scripts(): void {
 
 		$this->plugin_service->enqueue_script(
@@ -118,7 +173,12 @@ final class Admin {
 		);
 	}
 
-	private function enqueue_comment_page_scripts(): void {
+	/**
+	 * Enqueues scripts and styles for the edit comment page.
+	 *
+	 * @since 3.0.0
+	 */
+	private function enqueue_edit_comment_page_scripts(): void {
 
 		wp_enqueue_media();
 
@@ -132,11 +192,18 @@ final class Admin {
 				'set_attachment_title'     => esc_attr__( 'Set Comment Attachment', 'dco-comment-attachment' ),
 				'add_attachment_label'     => esc_attr__( 'Add Attachment', 'dco-comment-attachment' ),
 				'replace_attachment_label' => esc_attr__( 'Replace Attachment', 'dco-comment-attachment' ),
-				'comment_attachments'      => $this->get_commment_page_comment_attachments_script_data(),
+				'comment_attachments'      => $this->generate_commment_page_comment_attachments_script_data(),
 			]
 		);
 	}
 
+	/**
+	 * Enqueues scripts and styles for the plugin settings page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return void
+	 */
 	private function enqueue_plugin_settings_page_scripts(): void {
 
 		$name = 'dco-comment-attachment-admin-plugin-settings';
@@ -152,7 +219,15 @@ final class Admin {
 		);
 	}
 
-	private function get_commment_page_comment_attachments_script_data(): array {
+	/**
+	 * Generates the script data for comment attachments on the edit comment page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array An array of attachment data, where each element contains
+	 *               the attachment id and its corresponding HTML markup.
+	 */
+	private function generate_commment_page_comment_attachments_script_data(): array {
 
 		$data = [];
 
@@ -172,6 +247,15 @@ final class Admin {
 		return $data;
 	}
 
+	/**
+	 * Checks if the provided page is an admin page related to the plugin.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $page The current admin page id.
+	 *
+	 * @return bool True if the page is a plugin-related admin page, false otherwise.
+	 */
 	private function is_admin_page( string $page ): bool {
 
 		return in_array(
@@ -181,16 +265,43 @@ final class Admin {
 		);
 	}
 
-	private function is_comment_page( string $page ): bool {
+	/**
+	 * Checks if the provided page is the edit comment page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $page The current admin page id.
+	 *
+	 * @return bool True if the page is a edit comment page, false otherwise.
+	 */
+	private function is_edit_comment_page( string $page ): bool {
 
 		return 'comment.php' === $page;
 	}
 
+	/**
+	 * Checks if the provided page is the edit comments page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $page The current admin page id.
+	 *
+	 * @return bool True if the page is the edit comments page, false otherwise.
+	 */
 	private function is_edit_comments_page( string $page ): bool {
 
 		return 'edit-comments.php' === $page;
 	}
 
+	/**
+	 * Checks if the provided page is the plugin settings page.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param string $page The current admin page id.
+	 *
+	 * @return bool True if the page is the plugin settings page, false otherwise.
+	 */
 	private function is_plugin_settings_page( string $page ): bool {
 
 		return 'settings_page_dco-comment-attachment' === $page;
