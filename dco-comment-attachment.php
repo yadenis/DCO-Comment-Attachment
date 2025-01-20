@@ -81,7 +81,7 @@ function dco_ca() {
 	$injector->share( DCO_CA\Form::class );
 	$injector->share( DCO_CA\FormHandler::class );
 	$injector->share( DCO_CA\RESTAPI::class );
-	$injector->share( DCO_CA\Settings::class );
+	$injector->share( DCO_CA\SettingsPage::class );
 	$injector->share( DCO_CA\Shortcode::class );
 
 	$injector->make( DCO_CA\AdminArea::class );
@@ -89,7 +89,7 @@ function dco_ca() {
 	$injector->make( DCO_CA\Form::class );
 	$injector->make( DCO_CA\FormHandler::class );
 	$injector->make( DCO_CA\RESTAPI::class );
-	$injector->make( DCO_CA\Settings::class );
+	$injector->make( DCO_CA\SettingsPage::class );
 	$injector->make( DCO_CA\Shortcode::class );
 
 	require_once DCO_CA_PATH . 'backward-compatibility/filters.php';

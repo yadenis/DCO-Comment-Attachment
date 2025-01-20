@@ -24,7 +24,7 @@ use DCO_CA\Services\SettingsService;
 defined( 'ABSPATH' ) || die;
 
 /**
- * Handles the admin functionality.
+ * Handles the admin area functionality.
  *
  * @since 3.0.0
  */

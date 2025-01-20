@@ -347,11 +347,11 @@ final class AllowedFileTypesSetting implements Setting {
 		$mark2 = __( 'allowed only for Administrators and Editors.', 'dco-comment-attachment' );
 
 		$note1 = __(
-			'To view all file extensions in a group, click the "Show All" link below that group.',
+			'To view all file extensions in a group, click the "Show All" link below the group.',
 			'dco-comment-attachment'
 		);
 		$note2 = __(
-			'Clicking on the name of a file type group (e.g., image) will select or deselect all extensions in that group.',
+			'Clicking the name of a file type group (e.g., image) will select or deselect all file extensions in the group.',
 			'dco-comment-attachment'
 		);
 

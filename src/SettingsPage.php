@@ -12,7 +12,7 @@ use DCO_CA\Services\SettingsService;
 
 defined( 'ABSPATH' ) || die;
 
-final class Settings {
+final class SettingsPage {
 
 	private array $settings;
 
