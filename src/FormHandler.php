@@ -1,4 +1,14 @@
 <?php
+/**
+ * Form Handler
+ *
+ * @package DCO_Comment_Attachment
+ * @author Denis Yanchevskiy
+ * @copyright 2019
+ * @license GPLv2+
+ *
+ * @since 3.0.0
+ */
 
 declare(strict_types=1);
 
@@ -13,17 +23,55 @@ use WP_Error;
 
 defined( 'ABSPATH' ) || die;
 
+/**
+ * Handles the form submissions functionality.
+ *
+ * @since 3.0.0
+ */
 final class FormHandler {
 
+	/**
+	 * The list of uploaded attachments.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var array
+	 */
 	private array $uploaded_attachments;
+
+	/**
+	 * The list of processed attachment ids.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var array
+	 */
 	private array $handled_attachment_ids = [];
 
+	/**
+	 * Whether manual moderation is enabled.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @var bool
+	 */
 	private bool $is_manually_moderation_enabled;
 
+	/**
+	 * Constructor
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param PluginService             $plugin_service              Service functions for the plugin.
+	 * @param SettingsService           $settings_service            Service functions for settings.
+	 * @param CommentService            $comment_service             Service functions for comments.
+	 * @param AttachmentUploadValidator $attachment_upload_validator Attachment upload validator.
+	 * @param AttachmentUploadHandler   $attachment_upload_handler   Attachment upload handler.
+	 */
 	public function __construct(
 		private PluginService $plugin_service,
-		private CommentService $comment_service,
 		private SettingsService $settings_service,
+		private CommentService $comment_service,
 		private AttachmentUploadValidator $attachment_upload_validator,
 		private AttachmentUploadHandler $attachment_upload_handler,
 	) {
@@ -37,6 +85,17 @@ final class FormHandler {
 		add_filter( 'pre_comment_approved', $this->unapprove_comment_or_not( ... ) );
 	}
 
+	/**
+	 * Validates uploaded attachments before the comment is saved.
+	 *
+	 * Displays an error and stops submission if validation fails.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array $commentdata Comment data.
+	 *
+	 * @return array Validated comment data.
+	 */
 	public function validate_uploaded_attachments( array $commentdata ): array {
 
 		$validated = $this->attachment_upload_validator->validate( $this->uploaded_attachments );
@@ -54,8 +113,19 @@ final class FormHandler {
 			esc_html__( 'Comment Submission Failure', 'dco-comment-attachment' ),
 			[ 'back_link' => true ]
 		);
+
+		return $commentdata;
 	}
 
+	/**
+	 * Handles file uploads and associates attachments with a comment.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int $comment_id Comment ID.
+	 *
+	 * @return void
+	 */
 	public function handle_uploaded_attachments( int $comment_id ): void {
 
 		$comment = $this->comment_service->get_comment_instance( $comment_id );
@@ -78,6 +148,16 @@ final class FormHandler {
 		);
 	}
 
+	/**
+	 * Changes the approval status of the comment to "unapproved"
+	 * if manual moderation is enabled and attachments were uploaded.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param int|string|WP_Error $approved Approval status.
+	 *
+	 * @return int|string|WP_Error Processed approval status.
+	 */
 	public function unapprove_comment_or_not( int|string|WP_Error $approved ): int|string|WP_Error {
 
 		if ( ! $this->plugin_service->is_form_enabled() ) {
@@ -91,6 +171,13 @@ final class FormHandler {
 		return 0;
 	}
 
+	/**
+	 * Initializes the uploaded attachments from $_FILES.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return void
+	 */
 	private function init_uploaded_attachments(): void {
 
 		// phpcs:disable WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized

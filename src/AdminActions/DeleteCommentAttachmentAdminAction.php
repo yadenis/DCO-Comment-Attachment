@@ -44,7 +44,7 @@ final class DeleteCommentAttachmentAdminAction {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var bool True for deletion, false for detachment.
+	 * @var bool
 	 */
 	protected bool $is_delete_attachment;
 

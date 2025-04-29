@@ -32,7 +32,7 @@ final class CommentsList {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var bool True if auto-embedding of links is enabled, false otherwise.
+	 * @var bool
 	 */
 	private bool $is_autoembed_links;
 
